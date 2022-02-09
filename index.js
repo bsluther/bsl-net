@@ -6,12 +6,12 @@ const PORT = process.env.PORT || 3000
 
 server.use(
   express.static(
-    path.join(__dirname,'../frontend/build'))
+    path.join(__dirname,'./frontend/build'))
 )
 
 server.get('/', (req, res) => {
   res.sendFile(
-      path.join(__dirname, '../frontend/build/index.html')
+      path.join(__dirname, './frontend/build/index.html')
   )
 })
 
