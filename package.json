@@ -5,7 +5,9 @@
   "main": "./server/index.js",
   "scripts": {
     "start": "node ./server/index.js",
-    "build": "cd frontend && npm install && npm run build"
+    "server": "nodemon ./server/index.js",
+    "build": "cd frontend && npm install && npm run build",
+    "dev": "concurrently \"nodemon ./server/index.js\" \"cd frontend && npm run start\""
   },
   "keywords": [],
   "author": "",
@@ -14,6 +16,11 @@
     "express": "^4.17.2"
   },
   "engine": {
-    "node": "15.x"
+    "node": "15.x",
+    "npm": "7.x"
+  },
+  "devDependencies": {
+    "concurrently": "^7.0.0",
+    "nodemon": "^2.0.15"
   }
 }
