@@ -4,6 +4,17 @@ module.exports = {
     extend: {
       gridTemplateRows: {
         'container': '5rem auto'
+      },
+      fontFamily: {
+        customMono: [
+          '"Source Code Pro"',
+          'Menlo',
+          'Monaco',
+          'Consolas',
+          '"Liberation Mono"',
+          '"Courier New"',
+          'monospace'
+        ]
       }
     },
   },

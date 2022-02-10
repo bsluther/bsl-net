@@ -17,7 +17,7 @@ const App = () => {
     .then(data => console.log(data))
   })
   return (
-    <section className='grid grid-rows-container'>
+    <section className='grid grid-rows-container font-customMono'>
       <Header />
       <div className='row-start-2'>Lexi Rox!</div>
     </section>
