@@ -17,24 +17,23 @@ const mongoUri = process.env.MONGO_URI
 const mongoClient = new MongoClient(mongoUri)
 const database = mongoClient.db('bsl-net')
 const tracker = database.collection('tracker')
-mongoClient.connect()
 
 
-// async function main() {
-//   try {
-//     await mongoClient.connect()
-//     // await mongoClient.db('bsl-net').command({ ping: 1 })
-//     console.log('Database connected...')
+async function main() {
+  try {
+    await mongoClient.connect()
+    // await mongoClient.db('bsl-net').command({ ping: 1 })
+    console.log('Database connected...')
 
-//     await listDatabases(mongoClient)
-//   } catch(e) {
-//     console.error(e)
-//   } finally {
-//     await mongoClient.close()
-//     console.log('Database connection closed.')
-//   }
-// }
-// main().catch(console.dir)
+    await listDatabases(mongoClient)
+  } catch(e) {
+    console.error(e)
+  } finally {
+    await mongoClient.close()
+    console.log('Database connection closed.')
+  }
+}
+main().catch(console.dir)
 
 
 
