@@ -17,7 +17,7 @@ const mongoUri = process.env.MONGO_URI
 const mongoClient = new MongoClient(mongoUri)
 const database = mongoClient.db('bsl-net')
 const tracker = database.collection('tracker')
-// mongoClient.connect()
+mongoClient.connect()
 
 
 // async function main() {
