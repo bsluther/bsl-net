@@ -17,7 +17,7 @@ const mongoUri = process.env.MONGO_URI
 const mongoClient = new MongoClient(mongoUri)
 const database = mongoClient.db('bsl-net')
 const tracker = database.collection('tracker')
-mongoClient.connect()
+// mongoClient.connect()
 
 
 // async function main() {
@@ -40,10 +40,10 @@ mongoClient.connect()
 
 
 
-async function listDatabases(client) {
-  const databasesList = await client.db().admin().listDatabases()
-  return databasesList
-}
+// async function listDatabases(client) {
+//   const databasesList = await client.db().admin().listDatabases()
+//   return databasesList
+// }
 
 
 
@@ -57,11 +57,11 @@ server.get('/', (req, res) => {
   )
 })
 
-server.get('/test', async (req, res) => {
-  console.log('test route hit')
-  const data = await listDatabases(mongoClient)
-  res.send(data)
-})
+// server.get('/test', async (req, res) => {
+//   console.log('test route hit')
+//   const data = await listDatabases(mongoClient)
+//   res.send(data)
+// })
 
 
 
