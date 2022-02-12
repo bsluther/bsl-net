@@ -57,11 +57,11 @@ server.get('/', (req, res) => {
   )
 })
 
-// server.get('/test', async (req, res) => {
-//   console.log('test route hit')
-//   const data = await listDatabases(mongoClient)
-//   res.send(data)
-// })
+server.get('/test', async (req, res) => {
+  console.log('test route hit')
+  const data = await listDatabases(mongoClient)
+  res.send(data)
+})
 
 
 
