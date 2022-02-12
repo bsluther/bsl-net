@@ -2,7 +2,7 @@ require('dotenv').config()
 const express = require('express')
 const path = require('path')
 const { MongoClient } = require('mongodb')
-// dotenv.configure()
+const { getCategories } = require('./db')
 
 const server = express()
 const PORT = process.env.PORT || 7777
@@ -37,9 +37,6 @@ async function main() {
 main().catch(console.dir)
 
 
-
-
-
 async function listDatabases(client) {
   const databasesList = await client.db().admin().listDatabases()
   return databasesList
@@ -51,6 +48,9 @@ async function listDatabases(client) {
 
 /*** ROUTES ***/
 
+// @route   GET /
+// @desc    Get frontend build in deployment
+// @access  Public
 server.get('/', (req, res) => {
   res.sendFile(
       path.join(__dirname, '../frontend/build/index.html')
@@ -60,6 +60,15 @@ server.get('/', (req, res) => {
 server.get('/test', async (req, res) => {
   console.log('test route hit')
   const data = await main()
+  res.send(data)
+})
+
+// @route   GET /tracker/categories
+// @desc    Get categories data
+// @access  Public
+server.get('/tracker/categories', async (req, res) => {
+  console.log('tracker/categories route hit')
+  const data = await getCategories(mongoClient)
   res.send(data)
 })
 

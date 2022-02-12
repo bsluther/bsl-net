@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
-
+import { v4 as uuid } from 'uuid'
+console.log(uuid())
 const Header = () => {
   return (
     <section className={`
@@ -12,8 +13,8 @@ const Header = () => {
 
 const App = () => {
   useEffect(() => {
-    fetch('./test')
-    .then(res => res.text())
+    fetch('./tracker/categories')
+    .then(res => res.json())
     .then(data => console.log(data))
   })
   return (
