@@ -1,6 +1,7 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { v4 as uuid } from 'uuid'
-console.log(uuid())
+import { CategoriesDropdown } from './tracker/categoriesDropdown'
+
 const Header = () => {
   return (
     <section className={`
@@ -12,15 +13,21 @@ const Header = () => {
 }
 
 const App = () => {
+  const [categoriesData, setCategoriesData] = useState()
+  console.log(categoriesData)
   useEffect(() => {
     fetch('./tracker/categories')
     .then(res => res.json())
-    .then(data => console.log(data))
-  })
+    .then(data => setCategoriesData(data))
+  }, [setCategoriesData])
   return (
     <section className='grid grid-rows-container font-customMono'>
       <Header />
-      <div className='row-start-2'>Lexi Rox!</div>
+      <div className='row-start-2'>
+        <CategoriesDropdown
+          nameIdObjs={categoriesData}
+        />
+      </div>
     </section>
   )
 }
