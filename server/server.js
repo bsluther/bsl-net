@@ -1,7 +1,8 @@
+require('dotenv').config()
 const express = require('express')
-const res = require('express/lib/response')
 const path = require('path')
 const { MongoClient } = require('mongodb')
+// dotenv.configure()
 
 const server = express()
 const PORT = process.env.PORT || 7777
@@ -12,8 +13,7 @@ server.use(
 )
 
 /*** DATABASE ***/
-
-const mongoUri = 'mongodb+srv://bsluther:throwaway@gv-mdb.yizju.mongodb.net/gv-mdb?retryWrites=true&w=majority'
+const mongoUri = process.env.MONGO_URI
 const mongoClient = new MongoClient(mongoUri)
 const database = mongoClient.db('bsl-net')
 const tracker = database.collection('tracker')
