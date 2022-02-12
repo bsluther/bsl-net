@@ -14,7 +14,7 @@ server.use(
 
 /*** DATABASE ***/
 const mongoUri = process.env.MONGO_URI
-const mongoClient = new MongoClient(mongoUri)
+const mongoClient = new MongoClient(mongoUri, { useNewUrlParser: true, useUnifiedTopology: true })
 const database = mongoClient.db('bsl-net')
 const tracker = database.collection('tracker')
 

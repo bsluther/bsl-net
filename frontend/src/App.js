@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react'
-import { v4 as uuid } from 'uuid'
-import { CategoriesDropdown } from './tracker/categoriesDropdown'
+// import { useEffect, useState } from 'react'
+import { PeriodCreator } from './tracker/periodCreator'
+// import { v4 as uuid } from 'uuid'
+
 
 const Header = () => {
   return (
@@ -13,20 +14,11 @@ const Header = () => {
 }
 
 const App = () => {
-  const [categoriesData, setCategoriesData] = useState()
-  console.log(categoriesData)
-  useEffect(() => {
-    fetch('./tracker/categories')
-    .then(res => res.json())
-    .then(data => setCategoriesData(data))
-  }, [setCategoriesData])
   return (
     <section className='grid grid-rows-container font-customMono'>
       <Header />
       <div className='row-start-2'>
-        <CategoriesDropdown
-          nameIdObjs={categoriesData}
-        />
+        <PeriodCreator />
       </div>
     </section>
   )
