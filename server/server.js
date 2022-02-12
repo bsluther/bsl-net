@@ -25,7 +25,8 @@ async function main() {
     // await mongoClient.db('bsl-net').command({ ping: 1 })
     console.log('Database connected...')
 
-    await listDatabases(mongoClient)
+    const data = await listDatabases(mongoClient)
+    return data
   } catch(e) {
     console.error(e)
   } finally {
@@ -39,10 +40,10 @@ main().catch(console.dir)
 
 
 
-// async function listDatabases(client) {
-//   const databasesList = await client.db().admin().listDatabases()
-//   return databasesList
-// }
+async function listDatabases(client) {
+  const databasesList = await client.db().admin().listDatabases()
+  return databasesList
+}
 
 
 
@@ -58,7 +59,7 @@ server.get('/', (req, res) => {
 
 server.get('/test', async (req, res) => {
   console.log('test route hit')
-  const data = await listDatabases(mongoClient)
+  const data = await main()
   res.send(data)
 })
 
