@@ -1,78 +1,32 @@
 require('dotenv').config()
 const express = require('express')
 const path = require('path')
-const { MongoClient } = require('mongodb')
-const { getCategories } = require('./db')
+const { getAllBlocks, getAllCategories, postBlock } = require('./dbOperations')
+
 
 const server = express()
 const PORT = process.env.PORT || 7777
 
+server.use(express.json())
 server.use(
   express.static(
     path.join(__dirname,'../frontend/build'))
 )
 
-/*** DATABASE ***/
-const mongoUri = process.env.MONGO_URI
-const mongoClient = new MongoClient(mongoUri, { useNewUrlParser: true, useUnifiedTopology: true })
-const database = mongoClient.db('bsl-net')
-const tracker = database.collection('tracker')
-
-
-async function main() {
-  try {
-    await mongoClient.connect()
-    // await mongoClient.db('bsl-net').command({ ping: 1 })
-    console.log('Database connected...')
-
-    const data = await listDatabases(mongoClient)
-    return data
-  } catch(e) {
-    console.error(e)
-  } finally {
-    await mongoClient.close()
-    console.log('Database connection closed.')
-  }
-}
-main().catch(console.dir)
-
-
-async function listDatabases(client) {
-  const databasesList = await client.db().admin().listDatabases()
-  return databasesList
-}
-
-
-
-
-
-/*** ROUTES ***/
-
-// @route   GET /
-// @desc    Get frontend build in deployment
-// @access  Public
-server.get('/', (req, res) => {
-  res.sendFile(
-      path.join(__dirname, '../frontend/build/index.html')
-  )
+server.get('/tracker/blocks', (req, res) => {
+  getAllBlocks()
+  .then(data => res.send(data))
 })
 
-server.get('/test', async (req, res) => {
-  console.log('test route hit')
-  const data = await main()
-  res.send(data)
+server.get('/tracker/categories', (req, res) => {
+  getAllCategories()
+  .then(data => res.send(data))
 })
 
-// @route   GET /tracker/categories
-// @desc    Get categories data
-// @access  Public
-server.get('/tracker/categories', async (req, res) => {
-  console.log('tracker/categories route hit')
-  const data = await getCategories(mongoClient)
-  res.send(data)
+server.post('/tracker/blocks', (req, res) => {
+  postBlock(req.body)
+  .then(data => res.send(data))
 })
-
-
 
 server.listen(PORT, () => {
   console.log(`App running on port ${PORT}.`)
