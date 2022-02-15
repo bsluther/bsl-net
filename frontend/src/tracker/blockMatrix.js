@@ -37,7 +37,7 @@ const BlockMatrix = () => {
     ])
     .then(([cats, blks]) => {
       setCategories(cats)
-      setBlocks(blks)
+      setBlocks(map(assocName(cats))(blks))
     })
   }, [setBlocks, setCategories])
 
