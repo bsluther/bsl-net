@@ -1,9 +1,9 @@
 import { atom, useAtom } from 'jotai'
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useState } from 'react'
 import { CategoriesDropdown } from './categoriesDropdown'
 import * as L from 'partial.lenses'
 import { DateTime } from 'luxon'
-import { assoc } from 'ramda'
+import { getAndStoreBlocks, getAndStoreCategories, postBlock } from './fetches'
 
 /*
 TODO:
@@ -14,7 +14,7 @@ TODO:
 -rename period to block?
 */
 
-const categoriesAtom = atom([])
+
 
 const blockAtom = atom({
   category: undefined,
@@ -30,27 +30,11 @@ const TimePicker = ({ instant, handler }) => {
   )
 }
 
-const blockTest = (block) => {
-  console.log(block)
-  fetch('./tracker/blocks', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(block)
-  })
-  .then(res => res.json())
-  .then(data => console.log(data))
-  // .then(data => console.log(data))
-}
-
-// ??? :: Block -> CategoryData -> EnrichedBlock
-
-const nameCategories = block => categoryData =>
-  assoc('categoryName')(categoryData[block.category].name)
-
-const BlockCreator = () => {
+const BlockCreator = ({ categoriesAtom, blocksAtom }) => {
   const [categories, setCategories] = useAtom(categoriesAtom)
   const [block, setBlock] = useAtom(blockAtom)
   const [showErrors, setShowErrors] = useState(false)
+  const [_, setBlocks] = useAtom(blocksAtom)
 
   const startDt = DateTime.fromISO(block.startInstant)
   const endDt = DateTime.fromISO(block.endInstant)
@@ -58,9 +42,7 @@ const BlockCreator = () => {
   const filled = !!block.category && !!block.startInstant && !!block.endInstant
 
   useEffect(() => {
-    fetch('./tracker/categories')
-    .then(res => res.json())
-    .then(data => setCategories(data))
+    getAndStoreCategories(setCategories)
   }, [setCategories])
 
 
@@ -81,7 +63,7 @@ const BlockCreator = () => {
       <div>
         <div>End:</div>
         <TimePicker
-          instant={L.get(['endInstant'])(block)} handler={x => x}
+          instant={L.get(['endInstant'])(block)}
           handler={instant => setBlock(L.set(['endInstant'])(instant))}
         />
       </div>
@@ -92,7 +74,8 @@ const BlockCreator = () => {
         `}
         onClick={() =>
           filled && startBeforeEnd
-            ? blockTest(block)
+            ? postBlock(block)
+                .then(() => getAndStoreBlocks(setBlocks))
             : setShowErrors(true)}
       >
         Save Period

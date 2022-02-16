@@ -1,7 +1,7 @@
 require('dotenv').config()
 const express = require('express')
 const path = require('path')
-const { getAllBlocks, getAllCategories, postBlock } = require('./dbOperations')
+const { getAllBlocks, getAllCategories, postBlock, deleteBlock } = require('./dbOperations')
 
 
 const server = express()
@@ -25,6 +25,12 @@ server.get('/tracker/categories', (req, res) => {
 
 server.post('/tracker/blocks', (req, res) => {
   postBlock(req.body)
+  .then(data => res.send(data))
+})
+
+server.delete('/tracker/blocks', (req, res) => {
+  console.log(req.body)
+  deleteBlock(req.body.id)
   .then(data => res.send(data))
 })
 

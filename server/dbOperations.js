@@ -1,4 +1,4 @@
-const { MongoClient } = require('mongodb')
+const { MongoClient, ObjectId } = require('mongodb')
 
 async function getAllBlocks() {
   const result = await main(client =>
@@ -29,6 +29,15 @@ async function postBlock(data) {
   return result
 }
 
+async function deleteBlock(id) {
+  const result = await main(client =>
+                              client
+                              .db('bsl-net')
+                              .collection('tracker-blocks')
+                              .deleteOne({ "_id": ObjectId(id) }))
+  return result
+}
+
 async function main(operation) {
   const mongoUri = process.env.MONGO_URI
   const client = new MongoClient(mongoUri, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -47,4 +56,4 @@ async function main(operation) {
   }
 }
 
-module.exports = { main, getAllBlocks, getAllCategories, postBlock }
+module.exports = { main, getAllBlocks, getAllCategories, postBlock, deleteBlock }
