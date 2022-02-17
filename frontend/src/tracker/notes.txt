@@ -1,0 +1,38 @@
+BLOCK LAWS:
+
+A single block of time can be assigned only ONE category!
+That category may be a subcategory of others.
+That block of time may subdivided into subblocks, which can each be assigned their own category.
+  e.g. 2-5pm tracker-project -> 70% tracker-project 30% mathematics
+But note that this supercedes the category of the original block.
+If a block is partially subdivided, the leftover time remains in the original block category.
+  e.g. 2-5pm tracker-project -> subblock 30% mathematics = 70% tracker-project, 30% mathematics.
+
+BLOCK DATA:
+
+_id: <BlockId>
+creator: <UserId>
+category: <CategoryId>
+subblocks: [
+  {
+    subdivider: 'percentage' || 'block',
+    division: '30%' || <Block>,
+    category: <CategoryId>
+  }
+],
+maybe, depends on if I want to have subblocks be truly indepdent blocks, or live in the containing block
+superblock: <BlockId>
+
+startInstant:
+  or...
+startTime:
+startDate:
+startTimeZone:
+  or...
+start: {
+  time: <IsoTime>
+  date: <IsoDate>
+  timeZone: <???>
+}
+
+

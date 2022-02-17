@@ -5,14 +5,7 @@ import * as L from 'partial.lenses'
 import { DateTime } from 'luxon'
 import { getAndStoreBlocks, getAndStoreCategories, postBlock } from './fetches'
 
-/*
-TODO:
--put all state into a single Period atom
--set start time to one hour prior to current time
--set end time to current time
--check to make sure end time is after start time
--rename period to block?
-*/
+
 
 
 
@@ -26,7 +19,12 @@ const TimePicker = ({ instant, handler }) => {
   const dt = DateTime.fromISO(instant)
 
   return (
-    <input type='datetime-local' className={`border border-black rounded-sm px-1`} value={dt.toISO({ includeOffset: false })} onChange={e => handler(DateTime.fromISO(e.target.value).toISO())}/>
+    <input
+      type='datetime-local'
+      className={`border border-black rounded-sm px-1 bg-white`}
+      value={dt.toISO({ includeOffset: false })} 
+      onChange={e => handler(DateTime.fromISO(e.target.value).toISO())}
+    />
   )
 }
 
@@ -47,21 +45,24 @@ const BlockCreator = ({ categoriesAtom, blocksAtom }) => {
 
 
   return (
-    <div className={``}>
-      <CategoriesDropdown
-        nameIdObjs={categories}
-        selectedId={L.get('category')(block)}
-        selectHandler={id => setBlock(L.set(['category'])(id))}
-      />
-      <div>
-        <div>Start:</div>
+    <div className={`flex flex-col border-2 border-black rounded-sm bg-hermit-grey-400 w-max m-1 place-items-center`}>
+      <div className='flex p-1'>
+        <p className='pr-2'>Category:</p>
+        <CategoriesDropdown
+          nameIdObjs={categories}
+          selectedId={L.get('category')(block)}
+          selectHandler={id => setBlock(L.set(['category'])(id))}
+        />
+      </div>
+      <div className='flex p-1'>
+        <p className='pr-2'>Start:</p>
         <TimePicker
           instant={L.get(['startInstant'])(block)}
           handler={instant => setBlock(L.set(['startInstant'])(instant))}
         />
       </div>
-      <div>
-        <div>End:</div>
+      <div className='flex p-1'>
+        <p className='pr-2'>End:</p>
         <TimePicker
           instant={L.get(['endInstant'])(block)}
           handler={instant => setBlock(L.set(['endInstant'])(instant))}
@@ -69,8 +70,8 @@ const BlockCreator = ({ categoriesAtom, blocksAtom }) => {
       </div>
       <button
         className={`
-          bg-gray-600 border border-gray-400 rounded-md px-2
-          ${filled && startBeforeEnd ? 'text-white' : 'text-gray-400'}
+          bg-hermit-yellow-403 border border-black rounded-md px-2 m-1 justify-self-center w-max
+          ${filled && startBeforeEnd ? 'text-black' : 'text-black'}
         `}
         onClick={() =>
           filled && startBeforeEnd
@@ -78,7 +79,7 @@ const BlockCreator = ({ categoriesAtom, blocksAtom }) => {
                 .then(() => getAndStoreBlocks(setBlocks))
             : setShowErrors(true)}
       >
-        Save Period
+        Save Block
       </button>
       {showErrors
         ? <div>

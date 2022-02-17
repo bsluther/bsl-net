@@ -1,4 +1,5 @@
 import { prop, assoc, find } from 'ramda'
+import { blcId } from '../util'
 
 const deleteBlock = id =>
   fetch('./tracker/blocks', {
@@ -15,7 +16,7 @@ const postBlock = block =>
   fetch('./tracker/blocks', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(block)
+    body: JSON.stringify(assoc('_id')(blcId())(block))
   })
   .then(res => res.json())
 

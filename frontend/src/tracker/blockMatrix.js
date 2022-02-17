@@ -19,7 +19,7 @@ const mapIx = addIndex(map)
 const DeleteButton = forwardRef(({ deleteHandler, id }, ref) =>
   <div className='flex px-1' ref={ref}>
     <button
-      className=' bg-red-600 rounded-lg px-2 h-min text-xs self-center'
+      className='border border-black text-black bg-white rounded-lg px-2 h-min text-xs self-center'
       onClick={() => {
         deleteHandler(id)
       }}
@@ -29,11 +29,11 @@ const DeleteButton = forwardRef(({ deleteHandler, id }, ref) =>
 
 const LabelRow = ({ widths }) => {
   return (
-    <div className='flex bg-white'>
-      <div className={`flex border border-black`}>
-        <div className='border-x border-black' style={{ width: widths.category}}>Category</div>
-        <div className='border-x border-black' style={{ width: widths.startInstant}}>Start</div>
-        <div className='border-x border-black' style={{ width: widths.endInstant}}>End</div>
+    <div className='flex'>
+      <div className={`flex border border-black bg-hermit-grey-900 text-hermit-grey-200`}>
+        <div className='border-x border-black text-center' style={{ width: widths.category}}>Category</div>
+        <div className='border-x border-black text-center' style={{ width: widths.startInstant}}>Start</div>
+        <div className='border-x border-black text-center' style={{ width: widths.endInstant}}>End</div>
       </div>
     </div>
   )
@@ -42,11 +42,11 @@ const LabelRow = ({ widths }) => {
 
 const Row = ({ data, rowIndex, syncBlocks, widths }) => {
   return (
-    <div className='flex bg-white'>
-      <div className={`flex border border-black ${isEven(rowIndex) ? 'bg-pink-400' : null}`}>
-        <div style={{ width: widths.category}} className='border-x border-black'>{data.categoryName}</div>
-        <div style={{ width: widths.startInstant}} className='border-x border-black'>{isoToF(data.startInstant)}</div>
-        <div style={{ width: widths.endInstant}} className='border-x border-black'>{isoToF(data.endInstant)}</div>
+    <div className='flex bg-hermit-aqua-500'>
+      <div className={`flex border border-black ${isEven(rowIndex) ? 'bg-hermit-grey-500' : 'bg-hermit-grey-400'}`}>
+        <div style={{ width: widths.category}} className='border-x border-black px-1 w-max'>{data.categoryName}</div>
+        <div style={{ width: widths.startInstant}} className='border-x border-black px-1 w-max'>{isoToF(data.startInstant)}</div>
+        <div style={{ width: widths.endInstant}} className='border-x border-black px-1 w-max'>{isoToF(data.endInstant)}</div>
       </div>
       <DeleteButton id={data._id} deleteHandler={id => {
         deleteBlock(id)
@@ -64,7 +64,6 @@ const BlockMatrix = ({ blocksAtom, categoriesAtom }) => {
   const rightBarRef = useRef()
   // const [rightBarWidth, setRightBarWidth] = useState()
 
-  console.log(widths)
 
   const syncBlocks = () => getAndStoreBlocks(setBlocks)
 
@@ -84,7 +83,7 @@ const BlockMatrix = ({ blocksAtom, categoriesAtom }) => {
   }, [setBlocks, setCategories])
 
   return (
-    <div className='flex flex-col' ref={containerRef}>
+    <div className='flex flex-col w-full' ref={containerRef}>
       <div className='flex'>
         <LabelRow widths={widths} />
         <div className='invisible'>

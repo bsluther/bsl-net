@@ -15,7 +15,7 @@ const CategoriesDropdown = ({ nameIdObjs, selectedId, selectHandler }) => {
     <select
       value={selectedId ? selectedId : 'title'}
       onChange={e => selectHandler(e.target.value)}
-      className={`border border-black round-sm`}
+      className={`border border-black round-sm bg-white`}
     >
       {loading
         ? prepend(<option value='title' key='title' disabled>Choose a category</option>)
