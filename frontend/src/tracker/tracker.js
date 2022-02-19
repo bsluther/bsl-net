@@ -25,15 +25,22 @@ const namedBlocksAtom = atom(
   (get, set, blks) => set(blocksAtom, blks)
 )
 
-
-
 const trackerAtom = atom({
+  user: {
+    users: ['ari', 'bsluther', 'dolan', 'moontiger', 'whittlesey'],
+    currentUser: 'noCurrentUser'
+  },
   editor: { target: 'draft' }
 })
 
+const trackerUserAtom = atom(
+  get => get(trackerAtom).user,
+  (get, set, _arg) => set(trackerAtom, L.set(['user'], _arg, (get(trackerAtom))))
+)
+
 
 const Tracker = ({ userAtom }) => {
-  const [userState, setUserState] = useAtom(userAtom)
+  // const [userState, setUserState] = useAtom(userAtom)
   const [categories , setCategories] = useAtom(categoriesAtom)
   const [blocks, setBlocks] = useAtom(blocksAtom)
   const [namedBlocks] = useAtom(namedBlocksAtom)
@@ -57,27 +64,27 @@ const Tracker = ({ userAtom }) => {
   const syncBlocks = () =>
     fork(err => console.log('Failed to fetch blocks.', err))
         (blcs => setBlocks(blcs))
-        (getUserBlocksF(userState.currentUser))
+        (getUserBlocksF(trackerState.user.currentUser))
 
   useEffect(() => {
     syncBlocks()
 
     fork(err => console.log('Failed to fetch categories.', err))
         (cats => setCategories(cats))
-        (getCategoriesF(userState.currentUser))
-  }, [setBlocks, setCategories, userState])
+        (getCategoriesF(trackerState.user.currentUser))
+  }, [setBlocks, setCategories, trackerState.user])
 
 
   return (
     <>
-      {userState.currentUser === 'noCurrentUser'
+      {trackerState.user.currentUser === 'noCurrentUser'
         ? <div className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'>
             <div className='flex flex-col items-center px-4 pt-2 pb-4 space-y-2 rounded-md text-hermit-yellow-400 w-max h-max bg-hermit-grey-900'>
               <p>Login to to use the Tracker</p>
               <UserDropdown 
-                users={userState.users} 
-                currentUser={userState.currentUser} 
-                handleLogin={usr => setUserState(L.set(['currentUser'], usr))} 
+                users={trackerState.user.users} 
+                currentUser={trackerState.user.currentUser} 
+                handleLogin={usr => setTrackerState(L.set(['user', 'currentUser'], usr))} 
               />
             </div>
           </div>
@@ -85,7 +92,7 @@ const Tracker = ({ userAtom }) => {
             <div className='w-full'>
               <EditorTargeter
                 editorTarget={trackerState.editor.target}
-                user={userState.currentUser}
+                user={trackerState.user.currentUser}
                 blocksAtom={namedBlocksAtom}
                 categories={categories}
                 syncBlocks={syncBlocks}
@@ -100,4 +107,4 @@ const Tracker = ({ userAtom }) => {
   )
 }
 
-export { Tracker }
+export { Tracker, trackerUserAtom }
