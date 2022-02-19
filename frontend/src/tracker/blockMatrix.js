@@ -1,9 +1,10 @@
-
-import { map, addIndex } from 'ramda'
-import { useEffect, useLayoutEffect, useRef, useState, forwardRef } from 'react'
-import { useAtom } from 'jotai'
-import { getAndStoreCatsAndBlocks, deleteBlock, getAndStoreBlocks } from './fetches'
+import * as L from 'partial.lenses'
+import { map, addIndex, concat, equals } from 'ramda'
+import { useLayoutEffect, useRef, useState, forwardRef } from 'react'
+import { deleteBlock } from './fetches'
 import { DateTime } from 'luxon'
+import { Block } from './blockData'
+
 
 /* IMPROVEMENTS:
 -use Maybes to handle possibly missing or unloaded data
@@ -39,14 +40,23 @@ const LabelRow = ({ widths }) => {
   )
 }
 
+const joinDateWithTime = date => time => concat(date)(concat('T')(time))
 
-const Row = ({ data, rowIndex, syncBlocks, widths }) => {
+const Row = ({ data, rowIndex, syncBlocks, widths, editorTarget, setEditorTarget }) => {
+  const isTargeted = equals(editorTarget)(L.get(Block.id, data))
+
+  console.log(equals(editorTarget)(L.get(Block.id, data)))
   return (
     <div className='flex bg-hermit-aqua-500'>
-      <div className={`flex border border-black ${isEven(rowIndex) ? 'bg-hermit-grey-500' : 'bg-hermit-grey-400'}`}>
-        <div style={{ width: widths.category}} className='border-x border-black px-1 w-max'>{data.categoryName}</div>
-        <div style={{ width: widths.startInstant}} className='border-x border-black px-1 w-max'>{isoToF(data.startInstant)}</div>
-        <div style={{ width: widths.endInstant}} className='border-x border-black px-1 w-max'>{isoToF(data.endInstant)}</div>
+      <div
+        className={`flex
+          ${isEven(rowIndex) ? 'bg-hermit-grey-500' : 'bg-hermit-grey-400'}
+          ${isTargeted ? 'border border-hermit-yellow-400' : 'border border-black' }}
+        `}
+        onClick={() => setEditorTarget(data._id)}>
+        <div style={{ width: widths.category}} className='border border-black px-1 w-max'>{data.categoryName}</div>
+        <div style={{ width: widths.startInstant}} className='border border-black px-1 w-max'>{isoToF(joinDateWithTime(data.start.date)(data.start.time))}</div>
+        <div style={{ width: widths.endInstant}} className='border border-black px-1 w-max'>{isoToF(joinDateWithTime(data.end.date)(data.end.time))}</div>
       </div>
       <DeleteButton id={data._id} deleteHandler={id => {
         deleteBlock(id)
@@ -56,16 +66,11 @@ const Row = ({ data, rowIndex, syncBlocks, widths }) => {
   )
 }
 
-const BlockMatrix = ({ blocksAtom, categoriesAtom }) => {
-  const [blocks, setBlocks] = useAtom(blocksAtom)
-  const [categories, setCategories] = useAtom(categoriesAtom)
+const BlockMatrix = ({ blocks, syncBlocks, editorTarget, setEditorTarget }) => {
   const containerRef = useRef()
   const [widths, setWidths] = useState({})
   const rightBarRef = useRef()
-  // const [rightBarWidth, setRightBarWidth] = useState()
-
-
-  const syncBlocks = () => getAndStoreBlocks(setBlocks)
+  console.log('blocks', blocks)
 
   useLayoutEffect(() => {
     const rightBarWidth = rightBarRef.current.clientWidth
@@ -78,9 +83,7 @@ const BlockMatrix = ({ blocksAtom, categoriesAtom }) => {
     })
   }, [containerRef])
 
-  useEffect(() => {
-    getAndStoreCatsAndBlocks(setCategories)(setBlocks)
-  }, [setBlocks, setCategories])
+  
 
   return (
     <div className='flex flex-col w-full' ref={containerRef}>
@@ -97,6 +100,8 @@ const BlockMatrix = ({ blocksAtom, categoriesAtom }) => {
                   syncBlocks={syncBlocks}
                   rowIndex={index}
                   widths={widths}
+                  editorTarget={editorTarget}
+                  setEditorTarget={setEditorTarget}
                 />)
             (blocks)}
     </div>

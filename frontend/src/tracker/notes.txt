@@ -11,7 +11,7 @@ If a block is partially subdivided, the leftover time remains in the original bl
 BLOCK DATA:
 
 _id: <BlockId>
-creator: <UserId>
+user: <UserId>
 category: <CategoryId>
 subblocks: [
   {

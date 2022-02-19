@@ -1,7 +1,7 @@
 require('dotenv').config()
 const express = require('express')
 const path = require('path')
-const { getAllBlocks, getAllCategories, postBlock, deleteBlock } = require('./dbOperations')
+const { getAllBlocks, getAllCategories, postBlock, deleteBlock, postCategory } = require('./dbOperations')
 
 
 const server = express()
@@ -12,14 +12,12 @@ server.use(
   express.static(
     path.join(__dirname,'../frontend/build'))
 )
+/**************************************
+                 BLOCK
+**************************************/
 
 server.get('/tracker/blocks', (req, res) => {
-  getAllBlocks()
-  .then(data => res.send(data))
-})
-
-server.get('/tracker/categories', (req, res) => {
-  getAllCategories()
+  getAllBlocks(req.query.user)
   .then(data => res.send(data))
 })
 
@@ -27,6 +25,25 @@ server.post('/tracker/blocks', (req, res) => {
   postBlock(req.body)
   .then(data => res.send(data))
 })
+
+
+/**************************************
+               CATEGORY
+**************************************/
+
+server.get('/tracker/categories', (req, res) => {
+  getAllCategories(req.query.user)
+  .then(data => res.send(data))
+})
+
+server.post('/tracker/categories', (req, res) => {
+  postCategory(req.body)
+  .then(data => res.send(data))
+})
+
+
+
+
 
 server.delete('/tracker/blocks', (req, res) => {
   console.log(req.body)

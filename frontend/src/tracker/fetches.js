@@ -43,7 +43,7 @@ const getAndStoreCatsAndBlocks = catSetter => blkSetter => {
   })
 }
 
-const findCategoryById = id => cats => find(cat => prop('id')(cat) === id)(cats)
+const findCategoryById = id => cats => find(cat => prop('_id')(cat) === id)(cats)
 
 const assocName = categories => block =>
   assoc('categoryName')
@@ -60,4 +60,12 @@ const getAndStoreBlocks = blkSetter => {
   .then(blks => blkSetter(blks))
 }
 
-export { postBlock, getAndStoreCategories, getAndStoreCatsAndBlocks, getAndStoreBlocks, deleteBlock, assocName }
+/*************************************/
+
+const getUserBlocks = username => {
+  fetch(`./tracker/blocks/?user=${username}`)
+  .then(res => res.json())
+  .then(data => console.log(data))
+}
+
+export { postBlock, getAndStoreCategories, getAndStoreCatsAndBlocks, getAndStoreBlocks, deleteBlock, assocName, getUserBlocks }

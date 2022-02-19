@@ -1,21 +1,15 @@
 const { MongoClient, ObjectId } = require('mongodb')
 
-async function getAllBlocks() {
+/**************************************
+                 BLOCK
+**************************************/
+
+async function getAllBlocks(user) {
   const result = await main(client =>
                               client
                               .db('bsl-net')
                               .collection('tracker-blocks')
-                              .find()
-                              .toArray())
-  return result
-}
-
-async function getAllCategories() {
-  const result = await main(client =>
-                              client
-                              .db('bsl-net')
-                              .collection('tracker-categories')
-                              .find()
+                              .find({ user })
                               .toArray())
   return result
 }
@@ -34,9 +28,36 @@ async function deleteBlock(id) {
                               client
                               .db('bsl-net')
                               .collection('tracker-blocks')
-                              .deleteOne({ "_id": ObjectId(id) }))
+                              .deleteOne({ "_id": id }))
   return result
 }
+
+/**************************************
+               CATEGORY
+**************************************/
+
+async function getAllCategories(user) {
+  const result = await main(client =>
+                              client
+                              .db('bsl-net')
+                              .collection('tracker-categories')
+                              .find({ creator: user })
+                              .toArray())
+  return result
+}
+
+async function postCategory(data) {
+  const result = await main(client =>
+                              client
+                              .db('bsl-net')
+                              .collection('tracker-categories')
+                              .insertOne(data))
+}
+
+/**************************************
+                 MAIN
+**************************************/
+
 
 async function main(operation) {
   const mongoUri = process.env.MONGO_URI
@@ -45,7 +66,7 @@ async function main(operation) {
   try {
     await client.connect()
 
-    // const result = await client.db('bsl-net').collection('tracker-blocks').find().toArray()
+
     const result = await operation(client)
 
     return result
@@ -56,4 +77,4 @@ async function main(operation) {
   }
 }
 
-module.exports = { main, getAllBlocks, getAllCategories, postBlock, deleteBlock }
+module.exports = { main, getAllBlocks, getAllCategories, deleteBlock, postBlock, postCategory }

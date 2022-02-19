@@ -15,6 +15,7 @@
   "dependencies": {
     "dotenv": "^16.0.0",
     "express": "^4.17.2",
+    "fluture": "^14.0.0",
     "luxon": "^2.3.0",
     "mongodb": "4.3",
     "partial.lenses": "^14.17.0",

@@ -5,18 +5,18 @@ import { Tracker } from './tracker/tracker'
 
 /*
 TO-DO:
--Use my own IDs instead of Mongos
--Category -> Categories
--Users
--Create categories
+-Update vs save logic
+-New block option (when editing a block)
+-Ghetto Fetch Future (curry2?)
+-Get delete button working again
+-User created categories
 -Matrix sorting/filtering
   -Duration by category
 */
 
 const userAtom = atom({
   users: ['ari', 'bsluther', 'dolan', 'moontiger', 'whittlesey'],
-  currentUser: 'noCurrentUser',
-
+  currentUser: 'noCurrentUser'
 })
 
 const App = () => {
@@ -24,17 +24,10 @@ const App = () => {
   return (
     <section className='grid grid-rows-container font-customMono bg-hermit-aqua-500 h-screen w-screen'>
       <Header userAtom={userAtom}/>
-      <Tracker />
-      {/* <div className='row-start-2'>
-        <BlockCreator categoriesAtom={categoriesAtom} blocksAtom={namedBlocksAtom} />
-      </div>
-
-      <div className='row-start-2 col-start-2'>
-        <BlockMatrix categoriesAtom={categoriesAtom} blocksAtom={namedBlocksAtom} />
-      </div> */}
-      
+      <Tracker userAtom={userAtom} />
     </section>
   )
 }
 
+export { userAtom }
 export default App

@@ -2,7 +2,7 @@ import { map, prop, length, gt, prepend, compose as B } from 'ramda'
 import { snakeToSpaced } from '../util'
 
 const name = prop('name')
-const id = prop('id')
+const id = prop('_id')
 
 const renderOption = map(obj =>
                           <option value={id(obj)} key={id(obj)}>
