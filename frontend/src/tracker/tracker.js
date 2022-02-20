@@ -1,14 +1,13 @@
 import { useEffect } from 'react'
-import { atom, useAtom } from 'jotai'
+import { useAtom } from 'jotai'
 import { filter, map } from 'ramda'
-import { assocName, getAndStoreBlocks } from './fetches'
-import { Block } from './blockData'
 import * as L from 'partial.lenses'
 import { Matrix } from './matrix/matrix'
 import { UserDropdown } from './user/userDropdown'
 import { fork } from 'fluture'
 import { EditorTargeter } from './editorTargeter'
 import { getCategoriesF, getUserBlocksF } from './dbFns'
+import { trackerAtom, blocksAtom, namedBlocksAtom, categoriesAtom } from './atoms'
 
 /*
 STATE:
@@ -17,26 +16,10 @@ STATE:
 */
 
 
-const categoriesAtom = atom([])
-const blocksAtom = atom([])
-const namedBlocksAtom = atom(
-  get => map(assocName(get(categoriesAtom)))
-            (get(blocksAtom)),
-  (get, set, blks) => set(blocksAtom, blks)
-)
 
-const trackerAtom = atom({
-  user: {
-    users: ['ari', 'bsluther', 'dolan', 'moontiger', 'whittlesey'],
-    currentUser: 'noCurrentUser'
-  },
-  editor: { target: 'draft' }
-})
 
-const trackerUserAtom = atom(
-  get => get(trackerAtom).user,
-  (get, set, _arg) => set(trackerAtom, L.set(['user'], _arg, (get(trackerAtom))))
-)
+
+
 
 
 const Tracker = ({ userAtom }) => {
@@ -92,6 +75,7 @@ const Tracker = ({ userAtom }) => {
             <div className='w-full'>
               <EditorTargeter
                 editorTarget={trackerState.editor.target}
+                setEditorTarget={setEditorTarget}
                 user={trackerState.user.currentUser}
                 blocksAtom={namedBlocksAtom}
                 categories={categories}
@@ -107,4 +91,4 @@ const Tracker = ({ userAtom }) => {
   )
 }
 
-export { Tracker, trackerUserAtom }
+export { Tracker }

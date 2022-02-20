@@ -120,7 +120,7 @@ const Row = ({ block, y, editorTarget, setEditorTarget }) => {
 }
 
 const Grid = ({ blocks, columnsConfig, editorTarget, setEditorTarget }) => {
-  const [dimensions, setDimensions] = useAtom(dimensionsAtom)
+  const [dimensions] = useAtom(dimensionsAtom)
 
   const columnCount = length(keys(columnsConfig))
   const rowCount = length(blocks)

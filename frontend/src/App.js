@@ -1,7 +1,9 @@
 // import { useEffect, useState } from 'react'
 import { atom } from 'jotai'
 import { Header } from './header'
-import { Tracker, trackerUserAtom } from './tracker/tracker'
+import { Tracker } from './tracker/tracker'
+import { trackerAtom } from './tracker/atoms'
+import * as L from 'partial.lenses'
 
 /*
 TO-DO:
@@ -18,6 +20,10 @@ TO-DO:
   -Duration by category
 */
 
+const trackerUserAtom = atom(
+  get => get(trackerAtom).user,
+  (get, set, _arg) => set(trackerAtom, L.set(['user'], _arg, (get(trackerAtom))))
+)
 
 
 const App = () => {

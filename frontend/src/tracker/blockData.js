@@ -7,7 +7,7 @@ const blockConstructor = user => ({
   category: undefined,
   start: {
     date: DateTime.now().toISODate(),
-    time: DateTime.now().toISOTime({ includeOffset: false })
+    time: DateTime.now().minus({ hour: 1, minute: 30 }).toISOTime({ includeOffset: false })
   },
   end: {
     date: DateTime.now().toISODate(),

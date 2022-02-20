@@ -1,6 +1,5 @@
 import { encaseP, chain, attemptP } from 'fluture'
-import { curry } from 'ramda'
-
+import { curryN } from 'ramda'
 
 /**************************************
                  BLOCK
@@ -16,11 +15,12 @@ const getUserBlocksF = username =>
   .pipe(chain(encaseP(res => res.json())))
 
 const postBlockF = blc =>
-  attemptP(() => fetch('./tracker/blocks', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(blc)
-          }))
+  encaseP(curryN(2, fetch)('./tracker/blocks'))
+         ({
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(blc)
+        })
   .pipe(chain(encaseP(res => res.json())))
 
 
