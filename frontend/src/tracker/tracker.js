@@ -7,7 +7,7 @@ import { UserDropdown } from './user/userDropdown'
 import { fork } from 'fluture'
 import { EditorTargeter } from './editorTargeter'
 import { getCategoriesF, getUserBlocksF } from './dbFns'
-import { trackerAtom, blocksAtom, namedBlocksAtom, categoriesAtom } from './atoms'
+import { trackerAtom, blocksAtom, namedBlocksAtom, categoriesAtom, loginAtom } from './atoms'
 
 /*
 STATE:
@@ -16,38 +16,20 @@ STATE:
 */
 
 
-
-
-
-
-
-
 const Tracker = ({ userAtom }) => {
-  // const [userState, setUserState] = useAtom(userAtom)
   const [categories , setCategories] = useAtom(categoriesAtom)
   const [blocks, setBlocks] = useAtom(blocksAtom)
   const [namedBlocks] = useAtom(namedBlocksAtom)
   const [trackerState, setTrackerState] = useAtom(trackerAtom)
-  // console.log('Categories: ', categories)
-  // console.log('Blocks: ', blocks)
-  // console.log('NamedBlocks: ', namedBlocks)
-  console.log('Draft block: ', filter(blc => blc.isDraft)(namedBlocks))
+  const [, handleLogin] = useAtom(loginAtom)
 
   const setEditorTarget = id => setTrackerState(L.set(['editor', 'target'], id))
 
-  // useEffect(() => {
-  //   if (userState.currentUser !== 'noCurrentUser' && !editorState.editing) {
-  //     setEditorState({
-  //       editing: 'local',
-  //       localBlock: Block.constructor(userState.currentUser)
-  //     })
-  //   }
-  // }, [userState, editorState, setEditorState])
-   
   const syncBlocks = () =>
     fork(err => console.log('Failed to fetch blocks.', err))
         (blcs => setBlocks(blcs))
         (getUserBlocksF(trackerState.user.currentUser))
+
 
   useEffect(() => {
     syncBlocks()
@@ -67,7 +49,8 @@ const Tracker = ({ userAtom }) => {
               <UserDropdown 
                 users={trackerState.user.users} 
                 currentUser={trackerState.user.currentUser} 
-                handleLogin={usr => setTrackerState(L.set(['user', 'currentUser'], usr))} 
+                handleLogin={handleLogin} 
+                // handleLogin={usr => setTrackerState(L.set(['user', 'currentUser'], usr))} 
               />
             </div>
           </div>
@@ -84,7 +67,12 @@ const Tracker = ({ userAtom }) => {
             </div>
 
             <div className='w-full pr-2 pb-2'>
-              <Matrix blocks={filter(blc => !blc.isDraft)(namedBlocks)} editorTarget={trackerState.editor.target} setEditorTarget={setEditorTarget} />
+              <Matrix 
+                blocks={filter(blc => !blc.isDraft)(namedBlocks)} 
+                editorTarget={trackerState.editor.target} 
+                setEditorTarget={setEditorTarget} 
+                syncBlocks={syncBlocks}
+              />
             </div>
           </section>}
     </>

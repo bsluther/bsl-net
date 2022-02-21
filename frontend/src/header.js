@@ -3,6 +3,7 @@ import { map } from 'ramda'
 import * as L from 'partial.lenses'
 import { UserDropdown } from './tracker/user/userDropdown'
 import { useLayoutEffect, useRef, useState } from 'react'
+import { logoutAtom } from './tracker/atoms'
 
 const headerNavAtom = atom({ activeLink: 'Tracker' })
 
@@ -10,6 +11,7 @@ const HeaderSubMenu = ({ navState, setNavState, userAtom }) => {
   const [userState, setUserState] = useAtom(userAtom)
   const [buttonHeight, setButtonHeight] = useState()
   const buttonRef = useRef()
+  const [, logout] = useAtom(logoutAtom)
 
   useLayoutEffect(() => {
     setButtonHeight(buttonRef.current.offsetHeight)
@@ -28,7 +30,8 @@ const HeaderSubMenu = ({ navState, setNavState, userAtom }) => {
       />
       <button
         className={`text-xs border bg-hermit-grey-400 text-hermit-grey-900 border-hermit-grey-400 justify-self-end rounded-sm px-1`}
-        onClick={() => setUserState(L.set(['currentUser'], 'noCurrentUser'))}
+        onClick={logout}
+        // onClick={() => setUserState(L.set(['currentUser'], 'noCurrentUser'))}
         ref={buttonRef}
       >LOGOUT</button>
     </div>

@@ -1,4 +1,4 @@
-import { append, find, assoc, findIndex, update } from 'ramda'
+import { append, find, assoc, equals } from 'ramda'
 import * as L from 'partial.lenses'
 import { Block } from './blockData'
 import { BlockEditor } from './blockEditor'
@@ -15,6 +15,13 @@ const EditorTargeter = ({ editorTarget, setEditorTarget, blocksAtom, user, categ
   const [blocks, setBlocks] = useAtom(blocksAtom)
   console.log('editor target: ', editorTarget)
 
+  const undraftBlock = id =>
+    setBlocks(L.modify(
+      [L.find(blc => blc._id === id)], 
+      L.set(['isDraft'], undefined), 
+      blocks
+    ))
+
   // if target is draft, and no draft exists, create a draft
   useEffect(() => {
     if (editorTarget === 'draft' && !find(blc => blc.isDraft)(blocks)) {
@@ -28,7 +35,7 @@ const EditorTargeter = ({ editorTarget, setEditorTarget, blocksAtom, user, categ
   // create an attempt pointing to the target block
   const targetAtom = useMemo(() => 
     deriveTargetAtom(editorTarget)(blocksAtom)
-  , [deriveTargetAtom, editorTarget, blocksAtom])
+  , [editorTarget, blocksAtom])
 
   return (
     <BlockEditor
@@ -37,6 +44,7 @@ const EditorTargeter = ({ editorTarget, setEditorTarget, blocksAtom, user, categ
       syncBlocks={syncBlocks}
       editorTarget={editorTarget}
       setEditorTarget={setEditorTarget}
+      undraftBlock={undraftBlock}
     />
   )
 }

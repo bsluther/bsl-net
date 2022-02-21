@@ -23,6 +23,17 @@ const postBlockF = blc =>
         })
   .pipe(chain(encaseP(res => res.json())))
 
+const deleteBlockF = id =>
+  encaseP(curryN(2, fetch)('./tracker/blocks'))
+         ({
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id })
+         })
+  .pipe(chain(encaseP(res => res.json())))
+
+
+
 
 /**************************************
                CATEGORY
@@ -41,5 +52,6 @@ const getCategoriesF = username =>
 export {
   getUserBlocksP, getUserBlocksF,
   getCategoriesP, getCategoriesF,
-  postBlockF
+  postBlockF,
+  deleteBlockF
 }

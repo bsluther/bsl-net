@@ -1,12 +1,13 @@
-import { atom, useAtom } from 'jotai'
+import { useAtom } from 'jotai'
 import { useState } from 'react'
 import { CategoriesDropdown } from './categoriesDropdown'
 import * as L from 'partial.lenses'
 import { DateTime } from 'luxon'
-
 import { postBlockF } from './dbFns'
-import { dissoc, map } from 'ramda'
+import { dissoc } from 'ramda'
 import { fork } from 'fluture'
+import { Block } from './blockData'
+import { saveBlockAtom } from './atoms'
 
 
 
@@ -16,7 +17,6 @@ const startBeforeEnd = blc => {
   if (!blc) {
     return false
   } else {
-    console.log('startBeforeEnd blc', blc)
     const startDt = DateTime.fromISO(blc.start.date).plus(DateTime.fromISO(blc.start.time).toObject())
     const endDt = DateTime.fromISO(blc.end.date).plus(DateTime.fromISO(blc.end.time).toObject())
     console.log(startDt, endDt)
@@ -45,9 +45,11 @@ const EditorMenu = ({ selected, handleSelect }) => {
   )
 }
 
-const BlockEditor = ({ editingAtom, categories, syncBlocks, editorTarget, setEditorTarget }) => {
+const BlockEditor = ({ editingAtom, categories, syncBlocks, editorTarget, setEditorTarget, undraftBlock }) => {
   const [editing, setEditing] = useAtom(editingAtom)
   const [showErrors, setShowErrors] = useState(false)
+  const [, handleSaveBlock] = useAtom(saveBlockAtom)
+  const editingId = L.get(Block.id, editing)
 
   return (
     <div className={`flex flex-col border-2 border-black rounded-sm bg-hermit-grey-400 w-max m-1 place-items-center`}>
@@ -90,13 +92,21 @@ const BlockEditor = ({ editingAtom, categories, syncBlocks, editorTarget, setEdi
       </div>
       <button
         className={`
-          bg-hermit-yellow-403 border border-black rounded-md px-2 m-1 justify-self-center w-max
-          ${editing && filled(editing) && startBeforeEnd ? 'text-black' : 'text-black'}
+          bg-hermit-grey-900 border border-hermit-grey-900 
+          rounded-md px-2 m-1 justify-self-center w-max
+          ${editing && filled(editing) && startBeforeEnd
+            ? 'text-hermit-grey-400 hover:text-hermit-yellow-403'
+            : 'text-hermit-grey-400 hover:text-red-700 hover:cursor-not-allowed'}
         `}
         onClick={() =>
           editing && filled(editing) && startBeforeEnd
-            ? fork(err => console.log('Block post failed!'))
-                  (res => syncBlocks())
+            ? fork(err => console.log('Block post failed!', err))
+                  (res => {
+                    if (res.insertedId === editingId) {
+                      handleSaveBlock(editingId)
+                      syncBlocks()
+                    }
+                  })
                   (postBlockF(dissoc('isDraft')(editing)))
             : setShowErrors(true)}
       >

@@ -1,20 +1,20 @@
 import { atom } from 'jotai'
-import { map, find, findIndex, update } from 'ramda'
+import { map, find, findIndex, update, equals } from 'ramda'
 import * as L from 'partial.lenses'
 import { Block } from './blockData'
 import { assocName } from './fetches'
+
 
 const trackerAtom = atom({
   user: {
     users: ['ari', 'bsluther', 'dolan', 'moontiger', 'whittlesey'],
     currentUser: 'noCurrentUser'
   },
-  editor: { target: 'draft' }
+  editor: { target: 'draft' },
 })
 
 
 const categoriesAtom = atom([])
-
 
 const blocksAtom = atom([])
 
@@ -23,6 +23,58 @@ const namedBlocksAtom = atom(
             (get(blocksAtom)),
   (get, set, blks) => set(blocksAtom, blks)
 )
+
+/******************************************************************************/
+// HANDLERS
+
+const logoutAtom = atom(
+  null,
+  (get, set) => {
+    set(categoriesAtom, [])
+    set(blocksAtom, [])
+    set(trackerAtom, L.set(['editor', 'target'], 'draft', get(trackerAtom)))
+    set(trackerAtom, L.set(['user', 'currentUser'], 'noCurrentUser', get(trackerAtom)))
+  }
+)
+
+const loginAtom = atom(
+  null,
+  (get, set, user) => {
+    set(trackerAtom,
+        L.set(['user', 'currentUser'],
+              user,
+              get(trackerAtom)))
+  }
+)
+
+const saveBlockAtom = atom(
+  null,
+  (get, set, blcId) => {
+    // Set editorTarget to the ID of the saved block
+    set(trackerAtom,
+        L.set(
+          ['editor', 'target'],
+          blcId,
+          get(trackerAtom)
+        )
+    )
+
+    // Remove isDraft property from the saved block
+    set(blocksAtom,
+        L.set(
+          [L.find(x => L.get([Block.id], x) === blcId), 'isDraft'],
+          undefined,
+          get(blocksAtom)
+        ))
+
+  }
+)
+
+
+
+
+/******************************************************************************/
+
 
 
 
@@ -59,5 +111,9 @@ export {
   blocksAtom,
   namedBlocksAtom,
   categoriesAtom,
-  deriveTargetAtom
+  deriveTargetAtom,
+  loginAtom,
+  logoutAtom,
+  saveBlockAtom,
+  findIndexById
 }

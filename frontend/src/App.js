@@ -2,7 +2,7 @@
 import { atom } from 'jotai'
 import { Header } from './header'
 import { Tracker } from './tracker/tracker'
-import { trackerAtom } from './tracker/atoms'
+import { trackerAtom, } from './tracker/atoms'
 import * as L from 'partial.lenses'
 
 /*
@@ -22,7 +22,7 @@ TO-DO:
 
 const trackerUserAtom = atom(
   get => get(trackerAtom).user,
-  (get, set, _arg) => set(trackerAtom, L.set(['user'], _arg, (get(trackerAtom))))
+  (get, set, _arg) => set(trackerAtom, L.set(['user', 'currentUser'], _arg, (get(trackerAtom))))
 )
 
 
