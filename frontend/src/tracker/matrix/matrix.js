@@ -1,11 +1,11 @@
 import * as L from 'partial.lenses'
 import { atom, useAtom } from 'jotai'
 import { useRef } from 'react'
-import { Block } from '../blockData'
+import { Block } from '../block/blockData'
 import { add, addIndex, keys, length, map, prop, sort, values } from 'ramda'
 import { DateTime } from 'luxon'
-import { findIndexById } from '../atoms'
-import { deleteBlockF } from '../dbFns'
+import { findIndexById } from '../functions'
+import { deleteBlockF } from '../dbRequests'
 import { fork } from 'fluture'
 
 
@@ -53,15 +53,17 @@ const columnsConfigAtom = atom({
     calculated: true,
     calculation: blc => {
       const startDt = DateTime.fromISO(blc.start.date).set(DateTime.fromISO(blc.start.time).toObject())
+
       const endDt = DateTime.fromISO(blc.end.date).set(DateTime.fromISO(blc.end.time).toObject())
       const res = endDt.diff(startDt, ['hours', 'minutes']).toObject()
-      console.log('RES!', res)
+
       return `${Math.floor(res.hours)}hr ${Math.floor(res.minutes)}mn`
     }
   }
 })
 
-const compareColumns = (c1, c2) => prop('position')(c1) < prop('position')(c2) ? -1 : 1
+const compareColumns = (c1, c2) => 
+  prop('position')(c1) < prop('position')(c2) ? -1 : 1
 const sortColumns = sort(compareColumns)
 
 const DeleteButton = ({ invisible, y, handler }) => {
@@ -120,8 +122,8 @@ const Cell = ({ text, x, y, align, handleClick, targeted }) => {
     <div
       className={`
         col-start-${x} col-span-1 row-start-${y} row-span-1 
+        overflow-hidden px-1 cursor-pointer
         ${targeted ? 'bg-hermit-yellow-403' : 'bg-hermit-grey-400'}
-        overflow-hidden px-1
         text-${align}
       `}
       onClick={handleClick}
@@ -131,7 +133,6 @@ const Cell = ({ text, x, y, align, handleClick, targeted }) => {
   )
 }
 
-const Phantom = () => <div className='absolute'>HI</div>
 
 const Row = ({ block, y, editorTarget, setEditorTarget }) => {
   const [columnsConfig] = useAtom(columnsConfigAtom)
@@ -182,7 +183,7 @@ const Grid = ({ blocks, columnsConfig, editorTarget, setEditorTarget }) => {
 }
 
 const Matrix = ({ blocks, editorTarget, setEditorTarget, syncBlocks }) => {
-  const [dimensions, setDimensions] = useAtom(dimensionsAtom)
+  const [dimensions] = useAtom(dimensionsAtom)
   const [columnsConfig] = useAtom(columnsConfigAtom)
   const containerRef = useRef()
 
@@ -221,7 +222,7 @@ const Matrix = ({ blocks, editorTarget, setEditorTarget, syncBlocks }) => {
           blocks={blocks} 
           columnsConfig={columnsConfig} 
           editorTarget={editorTarget} 
-          setEditorTarget={setEditorTarget} 
+          setEditorTarget={setEditorTarget}
         />
       </section>
 

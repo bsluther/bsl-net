@@ -1,43 +1,45 @@
-import { useEffect } from 'react'
+import { useEffect, useCallback } from 'react'
 import { useAtom } from 'jotai'
-import { filter, map } from 'ramda'
+import { filter } from 'ramda'
 import * as L from 'partial.lenses'
 import { Matrix } from './matrix/matrix'
 import { UserDropdown } from './user/userDropdown'
 import { fork } from 'fluture'
-import { EditorTargeter } from './editorTargeter'
-import { getCategoriesF, getUserBlocksF } from './dbFns'
+import { EditorTargeter } from './block/editorTargeter'
+import { getCategoriesF, getUserBlocksF } from './dbRequests'
 import { trackerAtom, blocksAtom, namedBlocksAtom, categoriesAtom, loginAtom } from './atoms'
-
-/*
-STATE:
-1. If no user is logged in, load no data, display only "log in to continue".
-  a) Create a fetch that fetches by current user.
-*/
+import { CategoryEditor } from './category/categoryEditor'
+import { foldToIdObj } from './functions'
 
 
-const Tracker = ({ userAtom }) => {
+
+const Tracker = () => {
   const [categories , setCategories] = useAtom(categoriesAtom)
-  const [blocks, setBlocks] = useAtom(blocksAtom)
+  const [, setBlocks] = useAtom(blocksAtom)
   const [namedBlocks] = useAtom(namedBlocksAtom)
   const [trackerState, setTrackerState] = useAtom(trackerAtom)
   const [, handleLogin] = useAtom(loginAtom)
 
   const setEditorTarget = id => setTrackerState(L.set(['editor', 'target'], id))
 
-  const syncBlocks = () =>
-    fork(err => console.log('Failed to fetch blocks.', err))
-        (blcs => setBlocks(blcs))
-        (getUserBlocksF(trackerState.user.currentUser))
-
+  const syncBlocks = useCallback(
+    () =>
+      fork(err => console.log('Failed to fetch blocks.', err))
+          (blcs => setBlocks(blcs))
+          (getUserBlocksF(trackerState.user.currentUser))
+  , [setBlocks, trackerState.user.currentUser])
 
   useEffect(() => {
     syncBlocks()
+  }, [syncBlocks])
 
+  useEffect(() => {
     fork(err => console.log('Failed to fetch categories.', err))
-        (cats => setCategories(cats))
+        (cats => {
+          setCategories(foldToIdObj(cats))
+        })
         (getCategoriesF(trackerState.user.currentUser))
-  }, [setBlocks, setCategories, trackerState.user])
+  }, [setBlocks, setCategories, trackerState.user, syncBlocks])
 
 
   return (
@@ -50,12 +52,11 @@ const Tracker = ({ userAtom }) => {
                 users={trackerState.user.users} 
                 currentUser={trackerState.user.currentUser} 
                 handleLogin={handleLogin} 
-                // handleLogin={usr => setTrackerState(L.set(['user', 'currentUser'], usr))} 
               />
             </div>
           </div>
         : <section className={`w-screen grid grid-cols-2`}>
-            <div className='w-full'>
+            <div className='w-full col-start-1 col-span-1'>
               <EditorTargeter
                 editorTarget={trackerState.editor.target}
                 setEditorTarget={setEditorTarget}
@@ -66,7 +67,11 @@ const Tracker = ({ userAtom }) => {
               />
             </div>
 
-            <div className='w-full pr-2 pb-2'>
+            <div className='col-start-1 col-span-1'>
+              <CategoryEditor />
+            </div>
+
+            <div className='w-full row-start-1 col-start-2 col-span-1 pr-2 pb-2'>
               <Matrix 
                 blocks={filter(blc => !blc.isDraft)(namedBlocks)} 
                 editorTarget={trackerState.editor.target} 

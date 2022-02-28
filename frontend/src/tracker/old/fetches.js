@@ -1,5 +1,5 @@
 import { prop, assoc, find } from 'ramda'
-import { blcId } from '../util'
+import { blcId } from '../../util'
 
 const deleteBlock = id =>
   fetch('./tracker/blocks', {

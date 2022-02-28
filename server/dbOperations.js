@@ -52,6 +52,28 @@ async function postCategory(data) {
                               .db('bsl-net')
                               .collection('tracker-categories')
                               .insertOne(data))
+  return result
+}
+
+async function deleteCategory(id) {
+  const result = await main(client =>
+                              client
+                              .db('bsl-net')
+                              .collection('tracker-categories')
+                              .deleteOne({ "_id": id }))
+  return result
+}
+
+async function updateCategory(id, data) {
+  const result = await main(client =>
+                              client
+                              .db('bsl-net')
+                              .collection('tracker-categories')
+                              .updateOne(
+                                { "_id": id },
+                                { $set: data }
+                            ))
+  return result
 }
 
 /**************************************
@@ -77,4 +99,13 @@ async function main(operation) {
   }
 }
 
-module.exports = { main, getAllBlocks, getAllCategories, deleteBlock, postBlock, postCategory }
+module.exports = { 
+  main, 
+  getAllBlocks, 
+  getAllCategories, 
+  deleteBlock, 
+  postBlock, 
+  postCategory,
+  deleteCategory,
+  updateCategory
+}

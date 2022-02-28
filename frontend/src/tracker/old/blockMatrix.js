@@ -3,7 +3,7 @@ import { map, addIndex, concat, equals } from 'ramda'
 import { useLayoutEffect, useRef, useState, forwardRef } from 'react'
 import { deleteBlock } from './fetches'
 import { DateTime } from 'luxon'
-import { Block } from './blockData'
+import { Block } from '../blockData'
 
 
 /* IMPROVEMENTS:
@@ -108,4 +108,4 @@ const BlockMatrix = ({ blocks, syncBlocks, editorTarget, setEditorTarget }) => {
   )
 }
 
-export { BlockMatrix }
+// export { BlockMatrix }

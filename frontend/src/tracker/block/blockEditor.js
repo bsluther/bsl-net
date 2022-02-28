@@ -1,13 +1,13 @@
 import { useAtom } from 'jotai'
 import { useState } from 'react'
-import { CategoriesDropdown } from './categoriesDropdown'
+import { CategoriesDropdown } from '../category/categoriesDropdown'
 import * as L from 'partial.lenses'
 import { DateTime } from 'luxon'
-import { postBlockF } from './dbFns'
-import { dissoc } from 'ramda'
+import { postBlockF } from '../dbRequests'
+import { dissoc, values } from 'ramda'
 import { fork } from 'fluture'
 import { Block } from './blockData'
-import { saveBlockAtom } from './atoms'
+import { saveBlockAtom } from '../atoms'
 
 
 
@@ -38,9 +38,10 @@ const EditorMenu = ({ selected, handleSelect }) => {
   return (
     <div className={`flex w-full
       space-x-4 pt-1 px-4
-      bg-hermit-grey-900`}>
+      bg-hermit-grey-900 font-extrabold`}>
       <MenuButton name='New' selected={selected === 'New'} handleSelect={() => handleSelect('New')} />
       <MenuButton name='Edit' selected={selected === 'Edit'} handleSelect={() => handleSelect('New')} />
+      {/* <p className='text-hermit-grey-400 basis-full text-right text-lg'>BLOCK EDITOR</p> */}
     </div>
   )
 }
@@ -63,7 +64,7 @@ const BlockEditor = ({ editingAtom, categories, syncBlocks, editorTarget, setEdi
       <div className='flex p-1'>
         <p className='pr-2'>Category:</p>
         <CategoriesDropdown
-          nameIdObjs={categories}
+          nameIdObjs={values(categories)}
           selectedId={L.get('category')(editing)}
           selectHandler={id => setEditing(L.set(['category'])(id)(editing))}
         />

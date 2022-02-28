@@ -1,7 +1,8 @@
 require('dotenv').config()
 const express = require('express')
 const path = require('path')
-const { getAllBlocks, getAllCategories, postBlock, deleteBlock, postCategory } = require('./dbOperations')
+const { getAllBlocks, getAllCategories, postBlock, deleteBlock, postCategory, deleteCategory, updateCategory } = require('./dbOperations')
+const { dissoc } = require('ramda')
 
 
 const server = express()
@@ -26,6 +27,11 @@ server.post('/tracker/blocks', (req, res) => {
   .then(data => res.send(data))
 })
 
+server.delete('/tracker/blocks', (req, res) => {
+  console.log(req.body)
+  deleteBlock(req.body.id)
+  .then(data => res.send(data))
+})
 
 /**************************************
                CATEGORY
@@ -41,15 +47,20 @@ server.post('/tracker/categories', (req, res) => {
   .then(data => res.send(data))
 })
 
-
-
-
-
-server.delete('/tracker/blocks', (req, res) => {
-  console.log(req.body)
-  deleteBlock(req.body.id)
+server.delete('/tracker/categories', (req, res) => {
+  deleteCategory(req.body.id)
   .then(data => res.send(data))
 })
+
+server.put('/tracker/categories', (req, res) => {
+  updateCategory(req.body._id, req.body)
+  .then(data => res.send(data))
+})
+
+
+
+
+
 
 server.listen(PORT, () => {
   console.log(`App running on port ${PORT}.`)

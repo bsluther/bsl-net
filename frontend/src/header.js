@@ -3,7 +3,7 @@ import { map } from 'ramda'
 import * as L from 'partial.lenses'
 import { UserDropdown } from './tracker/user/userDropdown'
 import { useLayoutEffect, useRef, useState } from 'react'
-import { logoutAtom } from './tracker/atoms'
+import { logoutAtom, changeUserAtom } from './tracker/atoms'
 
 const headerNavAtom = atom({ activeLink: 'Tracker' })
 
@@ -12,6 +12,7 @@ const HeaderSubMenu = ({ navState, setNavState, userAtom }) => {
   const [buttonHeight, setButtonHeight] = useState()
   const buttonRef = useRef()
   const [, logout] = useAtom(logoutAtom)
+  const [, changeUser] = useAtom(changeUserAtom)
 
   useLayoutEffect(() => {
     setButtonHeight(buttonRef.current.offsetHeight)
@@ -26,7 +27,8 @@ const HeaderSubMenu = ({ navState, setNavState, userAtom }) => {
       <UserDropdown 
         users={userState.users}
         currentUser={userState.currentUser}
-        handleLogin={usr => setUserState(L.set(['currentUser'], usr))}
+        handleLogin={changeUser}
+        // handleLogin={usr => setUserState(L.set(['currentUser'], usr))}
       />
       <button
         className={`text-xs border bg-hermit-grey-400 text-hermit-grey-900 border-hermit-grey-400 justify-self-end rounded-sm px-1`}
@@ -57,7 +59,7 @@ const HeaderMenu = ({ activeLink, setActiveLink }) => {
                 key={text} 
                 text={text} 
                 handleClick={() => setActiveLink(text)} />)
-            (['Home', 'Tracker', 'Gainzville', 'Glossary', 'Writing'])}
+            (['Home', 'Tracker', 'SvgApp', 'Gainzville', 'Glossary', 'Writing'])}
       </div>
       
 
@@ -79,4 +81,4 @@ const Header = ({ userAtom }) => {
   )
 }
 
-export { Header }
+export { Header, headerNavAtom }

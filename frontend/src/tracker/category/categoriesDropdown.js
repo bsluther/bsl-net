@@ -1,5 +1,5 @@
 import { map, prop, length, gt, prepend, compose as B } from 'ramda'
-import { snakeToSpaced } from '../util'
+import { snakeToSpaced } from '../../util'
 
 const name = prop('name')
 const id = prop('_id')

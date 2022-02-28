@@ -1,19 +1,14 @@
-import { append, find, assoc, equals } from 'ramda'
+import { append, find, assoc } from 'ramda'
 import * as L from 'partial.lenses'
 import { Block } from './blockData'
 import { BlockEditor } from './blockEditor'
 import { useEffect, useMemo } from 'react'
-import { atom, useAtom } from 'jotai'
-import { deriveTargetAtom } from './atoms'
-
-// Move the deriveTargetAtom computation into a ref
-
-
+import { useAtom } from 'jotai'
+import { deriveTargetBlockAtom } from '../atoms'
 
 
 const EditorTargeter = ({ editorTarget, setEditorTarget, blocksAtom, user, categories, syncBlocks }) => {
   const [blocks, setBlocks] = useAtom(blocksAtom)
-  console.log('editor target: ', editorTarget)
 
   const undraftBlock = id =>
     setBlocks(L.modify(
@@ -34,7 +29,7 @@ const EditorTargeter = ({ editorTarget, setEditorTarget, blocksAtom, user, categ
 
   // create an attempt pointing to the target block
   const targetAtom = useMemo(() => 
-    deriveTargetAtom(editorTarget)(blocksAtom)
+    deriveTargetBlockAtom(editorTarget)(blocksAtom)
   , [editorTarget, blocksAtom])
 
   return (

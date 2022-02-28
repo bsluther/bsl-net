@@ -1,36 +1,27 @@
 import { atom } from 'jotai'
-import { map, find, findIndex, update, equals } from 'ramda'
+import { atomWithReset } from 'jotai/utils'
+import { map, find, assoc, prop, dissoc } from 'ramda'
 import * as L from 'partial.lenses'
-import { Block } from './blockData'
-import { assocName } from './fetches'
+import { Block } from './block/blockData'
+import { updateById, assocCatNameToBlock } from './functions'
+import { Category } from './category/categoryData'
 
+
+
+/***** TRACKER *****/
 
 const trackerAtom = atom({
   user: {
     users: ['ari', 'bsluther', 'dolan', 'moontiger', 'whittlesey'],
     currentUser: 'noCurrentUser'
   },
-  editor: { target: 'draft' },
+  editor: { target: 'draft' }
 })
-
-
-const categoriesAtom = atom([])
-
-const blocksAtom = atom([])
-
-const namedBlocksAtom = atom(
-  get => map(assocName(get(categoriesAtom)))
-            (get(blocksAtom)),
-  (get, set, blks) => set(blocksAtom, blks)
-)
-
-/******************************************************************************/
-// HANDLERS
 
 const logoutAtom = atom(
   null,
   (get, set) => {
-    set(categoriesAtom, [])
+    set(categoriesAtom, {})
     set(blocksAtom, [])
     set(trackerAtom, L.set(['editor', 'target'], 'draft', get(trackerAtom)))
     set(trackerAtom, L.set(['user', 'currentUser'], 'noCurrentUser', get(trackerAtom)))
@@ -45,6 +36,27 @@ const loginAtom = atom(
               user,
               get(trackerAtom)))
   }
+)
+
+// this looks a lot like COMPOSING EFFECTS...
+// time for some MONADS??
+const changeUserAtom = atom(
+  null,
+  (_get, set, user) => {
+    set(logoutAtom, null)
+    set(loginAtom, user)
+  }
+)
+
+
+/***** BLOCKS *****/
+
+const blocksAtom = atom([])
+
+const namedBlocksAtom = atom(
+  get => map(blc => assocCatNameToBlock(get(categoriesAtom))(blc))
+            (get(blocksAtom)),
+  (_get, set, blks) => set(blocksAtom, blks)
 )
 
 const saveBlockAtom = atom(
@@ -70,38 +82,106 @@ const saveBlockAtom = atom(
   }
 )
 
-
-
-
-/******************************************************************************/
-
-
-
-
-
-
-/******************************************************************************/
-// DERIVE TARGET ATOM
-
-const findIndexById = id => blcs => findIndex(blc => blc._id === id)(blcs)
-const updateById = x => id => blcs => update(findIndexById(id)(blcs))(x)(blcs)
-
-const deriveTargetAtom = str => blcsAtom =>
+const deriveTargetBlockAtom = str => blcsAtom =>
   str === 'draft'
     ? atom(
       get => find(blc => blc.isDraft)(get(blcsAtom)),
-      (get, set, _arg) => set(blcsAtom,
-                              updateById(_arg)
-                                        (L.get(Block.id)(_arg))
+      (get, set, arg) => set(blcsAtom,
+                              updateById(arg)
+                                        (L.get(Block.id)(arg))
                                         (get(blcsAtom)))
     )
     : atom(
       get => find(blc => L.get(Block.id)(blc) === str)(get(blcsAtom)),
-      (get, set, _arg) => set(blcsAtom,
-                          updateById(_arg)
-                                    (L.get(Block.id)(_arg))
+      (get, set, arg) => set(blcsAtom,
+                          updateById(arg)
+                                    (L.get(Block.id)(arg))
                                     (get(blcsAtom)))
     )
+
+/***** CATEGORIES *****/
+
+const categoriesAtom = atom({})
+
+// const draftCategoryAtom = atomWithReset(
+//   get => {
+//     console.log('get tracker atom: ', get(trackerAtom))
+//     return Category.constructor(get(trackerAtom).user.currentUser)
+//   },
+//   (_get, set, cat) => set(draftCategoryAtom, cat)
+// )
+
+const draftCategoryAtom = atom({})
+const createNewDraftCategoryAtom = atom(
+  null,
+  (get, set, _arg) => {
+    const user = get(trackerAtom).user.currentUser
+    const newDraft = Category.constructor(user)
+    set(draftCategoryAtom, newDraft)
+  }
+)
+
+const targetCategoryIdAtom = atom('draft')
+
+const targetCategoryAtom = atom(
+  get => {
+    const targetId = get(targetCategoryIdAtom)
+
+    if (targetId === 'draft') {
+      return get(draftCategoryAtom)
+    }
+    return prop(targetId)(get(categoriesAtom))
+  },
+  (get, set, cat) => {
+    const targetId = get(targetCategoryIdAtom)
+    console.log('setTargetCategory call, cat:', cat)
+    if (targetId === 'draft') {
+      set(draftCategoryAtom, cat)
+    } else {
+      set(categoriesAtom, cats => assoc(targetId)(cat)(cats))
+    }
+  }
+)
+
+const saveDraftCategoryAtom = atom(
+  null,
+  (get, set, _arg) => {
+    const newCat = get(targetCategoryAtom)
+    set(categoriesAtom, cats => assoc(newCat._id)
+                                     (newCat)
+                                     (cats))
+    set(targetCategoryIdAtom, newCat._id)
+    set(createNewDraftCategoryAtom, null)
+  }
+)
+
+const deleteCategoryAtom = atom(
+  null,
+  (get, set, deletingId) => {
+    const currentTargetId = get(targetCategoryIdAtom)
+    if (currentTargetId === deletingId) {
+      set(targetCategoryIdAtom, 'draft')
+    }
+    set(categoriesAtom, cats => dissoc(deletingId)(cats))
+  }
+)
+
+// const deriveTargetCategoryAtom = targetId =>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /******************************************************************************/
 
@@ -111,9 +191,15 @@ export {
   blocksAtom,
   namedBlocksAtom,
   categoriesAtom,
-  deriveTargetAtom,
+  deriveTargetBlockAtom,
   loginAtom,
   logoutAtom,
   saveBlockAtom,
-  findIndexById
+  changeUserAtom,
+  targetCategoryAtom,
+  targetCategoryIdAtom,
+  draftCategoryAtom,
+  createNewDraftCategoryAtom,
+  saveDraftCategoryAtom,
+  deleteCategoryAtom
 }

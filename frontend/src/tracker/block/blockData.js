@@ -1,5 +1,6 @@
-import { blcId } from '../util'
+import { blcId } from '../functions'
 import { DateTime } from 'luxon'
+import * as L from 'partial.lenses'
 
 const blockConstructor = user => ({
   _id: blcId(),

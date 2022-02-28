@@ -1,10 +1,10 @@
 // import { useEffect, useState } from 'react'
-import { atom } from 'jotai'
-import { Header } from './header'
+import { atom, useAtom } from 'jotai'
+import { Header, headerNavAtom } from './header'
 import { Tracker } from './tracker/tracker'
-import { trackerAtom, } from './tracker/atoms'
+import { trackerAtom } from './tracker/atoms'
 import * as L from 'partial.lenses'
-
+import { SvgApp } from './jotaiSvg/App'
 /*
 TO-DO:
 -Update vs save logic
@@ -20,18 +20,31 @@ TO-DO:
   -Duration by category
 */
 
+
+
 const trackerUserAtom = atom(
   get => get(trackerAtom).user,
   (get, set, _arg) => set(trackerAtom, L.set(['user', 'currentUser'], _arg, (get(trackerAtom))))
 )
 
+const BrokenPage = () => {
+  return (<div>{`Sorry, page does not exist...`}</div>)
+}
+const navSwitch = link => ({
+  'Tracker': Tracker,
+  'SvgApp': SvgApp
+}[link] ?? BrokenPage)
 
 const App = () => {
+  const [navState] = useAtom(headerNavAtom)
+  console.log('navstate', navState)
+  const ActiveApp = navSwitch(navState.activeLink)
 
   return (
     <section className='grid grid-rows-container font-customMono bg-hermit-aqua-500 h-screen w-screen'>
       <Header userAtom={trackerUserAtom}/>
-      <Tracker userAtom={trackerUserAtom} />
+      <ActiveApp userAtom={trackerUserAtom} />
+      {/* <Tracker userAtom={trackerUserAtom} /> */}
     </section>
   )
 }

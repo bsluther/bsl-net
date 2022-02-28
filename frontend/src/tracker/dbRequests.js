@@ -1,4 +1,4 @@
-import { encaseP, chain, attemptP } from 'fluture'
+import { encaseP, chain } from 'fluture'
 import { curryN } from 'ramda'
 
 /**************************************
@@ -48,10 +48,39 @@ const getCategoriesF = username =>
   encaseP(fetch)(`./tracker/categories/?user=${username}`)
   .pipe(chain(encaseP(res => res.json())))
 
+const postCategoryF = cat =>
+  encaseP(curryN(2, fetch)('./tracker/categories'))
+         ({
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(cat)
+        })
+  .pipe(chain(encaseP(res => res.json())))
+
+const deleteCategoryF = id =>
+  encaseP(curryN(2, fetch)('./tracker/categories'))
+         ({
+           method: 'DELETE',
+           headers: { 'Content-Type': 'application/json' },
+           body: JSON.stringify({ id })
+         })
+  .pipe(chain(encaseP(res => res.json())))
+
+const updateCategoryF = cat =>
+  encaseP(curryN(2, fetch)('./tracker/categories'))
+         ({
+           method: 'PUT',
+           headers: { 'Content-Type': 'application/json' },
+           body: JSON.stringify(cat)
+         })
+  .pipe(chain(encaseP(res => res.json())))
 
 export {
   getUserBlocksP, getUserBlocksF,
   getCategoriesP, getCategoriesF,
-  postBlockF,
-  deleteBlockF
+  postBlockF, 
+  deleteBlockF,
+  postCategoryF, 
+  deleteCategoryF,
+  updateCategoryF
 }
