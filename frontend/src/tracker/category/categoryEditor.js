@@ -88,7 +88,7 @@ const CatPresenter = ({ category, setCategory, categories, targetCategoryId, set
   const [listMode, setListMode] = useState('selectCategory')
 
   return (
-    <div className={`w-192 h-max flex p-1 m-2
+    <div className={`w-192 h-max flex p-1
       border-2 rounded-sm border-hermit-grey-900 bg-hermit-grey-400`}>
       <CategoryList
         categories={categories}

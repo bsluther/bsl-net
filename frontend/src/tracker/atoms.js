@@ -12,10 +12,15 @@ import { Category } from './category/categoryData'
 
 const trackerAtom = atom({
   user: {
-    users: ['ari', 'bsluther', 'dolan', 'moontiger', 'whittlesey'],
+    users: ['ari', 'bsluther', 'dolan', 'moontiger', 'whittlesey', 'sgluther'],
     currentUser: 'noCurrentUser'
   },
-  editor: { target: 'draft' }
+  editor: { target: 'draft' },
+  windows: {
+    blockEditor: true,
+    categoryEditor: true,
+    blockMatrix: true
+  }
 })
 
 const logoutAtom = atom(

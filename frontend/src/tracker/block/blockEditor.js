@@ -53,7 +53,7 @@ const BlockEditor = ({ editingAtom, categories, syncBlocks, editorTarget, setEdi
   const editingId = L.get(Block.id, editing)
 
   return (
-    <div className={`flex flex-col border-2 border-black rounded-sm bg-hermit-grey-400 w-max m-1 place-items-center`}>
+    <div className={`flex flex-col border-2 border-black rounded-sm bg-hermit-grey-400 w-max place-items-center`}>
       <EditorMenu
         selected={editorTarget === 'draft' ? 'New' : 'Edit'} 
         handleSelect={selection => {

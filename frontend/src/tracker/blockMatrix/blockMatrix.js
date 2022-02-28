@@ -87,7 +87,8 @@ const DeleteButton = ({ invisible, y, handler }) => {
         <path 
           strokeLinecap="round" 
           strokeLinejoin="round" 
-          strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" 
+          strokeWidth={2} 
+          d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" 
         />
       </svg>
     </button>
@@ -182,7 +183,7 @@ const Grid = ({ blocks, columnsConfig, editorTarget, setEditorTarget }) => {
   )
 }
 
-const Matrix = ({ blocks, editorTarget, setEditorTarget, syncBlocks }) => {
+const BlockMatrix = ({ blocks, editorTarget, setEditorTarget, syncBlocks }) => {
   const [dimensions] = useAtom(dimensionsAtom)
   const [columnsConfig] = useAtom(columnsConfigAtom)
   const containerRef = useRef()
@@ -236,4 +237,4 @@ const Matrix = ({ blocks, editorTarget, setEditorTarget, syncBlocks }) => {
   )
 }
 
-export { Matrix }
+export { BlockMatrix }

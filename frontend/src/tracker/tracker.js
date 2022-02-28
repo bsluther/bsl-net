@@ -2,7 +2,7 @@ import { useEffect, useCallback } from 'react'
 import { useAtom } from 'jotai'
 import { filter } from 'ramda'
 import * as L from 'partial.lenses'
-import { Matrix } from './matrix/matrix'
+import { BlockMatrix } from './blockMatrix/blockMatrix'
 import { UserDropdown } from './user/userDropdown'
 import { fork } from 'fluture'
 import { EditorTargeter } from './block/editorTargeter'
@@ -20,6 +20,7 @@ const Tracker = () => {
   const [trackerState, setTrackerState] = useAtom(trackerAtom)
   const [, handleLogin] = useAtom(loginAtom)
 
+  console.log('tracker state', trackerState)
   const setEditorTarget = id => setTrackerState(L.set(['editor', 'target'], id))
 
   const syncBlocks = useCallback(
@@ -56,28 +57,35 @@ const Tracker = () => {
             </div>
           </div>
         : <section className={`w-screen grid grid-cols-2`}>
-            <div className='w-full col-start-1 col-span-1'>
-              <EditorTargeter
-                editorTarget={trackerState.editor.target}
-                setEditorTarget={setEditorTarget}
-                user={trackerState.user.currentUser}
-                blocksAtom={namedBlocksAtom}
-                categories={categories}
-                syncBlocks={syncBlocks}
-              />
+
+            <div className='col-start-1 col-span-1 px-2'>
+              {trackerState.windows.categoryEditor && 
+                <CategoryEditor />}
             </div>
 
-            <div className='col-start-1 col-span-1'>
-              <CategoryEditor />
+            <div className='w-full col-start-1 col-span-1 px-2'>
+              {
+              trackerState.windows.blockEditor &&
+                <EditorTargeter
+                  editorTarget={trackerState.editor.target}
+                  setEditorTarget={setEditorTarget}
+                  user={trackerState.user.currentUser}
+                  blocksAtom={namedBlocksAtom}
+                  categories={categories}
+                  syncBlocks={syncBlocks}
+                />
+              }
             </div>
 
-            <div className='w-full row-start-1 col-start-2 col-span-1 pr-2 pb-2'>
-              <Matrix 
-                blocks={filter(blc => !blc.isDraft)(namedBlocks)} 
-                editorTarget={trackerState.editor.target} 
-                setEditorTarget={setEditorTarget} 
-                syncBlocks={syncBlocks}
-              />
+            <div className='w-full row-start-2 col-start-2 col-span-1 p-2'>
+              {trackerState.windows.blockMatrix &&
+                <BlockMatrix 
+                  blocks={filter(blc => !blc.isDraft)(namedBlocks)} 
+                  editorTarget={trackerState.editor.target} 
+                  setEditorTarget={setEditorTarget} 
+                  syncBlocks={syncBlocks}
+                />
+              }
             </div>
           </section>}
     </>

@@ -27,9 +27,12 @@ const trackerUserAtom = atom(
   (get, set, _arg) => set(trackerAtom, L.set(['user', 'currentUser'], _arg, (get(trackerAtom))))
 )
 
-const BrokenPage = () => {
-  return (<div>{`Sorry, page does not exist...`}</div>)
-}
+const BrokenPage = () => 
+  <div>
+    <p>Sorry, page does not exist...</p>
+    <p> Try the Tracker link!</p>
+    <p>(Or the SvgApp..)</p>
+  </div>
 const navSwitch = link => ({
   'Tracker': Tracker,
   'SvgApp': SvgApp

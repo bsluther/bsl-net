@@ -44,7 +44,7 @@ const CategoryList = ({ categories, selected, handleSelection, listMode, handleR
             (values(categories))}
       </ul>
 
-      <div className='flex h-max justify-end border-t border-hermit-grey-900'>
+      <div className='flex h-max justify-end border-t border-hermit-grey-900 bg-hermit-grey-400'>
           <PlusCircleSvg 
             handleClick={() => handleSelection('draft')} 
             styling={`w-6 h-6 text-hermit-grey-900 hover:text-hermit-yellow-403 cursor-pointer`}
