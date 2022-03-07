@@ -17,9 +17,10 @@ const trackerAtom = atom({
   },
   editor: { target: 'draft' },
   windows: {
-    blockEditor: true,
-    categoryEditor: true,
-    blockMatrix: true
+    blockEditor: false,
+    categoryEditor: false,
+    blockMatrix: false,
+    trancheMatrix: true
   }
 })
 

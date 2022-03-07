@@ -4,9 +4,9 @@ import * as L from 'partial.lenses'
 import { UserDropdown } from './tracker/user/userDropdown'
 import { useLayoutEffect, useRef, useState } from 'react'
 import { logoutAtom, changeUserAtom } from './tracker/atoms'
-import { TrackerSubMenu } from './tracker/headerMenu'
+import { TrackerSubMenu } from './tracker/trackerSubMenu'
 
-const headerNavAtom = atom({ activeLink: null })
+const headerNavAtom = atom({ activeLink: 'Tracker' })
 
 const SubMenuToggle = ({ label, isOpen, handleToggle }) => {
   return (

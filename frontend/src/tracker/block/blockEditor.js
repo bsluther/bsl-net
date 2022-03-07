@@ -19,7 +19,6 @@ const startBeforeEnd = blc => {
   } else {
     const startDt = DateTime.fromISO(blc.start.date).plus(DateTime.fromISO(blc.start.time).toObject())
     const endDt = DateTime.fromISO(blc.end.date).plus(DateTime.fromISO(blc.end.time).toObject())
-    console.log(startDt, endDt)
     return endDt.diff(startDt, 'milliseconds').milliseconds > 0
   }
 }

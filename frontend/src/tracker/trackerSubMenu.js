@@ -16,6 +16,7 @@ const TrackerSubMenu = () => {
       <SubMenuToggle label={'Block Editor'} isOpen={trackerState.windows.blockEditor} handleToggle={() => toggleWindow('blockEditor')} />
       <SubMenuToggle label={'Category Editor'} isOpen={trackerState.windows.categoryEditor} handleToggle={() => toggleWindow('categoryEditor')} />
       <SubMenuToggle label={'Block Matrix'} isOpen={trackerState.windows.blockMatrix} handleToggle={() => toggleWindow('blockMatrix')} />
+      <SubMenuToggle label={'Tranche Matrix'} isOpen={trackerState.windows.trancheMatrix} handleToggle={() => toggleWindow('trancheMatrix')} />
     </>
   )
 }

@@ -10,6 +10,9 @@ import { getCategoriesF, getUserBlocksF } from './dbRequests'
 import { trackerAtom, blocksAtom, namedBlocksAtom, categoriesAtom, loginAtom } from './atoms'
 import { CategoryEditor } from './category/categoryEditor'
 import { foldToIdObj } from './functions'
+import { ResizableHeader } from '../resizable/resizableHeader'
+import { TrancheCalculator } from './trancheMatrix/trancheCalculator'
+
 
 
 
@@ -20,7 +23,6 @@ const Tracker = () => {
   const [trackerState, setTrackerState] = useAtom(trackerAtom)
   const [, handleLogin] = useAtom(loginAtom)
 
-  console.log('tracker state', trackerState)
   const setEditorTarget = id => setTrackerState(L.set(['editor', 'target'], id))
 
   const syncBlocks = useCallback(
@@ -77,7 +79,7 @@ const Tracker = () => {
               }
             </div>
 
-            <div className='w-full row-start-2 col-start-2 col-span-1 p-2'>
+            <div className='flex flex-col w-full row-start-2 col-start-2 col-span-1 p-2 space-y-2'>
               {trackerState.windows.blockMatrix &&
                 <BlockMatrix 
                   blocks={filter(blc => !blc.isDraft)(namedBlocks)} 
@@ -86,7 +88,13 @@ const Tracker = () => {
                   syncBlocks={syncBlocks}
                 />
               }
+              {trackerState.windows.trancheMatrix && 
+                <TrancheCalculator 
+                  blocks={namedBlocks} 
+                  categories={categories} 
+                />}
             </div>
+
           </section>}
     </>
   )

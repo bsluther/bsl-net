@@ -145,7 +145,6 @@ const CategoryEditor = () => {
   const [, saveDraftCategory] = useAtom(saveDraftCategoryAtom)
   const [, deleteCategory] = useAtom(deleteCategoryAtom)
 
-  console.log(category)
   const handleSaveDraftCategory = () => 
     fork(err => console.error('Category post failed!', err))
         (res => saveDraftCategory())

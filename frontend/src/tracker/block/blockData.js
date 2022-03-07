@@ -1,6 +1,28 @@
 import { blcId } from '../functions'
 import { DateTime } from 'luxon'
 import * as L from 'partial.lenses'
+import { Pair, lift2, pair, maybe, pipe, justs, reduce as fold } from 'sanctuary'
+import { ifElse, map, filter } from 'ramda'
+import { fromISO, joinISOs, gt, inRange, emptyDuration } from '../dateTime/functions'
+import { Nothing, compose as B } from 'sanctuary'
+import { diff, isDuration, luxonPlus } from '../dateTime/pointfree'
+
+const aBlock = {
+  "_id": "blc-dd33bd55-2770-493b-9491-f994c5b3f18d",
+  "user": "bsluther",
+  "category": "cat-58b0c193-4683-4f34-b7d8-ed92843cdbf9",
+  "start": {
+      "date": "2022-03-04",
+      "time": "15:57:03.113"
+  },
+  "end": {
+      "date": "2022-03-04",
+      "time": "21:27:03.113"
+  },
+  "categoryName": "hacker_rank"
+}
+
+DateTime.now().set({ milliseconds: 0, seconds: 0 }).toISOTime({ suppressMilliseconds: true, suppressSeconds: true, includeOffset: false })
 
 const blockConstructor = user => ({
   _id: blcId(),
@@ -8,11 +30,11 @@ const blockConstructor = user => ({
   category: undefined,
   start: {
     date: DateTime.now().toISODate(),
-    time: DateTime.now().minus({ hour: 1, minute: 30 }).toISOTime({ includeOffset: false })
+    time: DateTime.now().minus({ hour: 1, minute: 30 }).set({ milliseconds: 0, seconds: 0 }).toISOTime({ suppressMilliseconds: true, suppressSeconds: true, includeOffset: false })
   },
   end: {
     date: DateTime.now().toISODate(),
-    time: DateTime.now().toISOTime({ includeOffset: false })
+    time: DateTime.now().set({ milliseconds: 0, seconds: 0 }).toISOTime({ suppressMilliseconds: true, suppressSeconds: true, includeOffset: false })
   }
 })
 
@@ -28,4 +50,52 @@ const Block = {
   endTime: ['end', 'time']
 }
 
-export { Block }
+// blockDT :: String -> Block -> Maybe DateTime
+const blockDT = prop => blc => 
+  ifElse(pair(a => b => !!a && !!b))
+        (B(fromISO)
+          (pair(joinISOs)))
+        (() => Nothing)
+        (Pair(blc[prop].date)(blc[prop].time))
+
+// blockStart :: Block -> Maybe DateTime
+const blockStart = blockDT('start')
+
+// blockEnd :: Block -> Maybe DateTime
+const blockEnd = blockDT('end')
+
+// blockDuration :: Block -> Maybe Duration
+const blockDuration = blc =>
+  lift2(diff)
+       (blockEnd(blc))
+       (blockStart(blc))
+
+const blockStartedAfter = dt => blc =>
+  maybe(false)(gt(dt))(blockStart(blc))
+
+const blockInRange = dt1 => dt2 => blc =>
+  maybe(false)(inRange(dt1)(dt2))(blockStart(blc))
+
+// sumBlocks :: [Block] -> Duration
+const sumBlocks = pipe([
+  map(blockDuration),
+  justs,
+  filter(isDuration),
+  fold(luxonPlus)(emptyDuration())
+])
+
+
+// console.log('blockstart: ', blockStart(aBlock))
+// console.log('blockend: ', blockEnd(aBlock))
+// console.log('blockduration', blockDuration(aBlock))
+
+export { 
+  Block,
+  blockDT,
+  blockInRange,
+  blockStart,
+  blockStartedAfter,
+  blockEnd,
+  blockDuration,
+  sumBlocks
+}
