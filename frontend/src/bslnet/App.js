@@ -25,8 +25,8 @@ const App = () => {
   return (
     <section
       style={{
-        // height: `${innerHeight}px`,
-        // Width: `${innerWidth}px`
+        height: `${innerHeight}px`,
+        Width: `${innerWidth}px`
       }}
       className={`font-customMono h-screen w-screen grid grid-rows-mainHeader grid-cols-1 overflow-hidden`}
       ref={appRef}
