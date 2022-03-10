@@ -4,10 +4,11 @@ import * as L from 'partial.lenses'
 import { DateTime } from 'luxon'
 import { CategoriesDropdown } from '../category/categoriesDropdown'
 import { values } from 'ramda'
-import { map, addIndex } from 'ramda'
+import { map, addIndex, append } from 'ramda'
 import { nowSansSeconds } from '../dateTime/functions'
 import { useEffect, useRef, useState } from 'react'
 import useFontSize from '../../hooks/useFontSize'
+import { PlusSvg } from '../svg'
 const mapIx = addIndex(map)
 
 const DatePicker = ({ isoDate = DateTime.now().toISODate(), handler = x => x }) => {
@@ -32,8 +33,39 @@ const TimePicker = ({ isoTime = nowSansSeconds(), handler }) => {
   )
 }
 
-const NewTag = ({ handleChange }) => {
+const NewTag = ({ handleNewTag }) => {
+  const [newTag, setNewTag] = useState('')
+  const [editing, setEditing] = useState(false)
+  const chars = Math.max(4, newTag.length ?? 0)
+  const fontSize = useFontSize()
+  const w = (fontSize - 4) * chars
+  const inputRef = useRef()
 
+  useEffect(() => {
+    if (inputRef.current && editing) {
+      inputRef.current.focus()
+    }
+  }, [inputRef, editing])
+
+  if (editing) return (
+    <input
+      style={{ width: `${w}px` }}
+      className={`border border-hermit-grey-900 bg-hermit-grey-400 outline-none rounded-md px-1`}
+      value={newTag}
+      onChange={e => setNewTag(e.target.value)}
+      onBlur={() => handleNewTag(newTag)}
+      ref={inputRef}
+    />
+  )
+
+  return (
+    <span
+      className={`flex w-max border border-hermit-grey-900 bg-hermit-aqua-200 rounded-md px-1 items-center`}
+      onClick={() => setEditing(true)}
+    >
+      <PlusSvg strokeWidth={1.5} className='w-5 h-5 ' />
+    </span>
+  )
 }
 
 const Tag = ({ tag, handleChange }) => {
@@ -46,7 +78,6 @@ const Tag = ({ tag, handleChange }) => {
 
   useEffect(() => {
     if (inputRef.current && editing) {
-      console.log('effect called')
       inputRef.current.focus()
     }
   }, [inputRef, editing])
@@ -54,7 +85,6 @@ const Tag = ({ tag, handleChange }) => {
 
   if (editing) return (
     <input
-      // autoFocus
       style={{ width: `${w}px` }}
       className={`border border-hermit-grey-900 bg-hermit-grey-400 outline-none rounded-md px-1`}
       value={tag}
@@ -65,7 +95,7 @@ const Tag = ({ tag, handleChange }) => {
   )
   return (
     <span
-      className={`w-max border border-hermit-grey-900 rounded-md px-1 appearance-none`}
+      className={`w-max border border-hermit-grey-900 rounded-md px-1`}
       onClick={() => setEditing(true)}
     >
       {tag}
@@ -76,7 +106,8 @@ const Tag = ({ tag, handleChange }) => {
 const TagCollection = ({ className, children }) => {
   return (
     <div className={`border border-hermit-grey-900 
-      w-full h-full p-1 flex flex-row flex-wrap gap-1 ${className}
+      w-full h-full p-1 flex flex-wrap gap-1 overflow-y-scroll
+      ${className}
     `}>
       {children}
     </div>
@@ -143,12 +174,14 @@ const BlockEditor = () => {
           className={`max-h-[6rem] w-3/4`}
         >
           {
-            block && block.tags && mapIx((tag, ix) => 
-                                            <Tag 
-                                              tag={tag} 
-                                              handleChange={tag => setBlock(L.set(['tags', ix], tag, block))} 
-                                              key={ix} />)
-                                        (block.tags)
+            block && block.tags && 
+              append(<NewTag handleNewTag={tag => setBlock(L.modify(['tags'], append(tag), block))}/>)
+                    (mapIx((tag, ix) => 
+                              <Tag 
+                                tag={tag} 
+                                handleChange={tag => setBlock(L.set(['tags', ix], tag, block))} 
+                                key={ix} />)
+                          (block.tags))
           }
         </TagCollection>
       </Field>
