@@ -42,6 +42,14 @@ const Tag = ({ tag, handleChange }) => {
   const fontSize = useFontSize()
   const w = (fontSize - 4) * chars
 
+  const inputRef = useRef()
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.scrollIntoView(true)
+    }
+  }, [inputRef])
+
 
   if (editing) return (
     <input
@@ -51,15 +59,13 @@ const Tag = ({ tag, handleChange }) => {
       value={tag}
       onChange={e => handleChange(e.target.value)}
       onBlur={() => setEditing(false)}
+      ref={inputRef}
     />
   )
   return (
     <span
       className={`w-max border border-hermit-grey-900 rounded-md px-1 appearance-none`}
-      onClick={e => {
-        setEditing(true)
-
-      }}
+      onClick={() => setEditing(true)}
     >
       {tag}
     </span>
