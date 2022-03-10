@@ -1,7 +1,12 @@
+import { fork } from 'fluture'
 import { atom, useAtom } from 'jotai'
+import { useCallback, useEffect } from 'react'
 import { useBreakpoint } from '../../bslnet/useBreakpoint'
+import { categoriesAtom, namedBlocks2Atom } from '../atoms'
 import { BlockEditor2 } from '../block/blockEditor2'
 import { CategoryEditor } from '../category/categoryEditor'
+import { getCategoriesF, getUserBlocksF } from '../dbRequests'
+import { foldToIdObj } from '../functions'
 import { Create } from '../mobile/Create'
 import { MobileNav } from '../mobile/MobileNav'
 
@@ -26,11 +31,36 @@ const navHash = {
 
 const navigate = label => navHash[label] ?? BrokenLink
 
+
+
 const Tracker = () => {
   const [userState] = useAtom(trackerUserAtom)
   const [primaryNavState, setPrimaryNavState] = useAtom(primaryNavAtom)
+  const [, setNamedBlocks2] = useAtom(namedBlocks2Atom)
+  const [, setCategories] = useAtom(categoriesAtom)
   const breakpoint = useBreakpoint()
-  console.log(primaryNavState)
+
+  const syncBlocks = useCallback(
+    () =>
+      fork(err => console.log('Failed to fetch blocks.', err))
+          (blcs => {
+            setNamedBlocks2(foldToIdObj(blcs))
+          })
+          (getUserBlocksF(userState.currentUser))
+  , [setNamedBlocks2, userState.currentUser])
+
+  useEffect(() => {
+    syncBlocks()
+  }, [syncBlocks])
+
+  useEffect(() => {
+    fork(err => console.log('Failed to fetch categories.', err))
+        (cats => {
+          setCategories(foldToIdObj(cats))
+        })
+        (getCategoriesF(userState.currentUser))
+  }, [setCategories, userState, syncBlocks])
+
   if (userState.currentUser === 'noCurrentUser') return (
     <Login />
   )
