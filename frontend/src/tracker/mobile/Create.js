@@ -54,7 +54,7 @@ const Tag = ({ tag, handleChange }) => {
 
   if (editing) return (
     <input
-      autoFocus
+      // autoFocus
       style={{ width: `${w}px` }}
       className={`border border-hermit-grey-900 bg-hermit-grey-400 outline-none rounded-md px-1`}
       value={tag}
