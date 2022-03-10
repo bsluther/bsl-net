@@ -12,10 +12,12 @@ const appSwitch = {
 const App = () => {
   const [currentApp] = useAtom(currentAppAtom)
   const [innerHeight, setInnerHeight] = useState()
+  const [innerWidth, setInnerWidth] = useState()
   const appRef = useRef()
 
   useLayoutEffect(() => {
     setInnerHeight(window.innerHeight)
+    setInnerWidth(window.innerWidth)
   })
 
   const CurrentApp = appSwitch[currentApp]
@@ -23,9 +25,10 @@ const App = () => {
   return (
     <section
       style={{
-        height: `${innerHeight}px`
+        // height: `${innerHeight}px`,
+        // Width: `${innerWidth}px`
       }}
-      className={`font-customMono w-screen grid grid-rows-mainHeader grid-cols-1`}
+      className={`font-customMono h-screen w-screen grid grid-rows-mainHeader grid-cols-1 overflow-hidden`}
       ref={appRef}
     >
       <Header />
