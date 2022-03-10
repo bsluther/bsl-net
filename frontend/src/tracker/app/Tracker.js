@@ -2,12 +2,15 @@ import { atom, useAtom } from 'jotai'
 import { useBreakpoint } from '../../bslnet/useBreakpoint'
 import { BlockEditor2 } from '../block/blockEditor2'
 import { CategoryEditor } from '../category/categoryEditor'
-import { MobileNav } from './MobileNav'
+import { Create } from '../mobile/Create'
+import { MobileNav } from '../mobile/MobileNav'
 
 const trackerUserAtom = atom({
   currentUser: 'bsluther',
   users: ['ari', 'bsluther', 'dolan', 'moontiger', 'whittlesey', 'sgluther']
 })
+
+const primaryNavAtom = atom('create')
 
 const Login = () => {
   return (
@@ -15,26 +18,37 @@ const Login = () => {
   )
 }
 
+const BrokenLink = () => <div>Sorry, nothing here...</div>
+
+const navHash = {
+  'create': Create
+}
+
+const navigate = label => navHash[label] ?? BrokenLink
+
 const Tracker = () => {
   const [userState] = useAtom(trackerUserAtom)
+  const [primaryNavState, setPrimaryNavState] = useAtom(primaryNavAtom)
   const breakpoint = useBreakpoint()
-
-  console.log((breakpoint === 'xs' || breakpoint === 'sm' || breakpoint === 'md'))
-
+  console.log(primaryNavState)
   if (userState.currentUser === 'noCurrentUser') return (
     <Login />
   )
 
+  const Navigated = navigate(primaryNavState)
+
   return (
     <section className={`row-start-2 row-span-1 col-start-1 col-span-1`}>
       <div className={`h-full flex flex-col justify-end`}>
-        <div className={`grow bg-hermit-aqua-500`}>test</div>
+        <div className={`grow bg-hermit-aqua-500`}>
+          <Navigated />
+        </div>
 
-        <div className={`h-max bg-hermit-aqua-500 space-y-[2px] py-[2px]`}>
+        {/* <div className={`h-max bg-hermit-aqua-500 space-y-[2px] py-[2px]`}>
           <BlockEditor2 />
           <CategoryEditor />
-        </div>
-        {(breakpoint === 'xs' || breakpoint === 'sm') && <MobileNav />}
+        </div> */}
+        {(breakpoint === 'xs' || breakpoint === 'sm') && <MobileNav handleNavClick={label => setPrimaryNavState(label)} />}
       </div>
     </section>
   )
