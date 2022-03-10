@@ -32,7 +32,8 @@ const blockConstructor = user => ({
   end: {
     date: DateTime.now().toISODate(),
     time: DateTime.now().set({ milliseconds: 0, seconds: 0 }).toISOTime({ suppressMilliseconds: true, suppressSeconds: true, includeOffset: false })
-  }
+  },
+  tags: ['mobile', 'presentation', 'block editor', 'design', 'test', 'test']
 })
 
 const Block = {

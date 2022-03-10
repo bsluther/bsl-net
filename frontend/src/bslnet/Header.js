@@ -1,7 +1,7 @@
 import { map } from 'ramda'
 import { useLayoutEffect } from 'react'
 import { HamburgerSvg } from '../tracker/svg'
-import { useBreakpoint } from './useBreakpoint'
+import { useBreakpoint } from '../hooks/useBreakpoint'
 
 const links = ['Tracker', 'Gainzville', 'About']
 

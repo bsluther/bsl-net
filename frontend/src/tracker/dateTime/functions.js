@@ -28,6 +28,9 @@ const inRange = lowerDT => upperDT => dt =>
 const gt = lowerDT => dt =>
   lowerDT < dt
 
+const nowSansSeconds = () =>
+  DateTime.now().set({ second: 0, millisecond: 0}).toISOTime({ suppressMilliseconds: true, suppressSeconds: true, includeOffset: false })
+
 // CONSIDER DELETING
 // safeAddDurs :: Duration -> Duration -> Maybe Duration
 const safeAddDurs = dur1 => dur2 =>
@@ -71,5 +74,6 @@ export {
   inRange,
   joinISOs,
   objAgo,
-  safeAddDurs
+  safeAddDurs,
+  nowSansSeconds
 }

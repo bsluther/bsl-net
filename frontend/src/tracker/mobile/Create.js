@@ -1,9 +1,14 @@
 import { useAtom } from 'jotai'
-import { categoriesAtom, targetBlockAtom } from '../atoms'
+import { categoriesAtom, targetBlockAtom, createNewDraftBlockAtom } from '../atoms'
 import * as L from 'partial.lenses'
 import { DateTime } from 'luxon'
 import { CategoriesDropdown } from '../category/categoriesDropdown'
 import { values } from 'ramda'
+import { map, addIndex } from 'ramda'
+import { nowSansSeconds } from '../dateTime/functions'
+import { useEffect, useRef, useState } from 'react'
+import useFontSize from '../../hooks/useFontSize'
+const mapIx = addIndex(map)
 
 const DatePicker = ({ isoDate = DateTime.now().toISODate(), handler = x => x }) => {
   return (
@@ -16,7 +21,7 @@ const DatePicker = ({ isoDate = DateTime.now().toISODate(), handler = x => x }) 
   )
 }
 
-const TimePicker = ({ isoTime = DateTime.now().toISOTime({ includeOffset: false }), handler }) => {
+const TimePicker = ({ isoTime = nowSansSeconds(), handler }) => {
   return (
     <input
       type='time'
@@ -27,18 +32,70 @@ const TimePicker = ({ isoTime = DateTime.now().toISOTime({ includeOffset: false 
   )
 }
 
+const NewTag = ({ handleChange }) => {
+
+}
+
+const Tag = ({ tag, handleChange }) => {
+  const [editing, setEditing] = useState(false)
+  const chars = Math.max(4, tag.length ?? 0)
+  const fontSize = useFontSize()
+  const w = (fontSize - 4) * chars
+
+
+  if (editing) return (
+    <input
+      autoFocus
+      style={{ width: `${w}px` }}
+      className={`border border-hermit-grey-900 rounded-md px-1 appearance-none`}
+      value={tag}
+      onChange={e => handleChange(e.target.value)}
+      onBlur={() => setEditing(false)}
+    />
+  )
+  return (
+    <span
+      className={`w-max border border-hermit-grey-900 rounded-md px-1 appearance-none`}
+      onClick={e => {
+        setEditing(true)
+
+      }}
+    >
+      {tag}
+    </span>
+  )
+}
+
+const TagCollection = ({ className, children }) => {
+  return (
+    <div className={`border border-hermit-grey-900 
+      w-full h-full p-1 flex flex-row flex-wrap gap-1 ${className}
+    `}>
+      {children}
+    </div>
+  )
+}
+
 const Field = ({ label, children }) => {
   return (
-    <div className={`flex p-1 space-x-2 items-center justify-center`}>
+    <div className={`flex p-1 space-x-2 items-center justify-center max-w-full`}>
       <span>{label}</span>
       {children}
     </div>
   )
 }
 
+
 const BlockEditor = () => {
   const [block, setBlock] = useAtom(targetBlockAtom)
   const [categories] = useAtom(categoriesAtom)
+  const [, createNewDraftBlock] = useAtom(createNewDraftBlockAtom)
+
+  useEffect(() => {
+    createNewDraftBlock()
+  }, [createNewDraftBlock])
+
+  
   return (
     <section className={`flex flex-col space-y-3`}>
       <Field label='Category'>
@@ -47,7 +104,8 @@ const BlockEditor = () => {
           nameIdObjs={values(categories)}
           selectedId={block.category}
           selectHandler={id => setBlock(L.set(['category'])
-                                             (id))}
+                                             (id)
+                                             (block))}
           title=''
         />
       </Field>
@@ -71,6 +129,21 @@ const BlockEditor = () => {
 
       <Field label='Notes'>
         <textarea className={`bg-hermit-aqua-500 focus:bg-hermit-grey-400 border border-hermit-grey-900 rounded-sm outline-none`}/>
+      </Field>
+
+      <Field label='Tags'>
+        <TagCollection
+          className={`max-h-[6rem] w-3/4`}
+        >
+          {
+            block && block.tags && mapIx((tag, ix) => 
+                                            <Tag 
+                                              tag={tag} 
+                                              handleChange={tag => setBlock(L.set(['tags', ix], tag, block))} 
+                                              key={ix} />)
+                                        (block.tags)
+          }
+        </TagCollection>
       </Field>
     </section>
   )

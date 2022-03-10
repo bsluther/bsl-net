@@ -1,7 +1,7 @@
 import { fork } from 'fluture'
 import { atom, useAtom } from 'jotai'
 import { useCallback, useEffect } from 'react'
-import { useBreakpoint } from '../../bslnet/useBreakpoint'
+import { useBreakpoint } from '../../hooks/useBreakpoint'
 import { categoriesAtom, namedBlocks2Atom } from '../atoms'
 import { BlockEditor2 } from '../block/blockEditor2'
 import { CategoryEditor } from '../category/categoryEditor'

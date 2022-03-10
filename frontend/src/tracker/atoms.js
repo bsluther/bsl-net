@@ -109,15 +109,18 @@ const deriveTargetBlockAtom = str => blcsAtom =>
 
 const blocks2Atom = atom ({})
 
+
 const namedBlocks2Atom = atom(
   get => {
     const blocks2 = get(blocks2Atom)
     const categories = get(categoriesAtom)
     
-    const res = map(blc => assoc('categoryName')
-                                (L.get([blc.category, 'name'])
-                                      (categories))
-                                (blc))
+    const res = map(blc => blc.category
+                             ? assoc('categoryName')
+                                    (L.get([blc.category, 'name'])
+                                          (categories))
+                                    (blc)
+                             : blc)
                    (blocks2)
     return res
   },
@@ -127,6 +130,7 @@ const namedBlocks2Atom = atom(
 const targetBlockIdAtom = atom('draft')
 
 const draftBlockAtom = atom({})
+
 const createNewDraftBlockAtom = atom(
   null,
   (get, set, _arg) => {
