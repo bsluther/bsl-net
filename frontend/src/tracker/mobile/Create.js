@@ -7,7 +7,7 @@ const DatePicker = ({ isoDate = DateTime.now().toISODate(), handler = x => x }) 
   return (
     <input
       type='date'
-      className={`w-40 border border-black rounded-sm px-1 bg-hermit-aqua-500`}
+      className={`w-40 border border-black rounded-sm px-1 bg-hermit-aqua-500 appearance-none`}
       value={isoDate}
       onChange={e => handler(e.target.value)}
     />
@@ -18,7 +18,7 @@ const TimePicker = ({ isoTime = DateTime.now().toISOTime({ includeOffset: false 
   return (
     <input
       type='time'
-      className={`border border-black rounded-sm px-1 bg-hermit-aqua-500 w-32`}
+      className={`border border-black rounded-sm px-1 bg-hermit-aqua-500 w-32 appearance-none`}
       value={isoTime}
       onChange={e => handler(e.target.value)}
     />
@@ -27,7 +27,7 @@ const TimePicker = ({ isoTime = DateTime.now().toISOTime({ includeOffset: false 
 
 const Field = ({ label, children }) => {
   return (
-    <div className={`flex p-1 space-x-2 items-center justify-center`}>
+    <div className={`flex p-1 space-x-2 items-center justify-start`}>
       <span>{label}</span>
       {children}
     </div>
