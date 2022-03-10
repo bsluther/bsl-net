@@ -107,6 +107,7 @@ const TagCollection = ({ className, children }) => {
   return (
     <div className={`border border-hermit-grey-900 
       w-full h-full p-1 flex flex-wrap gap-1 overflow-y-scroll
+      text-sm
       ${className}
     `}>
       {children}
@@ -166,7 +167,7 @@ const BlockEditor = () => {
       </Field>
 
       <Field label='Notes'>
-        <textarea className={`bg-hermit-aqua-500 focus:bg-hermit-grey-400 border border-hermit-grey-900 rounded-sm outline-none`}/>
+        <textarea className={`text-sm w-3/4 max-h-24 bg-hermit-aqua-500 focus:bg-hermit-grey-400 border border-hermit-grey-900 rounded-sm outline-none`}/>
       </Field>
 
       <Field label='Tags'>
@@ -175,7 +176,7 @@ const BlockEditor = () => {
         >
           {
             block && block.tags && 
-              append(<NewTag handleNewTag={tag => setBlock(L.modify(['tags'], append(tag), block))}/>)
+              append(<NewTag handleNewTag={tag => setBlock(L.modify(['tags'], append(tag), block))} key='newTag' />)
                     (mapIx((tag, ix) => 
                               <Tag 
                                 tag={tag} 
@@ -185,10 +186,13 @@ const BlockEditor = () => {
           }
         </TagCollection>
       </Field>
+      
+      <div className='self-center grow space-x-4'>
+        <button className={`text-hermit-grey-400 bg-hermit-grey-900 rounded-md w-max px-2`}>Discard</button>
+        <button className={`text-hermit-grey-400 bg-hermit-grey-900 rounded-md w-max px-2`}>Save</button>
+      </div>
+      
 
-      <Field label='Notes'>
-        <textarea className={`bg-hermit-aqua-500 focus:bg-hermit-grey-400 border border-hermit-grey-900 rounded-sm outline-none`}/>
-      </Field>
     </section>
   )
 }
