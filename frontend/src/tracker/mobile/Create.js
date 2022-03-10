@@ -89,7 +89,10 @@ const Tag = ({ tag, handleChange }) => {
       className={`border border-hermit-grey-900 bg-hermit-grey-400 outline-none rounded-md px-1`}
       value={tag}
       onChange={e => handleChange(e.target.value)}
-      onBlur={() => setEditing(false)}
+      onBlur={() => {
+        setEditing(false)
+        window.scrollTo({ top: 0 })
+      }}
       ref={inputRef}
     />
   )
