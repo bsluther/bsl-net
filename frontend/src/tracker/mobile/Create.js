@@ -47,7 +47,7 @@ const Tag = ({ tag, handleChange }) => {
     <input
       autoFocus
       style={{ width: `${w}px` }}
-      className={`border border-hermit-grey-900 rounded-md px-1 appearance-none`}
+      className={`border border-hermit-grey-900 bg-hermit-grey-400 outline-none rounded-md px-1`}
       value={tag}
       onChange={e => handleChange(e.target.value)}
       onBlur={() => setEditing(false)}
