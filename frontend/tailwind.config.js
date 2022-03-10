@@ -30,7 +30,11 @@ module.exports = {
         }
       },
       gridTemplateRows: {
+        'mainHeader': '2rem auto',
         'container': '5rem auto'
+      },
+      gridTemplateColumns: {
+        mainLarge: '500px auto'
       },
       fontFamily: {
         customMono: [

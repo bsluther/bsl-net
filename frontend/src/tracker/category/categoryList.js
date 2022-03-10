@@ -46,8 +46,8 @@ const CategoryList = ({ categories, selected, handleSelection, listMode, handleR
 
       <div className='flex h-max justify-end border-t border-hermit-grey-900 bg-hermit-grey-400'>
           <PlusCircleSvg 
-            handleClick={() => handleSelection('draft')} 
-            styling={`w-6 h-6 text-hermit-grey-900 hover:text-hermit-yellow-403 cursor-pointer`}
+            onClick={() => handleSelection('draft')} 
+            className={`w-6 h-6 text-hermit-grey-900 hover:text-hermit-yellow-403 cursor-pointer`}
             strokeWidth={1.5}
           />
       </div>

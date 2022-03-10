@@ -7,14 +7,21 @@ import { UserDropdown } from './user/userDropdown'
 import { fork } from 'fluture'
 import { EditorTargeter } from './block/editorTargeter'
 import { getCategoriesF, getUserBlocksF } from './dbRequests'
-import { trackerAtom, blocksAtom, namedBlocksAtom, categoriesAtom, loginAtom } from './atoms'
+import { trackerAtom, blocksAtom, namedBlocksAtom, categoriesAtom, loginAtom, namedBlocks2Atom } from './atoms'
 import { CategoryEditor } from './category/categoryEditor'
 import { foldToIdObj } from './functions'
-import { ResizableHeader } from '../resizable/resizableHeader'
 import { TrancheCalculator } from './trancheMatrix/trancheCalculator'
+import { BlockEditor2 } from './block/blockEditor2'
+import { EditorPane } from './panes/editorPane'
 
 
-
+const TrackerMain = () => {
+  return (
+    <section className={`w-screen h-full grid lg:grid-cols-mainLarge`}>
+      <EditorPane />
+    </section>
+  )
+}
 
 const Tracker = () => {
   const [categories , setCategories] = useAtom(categoriesAtom)
@@ -23,12 +30,17 @@ const Tracker = () => {
   const [trackerState, setTrackerState] = useAtom(trackerAtom)
   const [, handleLogin] = useAtom(loginAtom)
 
+  const [, setNamedBlocks2] = useAtom(namedBlocks2Atom)
+
   const setEditorTarget = id => setTrackerState(L.set(['editor', 'target'], id))
 
   const syncBlocks = useCallback(
     () =>
       fork(err => console.log('Failed to fetch blocks.', err))
-          (blcs => setBlocks(blcs))
+          (blcs => {
+            setBlocks(blcs)
+            setNamedBlocks2(foldToIdObj(blcs))
+          })
           (getUserBlocksF(trackerState.user.currentUser))
   , [setBlocks, trackerState.user.currentUser])
 
@@ -58,44 +70,41 @@ const Tracker = () => {
               />
             </div>
           </div>
-        : <section className={`w-screen grid grid-cols-2`}>
+        : <TrackerMain />
+        // <section className={`w-screen grid grid-cols-2`}>
 
-            <div className='col-start-1 col-span-1 px-2'>
-              {trackerState.windows.categoryEditor && 
-                <CategoryEditor />}
-            </div>
+        //     {/* <div className='col-start-1 col-span-1 px-2 w-192'>
+        //       {trackerState.windows.categoryEditor && 
+        //         <CategoryEditor />}
+        //     </div>
 
-            <div className='w-full col-start-1 col-span-1 px-2'>
-              {
-              trackerState.windows.blockEditor &&
-                <EditorTargeter
-                  editorTarget={trackerState.editor.target}
-                  setEditorTarget={setEditorTarget}
-                  user={trackerState.user.currentUser}
-                  blocksAtom={namedBlocksAtom}
-                  categories={categories}
-                  syncBlocks={syncBlocks}
-                />
-              }
-            </div>
+        //     <div className='w-full col-start-1 col-span-1 px-2'>
+        //       {
+        //       trackerState.windows.blockEditor &&
+        //         <BlockEditor2 />
+        //       }
+        //     </div> */}
+        //     <EditorPane />
 
-            <div className='flex flex-col w-full row-start-2 col-start-2 col-span-1 p-2 space-y-2'>
-              {trackerState.windows.blockMatrix &&
-                <BlockMatrix 
-                  blocks={filter(blc => !blc.isDraft)(namedBlocks)} 
-                  editorTarget={trackerState.editor.target} 
-                  setEditorTarget={setEditorTarget} 
-                  syncBlocks={syncBlocks}
-                />
-              }
-              {trackerState.windows.trancheMatrix && 
-                <TrancheCalculator 
-                  blocks={namedBlocks} 
-                  categories={categories} 
-                />}
-            </div>
+        //     <div className='flex flex-col w-full row-start-2 col-start-2 col-span-1 p-2 space-y-2'>
+        //       {trackerState.windows.blockMatrix &&
+        //         <BlockMatrix 
+        //           blocks={filter(blc => !blc.isDraft)(namedBlocks)} 
+        //           editorTarget={trackerState.editor.target} 
+        //           setEditorTarget={setEditorTarget} 
+        //           syncBlocks={syncBlocks}
+        //         />
+        //       }
+        //       {trackerState.windows.trancheMatrix && 
+        //         <TrancheCalculator 
+        //           blocks={namedBlocks} 
+        //           categories={categories} 
+        //         />}
+        //     </div>
 
-          </section>}
+        //   </section>
+          
+          }
     </>
   )
 }

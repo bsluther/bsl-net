@@ -1,13 +1,13 @@
 import { atom, useAtom } from 'jotai'
 import { filter, length, map, prop, values, toPairs, reduce } from 'ramda'
 import { useMemo } from 'react'
-import { ResizableHeader, resizingAtom } from '../../resizable/resizableHeader'
-import { filterByCategory, blocksToTranches } from '../tranche/functions'
+import { ResizableHeader, resizingAtom } from '../../../resizable/resizableHeader'
+import { filterByCategory, blocksToTranches } from '../../tranche/functions'
 import * as L from 'partial.lenses'
 import { DateTime, Duration } from 'luxon'
-import { emptyDuration, objAgo, gt } from '../dateTime/functions'
-import { blockDuration, blockInRange, blockStart, blockStartedAfter } from '../block/blockData'
-import { isDuration, luxonPlus, toFormat } from '../dateTime/pointfree'
+import { emptyDuration, objAgo, gt } from '../../dateTime/functions'
+import { blockDuration, blockInRange, blockStart, blockStartedAfter } from '../../block/blockData'
+import { isDuration, luxonPlus, toFormat } from '../../dateTime/pointfree'
 import { justs, pipe, concat, reduce as fold } from 'sanctuary'
 
 /* TO-DO

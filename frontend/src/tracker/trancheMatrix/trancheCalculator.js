@@ -4,11 +4,9 @@ import { blockInRange, blockStartedAfter, blockDuration, sumBlocks } from '../bl
 import { objAgo, emptyDuration } from '../dateTime/functions'
 import { toFormat, isDuration, luxonPlus } from '../dateTime/pointfree'
 import { MatrixPresenter } from './matrixPresenter'
+import { MatrixPresenterTable } from './matrixPresenterTable'
 import { blocksToTranches } from '../tranche/functions'
 import { useMemo } from 'react'
-
-
-// move to module
 
 
 
@@ -66,7 +64,7 @@ const TrancheCalculator = ({ columnCalculations = colCalculations, blocks = [], 
 
 
   return (
-    <MatrixPresenter
+    <MatrixPresenterTable
       matrixData={trancheData}
     />
   )

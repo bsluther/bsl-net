@@ -8,6 +8,7 @@ import { fork } from 'fluture'
 import { Category } from './categoryData'
 import { CategoryList } from './categoryList'
 import { MinusCircleSvg, MinusSvg, PlusSvg, XSvg } from '../svg'
+import { Collapsable } from '../Collapsable'
 
 
 
@@ -88,7 +89,7 @@ const CatPresenter = ({ category, setCategory, categories, targetCategoryId, set
   const [listMode, setListMode] = useState('selectCategory')
 
   return (
-    <div className={`w-192 h-max flex p-1
+    <div className={`w-full h-max flex p-1
       border-2 rounded-sm border-hermit-grey-900 bg-hermit-grey-400`}>
       <CategoryList
         categories={categories}
@@ -172,20 +173,24 @@ const CategoryEditor = () => {
   }, [createNewDraftCategory])
 
   return (
-    <CatPresenter
-      category={category} 
-      setCategory={setCategory} 
-      categories={categories}
-      targetCategoryId={targetCategoryId}
-      setTargetCategoryId={setTargetCategoryId}
-
-      handleSaveDraftCategory={handleSaveDraftCategory}
-      handleDeleteCategory={handleDeleteCategory}
-      handleUpdateCategory={handleUpdateCategory}
-
-      handleAddParent={handleAddParent}
-      handleRemoveParent={handleRemoveParent}
-    />
+    <Collapsable
+      title='Category Editor'
+    >
+      <CatPresenter
+        category={category} 
+        setCategory={setCategory} 
+        categories={categories}
+        targetCategoryId={targetCategoryId}
+        setTargetCategoryId={setTargetCategoryId}
+      
+        handleSaveDraftCategory={handleSaveDraftCategory}
+        handleDeleteCategory={handleDeleteCategory}
+        handleUpdateCategory={handleUpdateCategory}
+      
+        handleAddParent={handleAddParent}
+        handleRemoveParent={handleRemoveParent}
+      />
+    </Collapsable>
   )
 }
 

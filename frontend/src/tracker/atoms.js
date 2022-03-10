@@ -1,5 +1,4 @@
 import { atom } from 'jotai'
-import { atomWithReset } from 'jotai/utils'
 import { map, find, assoc, prop, dissoc } from 'ramda'
 import * as L from 'partial.lenses'
 import { Block } from './block/blockData'
@@ -54,7 +53,6 @@ const changeUserAtom = atom(
   }
 )
 
-
 /***** BLOCKS *****/
 
 const blocksAtom = atom([])
@@ -105,17 +103,64 @@ const deriveTargetBlockAtom = str => blcsAtom =>
                                     (get(blcsAtom)))
     )
 
+
+
+/***** BLOCKS V2 *****/
+
+const blocks2Atom = atom ({})
+
+const namedBlocks2Atom = atom(
+  get => {
+    const blocks2 = get(blocks2Atom)
+    const categories = get(categoriesAtom)
+    
+    const res = map(blc => assoc('categoryName')
+                                (L.get([blc.category, 'name'])
+                                      (categories))
+                                (blc))
+                   (blocks2)
+    return res
+  },
+  (_get, set, arg) => set(blocks2Atom, arg)
+)
+
+const targetBlockIdAtom = atom('draft')
+
+const draftBlockAtom = atom({})
+const createNewDraftBlockAtom = atom(
+  null,
+  (get, set, _arg) => {
+    const user = get(trackerAtom).user.currentUser
+    const newDraft = Block.constructor(user)
+
+    set(draftBlockAtom, newDraft)
+  }
+)
+
+const targetBlockAtom = atom(
+  get => {
+    const targetId = get(targetBlockIdAtom)
+
+    if (targetId === 'draft') {
+      return get(draftBlockAtom)
+    }
+    return prop(targetId)(get(namedBlocks2Atom))
+  },
+  (get, set, blc) => {
+    const targetId = get(targetBlockIdAtom)
+
+    if (targetId === 'draft') {
+      set(draftBlockAtom, blc)
+    }
+    set(namedBlocks2Atom, blcs => assoc(targetId)(blc)(blcs))
+  }
+)
+
+
+
 /***** CATEGORIES *****/
 
 const categoriesAtom = atom({})
-
-// const draftCategoryAtom = atomWithReset(
-//   get => {
-//     console.log('get tracker atom: ', get(trackerAtom))
-//     return Category.constructor(get(trackerAtom).user.currentUser)
-//   },
-//   (_get, set, cat) => set(draftCategoryAtom, cat)
-// )
 
 const draftCategoryAtom = atom({})
 const createNewDraftCategoryAtom = atom(
@@ -140,7 +185,7 @@ const targetCategoryAtom = atom(
   },
   (get, set, cat) => {
     const targetId = get(targetCategoryIdAtom)
-    console.log('setTargetCategory call, cat:', cat)
+
     if (targetId === 'draft') {
       set(draftCategoryAtom, cat)
     } else {
@@ -207,5 +252,11 @@ export {
   draftCategoryAtom,
   createNewDraftCategoryAtom,
   saveDraftCategoryAtom,
-  deleteCategoryAtom
+  deleteCategoryAtom,
+
+  blocks2Atom,
+  namedBlocks2Atom,
+  targetBlockIdAtom,
+  targetBlockAtom,
+  createNewDraftBlockAtom
 }
