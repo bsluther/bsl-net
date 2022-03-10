@@ -45,11 +45,11 @@ const Tag = ({ tag, handleChange }) => {
   const inputRef = useRef()
 
   useEffect(() => {
-    if (inputRef.current) {
-      // document.addEventListener(inputRef.current, 
-      inputRef.current.scrollIntoView(true)
+    if (inputRef.current && editing) {
+      console.log('effect called')
+      inputRef.current.focus()
     }
-  }, [inputRef])
+  }, [inputRef, editing])
 
 
   if (editing) return (
