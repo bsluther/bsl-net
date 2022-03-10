@@ -46,6 +46,7 @@ const Tag = ({ tag, handleChange }) => {
 
   useEffect(() => {
     if (inputRef.current) {
+      // document.addEventListener(inputRef.current, 
       inputRef.current.scrollIntoView(true)
     }
   }, [inputRef])
@@ -150,6 +151,10 @@ const BlockEditor = () => {
                                         (block.tags)
           }
         </TagCollection>
+      </Field>
+
+      <Field label='Notes'>
+        <textarea className={`bg-hermit-aqua-500 focus:bg-hermit-grey-400 border border-hermit-grey-900 rounded-sm outline-none`}/>
       </Field>
     </section>
   )
