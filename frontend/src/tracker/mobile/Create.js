@@ -110,7 +110,6 @@ const TagCollection = ({ className, children }) => {
   return (
     <div className={`border border-hermit-grey-900 
       w-full h-full p-1 flex flex-wrap gap-1 overflow-y-scroll
-      text-sm
       ${className}
     `}>
       {children}
@@ -170,7 +169,7 @@ const BlockEditor = () => {
       </Field>
 
       <Field label='Notes'>
-        <textarea className={`text-sm w-3/4 max-h-24 bg-hermit-aqua-500 focus:bg-hermit-grey-400 border border-hermit-grey-900 rounded-sm outline-none`}/>
+        <textarea className={`w-3/4 max-h-24 bg-hermit-aqua-500 focus:bg-hermit-grey-400 border border-hermit-grey-900 rounded-sm outline-none`}/>
       </Field>
 
       <Field label='Tags'>
