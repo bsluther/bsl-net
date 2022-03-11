@@ -109,7 +109,7 @@ const BlockFilter = ({ blocks }) => {
 
   return (
     <>
-      <div className='bg-hermit-grey-700 flex flex-col border-b border-hermit-grey-900'>
+      <div className=' bg-hermit-grey-700 flex flex-col border-b border-hermit-grey-900'>
         <div className={`self-center w-max rounded-md p-1  bg-hermit-grey-700`}>
         
           <div className='pb-1 flex space-x-2'>
@@ -157,7 +157,7 @@ const History = () => {
   const [categories, setCategories] = useAtom(categoriesAtom)
 
   return (
-    <section className={`h-full flex flex-col space-y-1`}>
+    <section className={`h-full overflow-scroll flex flex-col space-y-1`}>
       <BlockFilter blocks={values(blocks)} />
       
     </section>
