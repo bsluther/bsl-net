@@ -147,7 +147,7 @@ const BlockFilter = ({ blocks }) => {
         </div>
       </div>
 
-      {/* <BlobCollection blocks={sortedBlocks} /> */}
+      <BlobCollection blocks={sortedBlocks} />
     </>
   )
 }
