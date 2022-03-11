@@ -10,6 +10,7 @@ import { useEffect, useRef, useState } from 'react'
 import useFontSize from '../../hooks/useFontSize'
 import { PlusSvg } from '../svg'
 import { propOr } from 'ramda'
+import { remove } from 'ramda'
 const mapIx = addIndex(map)
 
 const DatePicker = ({ isoDate = DateTime.now().toISODate(), handler = x => x }) => {
@@ -54,7 +55,14 @@ const NewTag = ({ handleNewTag }) => {
       className={`border border-hermit-grey-900 bg-hermit-grey-400 outline-none rounded-md px-1`}
       value={newTag}
       onChange={e => setNewTag(e.target.value)}
-      onBlur={() => handleNewTag(newTag)}
+      onBlur={() => {
+        if (newTag.length > 0) {
+          handleNewTag(newTag)
+          setNewTag('')
+        }
+        setNewTag('')
+        setEditing(false)
+      }}
       ref={inputRef}
     />
   )
@@ -64,12 +72,12 @@ const NewTag = ({ handleNewTag }) => {
       className={`flex w-max border border-hermit-grey-900 bg-hermit-aqua-200 rounded-md px-1 items-center`}
       onClick={() => setEditing(true)}
     >
-      <PlusSvg strokeWidth={1.5} className='w-5 h-5 ' />
+      <PlusSvg strokeWidth={1.5} className='w-5 h-5' />
     </span>
   )
 }
 
-const Tag = ({ tag, handleChange }) => {
+const Tag = ({ tag, handleChange, handleRemove }) => {
   const [editing, setEditing] = useState(false)
   const chars = Math.max(4, tag.length ?? 0)
   const fontSize = useFontSize()
@@ -92,6 +100,9 @@ const Tag = ({ tag, handleChange }) => {
       onChange={e => handleChange(e.target.value)}
       onBlur={() => {
         setEditing(false)
+        if (tag.length === 0) {
+          handleRemove()
+        }
         window.scrollTo({ top: 0 })
       }}
       ref={inputRef}
@@ -182,11 +193,18 @@ const BlockEditor = () => {
         >
           {
             block && block.tags && 
-              append(<NewTag handleNewTag={tag => setBlock(L.modify(['tags'], append(tag), block))} key='newTag' />)
+              append(<NewTag 
+                        handleNewTag={tag => setBlock(L.modify(['tags'])
+                                                              (append(tag))
+                                                              (block))} 
+                        key='newTag' />)
                     (mapIx((tag, ix) => 
                               <Tag 
                                 tag={tag} 
                                 handleChange={tag => setBlock(L.set(['tags', ix], tag, block))} 
+                                handleRemove={() => setBlock(L.modify(['tags'])
+                                                                     (remove(ix)(1))
+                                                                     (block))}
                                 key={ix} />)
                           (block.tags))
           }
