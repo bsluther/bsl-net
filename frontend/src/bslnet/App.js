@@ -16,6 +16,7 @@ const App = () => {
   const appRef = useRef()
 
   useLayoutEffect(() => {
+    console.log(window.innerHeight)
     setInnerHeight(window.innerHeight)
     setInnerWidth(window.innerWidth)
   })
@@ -24,10 +25,10 @@ const App = () => {
 
   return (
     <section
-      style={{
-        height: `${innerHeight}px`,
-        Width: `${innerWidth}px`
-      }}
+      // style={{
+      //   height: `${innerHeight}px`,
+      //   Width: `${innerWidth}px`
+      // }}
       className={`font-customMono h-screen w-screen grid grid-rows-mainHeader grid-cols-1`}
       ref={appRef}
     >

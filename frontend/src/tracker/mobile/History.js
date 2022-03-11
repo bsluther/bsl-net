@@ -20,7 +20,7 @@ const BlockBlob = ({ block }) => {
   const end = blockEnd(block)
 
   return (
-    <div className={`border border-hermit-grey-900 space-x-6 w-max rounded-md px-2 bg-hermit-grey-400`}>
+    <div className={`h-8 border border-hermit-grey-900 space-x-6 w-max rounded-md px-2 bg-hermit-grey-400`}>
       
       <span className={`text-hermit-grey-900`}>{maybe('')(toFormat('M/d/yy'))(start)}</span>
       {/* <span>{`${maybe('')(toFormat('h:mm'))(start)}-${maybe('')(toFormat('h:mm'))(end)}`}</span> */}
@@ -32,7 +32,7 @@ const BlockBlob = ({ block }) => {
 
 const BlobCollection = ({ blocks }) => {
   return (
-    <div className={`flex flex-col items-center justify-center px-1 space-y-1 overflow-scroll`}>
+    <div className={`flex flex-col items-center justify-center px-1 space-y-1`}>
       {map(blc => 
             <BlockBlob block={blc} key={blc._id} />)
           (values(blocks))}
@@ -157,9 +157,8 @@ const History = () => {
   const [categories, setCategories] = useAtom(categoriesAtom)
 
   return (
-    <section className={`h-full overflow-scroll flex flex-col space-y-1`}>
+    <section className={`flex flex-col space-y-1`}>
       <BlockFilter blocks={values(blocks)} />
-      
     </section>
   )
 }

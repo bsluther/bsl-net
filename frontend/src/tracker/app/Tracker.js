@@ -72,24 +72,19 @@ const Tracker = () => {
   const Navigated = navigate(primaryNavState)
 
   return (
-    <section className={`row-start-2 row-span-1 col-start-1 col-span-1`}>
-      <div 
-        className={`h-full grid grid-rows-mobileNav`}
-        // className={`h-full flex flex-col justify-end`}
-      >
+    <section className={`h-full row-start-2 row-span-1 col-start-1 col-span-1
+      grid grid-rows-mobileNav
+      relative
+    `}>
+ 
         <div 
-          className={`row-start-1 row-span-1 col-start-1 col-span-1 bg-hermit-aqua-500`}
-          // className={`grow bg-hermit-aqua-500`}
+          className={`row-start-1 row-span-1 col-start-1 col-span-1 bg-hermit-aqua-500 h-full overflow-scroll`}
         >
           <Navigated />
         </div>
 
-        {/* <div className={`h-max bg-hermit-aqua-500 space-y-[2px] py-[2px]`}>
-          <BlockEditor2 />
-          <CategoryEditor />
-        </div> */}
         {(breakpoint === 'xs' || breakpoint === 'sm') && <MobileNav handleNavClick={label => setPrimaryNavState(label)} />}
-      </div>
+  
     </section>
   )
 }

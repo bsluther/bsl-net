@@ -33,7 +33,7 @@ module.exports = {
       },
       gridTemplateRows: {
         'container': '5rem auto',
-        'mainHeader': '2rem auto',
+        'mainHeader': '2rem 1fr',
         'mobileNav': '1fr 3rem'
       },
       gridTemplateColumns: {
