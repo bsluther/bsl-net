@@ -67,19 +67,29 @@ const DatePicker = ({ isoDate = isoDateNow() }) => {
 
 const DateDialog = () => {
   return (
-    <div className={`flex flex-col h-full`}>
+    <div className={`flex flex-col h-full basis-full space-y-4`}>
 
-      <div className={`flex items-center pt-2 px-4`}>
-        <div className='grow flex flex-col items-center'>
+      <div className={`flex items-center justify-center px-4 space-x-4`}>
+        <div className='flex flex-col'>
+          <span className='-mb-2'>Show</span>
+          <span>data</span>
+        </div>
+        <select className='bg-hermit-grey-900 border border-hermit-grey-400 rounded-md outline-none'>
+          <option>before</option>
+          <option>after</option>
+        </select>
+        {/* <span>{'<'}</span> */}
+        {/* <div className='grow flex flex-col items-center'>
           <span className={`uppercase`}>before</span>
           <span>or</span>
           <span className={`uppercase`}>after</span>
-        </div>
+        </div> */}
         <DatePicker />
       </div>
-      <div className='flex justify-center grow'>
-        <button>Cancel</button>
-        <button>Set Filter</button>
+
+      <div className='flex justify-center items-center grow space-x-4'>
+        <button className={`text-hermit-grey-400 bg-hermit-grey-700 rounded-md px-2 h-max`}>Cancel</button>
+        <button className={`text-hermit-grey-400 bg-hermit-grey-700 rounded-md px-2 h-max`}>Set Filter</button>
       </div>
       
 
@@ -101,11 +111,12 @@ const FilterDialog = () => {
   const [filterType, setFilterType] = useState()
 
   return (
-    <div className={`fixed top-1/2 left-1/2 -translate-x-1/2
-      w-11/12 h-40
+    <div className={`fixed top-1/3 left-1/2 -translate-x-1/2
+      w-11/12 h-max p-2 space-y-4
+      flex flex-col items-center
       text-hermit-grey-400 bg-hermit-grey-900 border border-hermit-grey-400 rounded-md
     `}>
-      <div className={`space-x-4 p-2`}>
+      <div className={`space-x-4 `}>
         <span>Filter by:</span>
         
         <span 
@@ -120,9 +131,13 @@ const FilterDialog = () => {
           onClick={() => setFilterType('category')}
         >category</span>
       </div>
-      <div>
-        {filterType && filterType === 'date' ? <DateDialog /> : null}
-      </div>
+      
+      {filterType && filterType === 'date' 
+        ? <div className='grow'>
+            <DateDialog /> 
+          </div>
+        : null}
+
 
 
     </div>
