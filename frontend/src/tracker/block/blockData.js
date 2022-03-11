@@ -2,8 +2,8 @@ import { blcId } from '../functions'
 import { DateTime } from 'luxon'
 import { Pair, lift2, pair, maybe, pipe, justs, reduce as fold } from 'sanctuary'
 import { ifElse, map, filter } from 'ramda'
-import { fromISO, joinISOs, gt, inRange, emptyDuration } from '../dateTime/functions'
-import { Nothing, compose as B } from 'sanctuary'
+import { fromISO, joinISOs, gt, inRange, emptyDuration, emptyDT } from '../dateTime/functions'
+import { Nothing, compose as B, I } from 'sanctuary'
 import { diff, isDuration, luxonPlus } from '../dateTime/pointfree'
 
 // const aBlock = {
@@ -21,6 +21,8 @@ import { diff, isDuration, luxonPlus } from '../dateTime/pointfree'
 //   "categoryName": "hacker_rank"
 // }
 
+// const someTags = ['mobile', 'presentation', 'block editor', 'design', 'test', 'test']
+
 const blockConstructor = user => ({
   _id: blcId(),
   user,
@@ -33,7 +35,7 @@ const blockConstructor = user => ({
     date: DateTime.now().toISODate(),
     time: DateTime.now().set({ milliseconds: 0, seconds: 0 }).toISOTime({ suppressMilliseconds: true, suppressSeconds: true, includeOffset: false })
   },
-  tags: ['mobile', 'presentation', 'block editor', 'design', 'test', 'test']
+  tags: []
 })
 
 const Block = {
@@ -61,6 +63,12 @@ const blockStart = blockDT('start')
 
 // blockEnd :: Block -> Maybe DateTime
 const blockEnd = blockDT('end')
+
+// maybeStart :: Block -> DateTime
+const maybeStart = blc => maybe(emptyDT())(I)(blockStart(blc))
+
+// maybeEnd :: Block -> DateTime
+const maybeEnd = blc => maybe(emptyDT())(I)(blockEnd(blc))
 
 // blockDuration :: Block -> Maybe Duration
 const blockDuration = blc =>
@@ -90,5 +98,7 @@ export {
   blockStartedAfter,
   blockEnd,
   blockDuration,
-  sumBlocks
+  sumBlocks,
+  maybeStart,
+  maybeEnd
 }

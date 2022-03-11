@@ -113,4 +113,30 @@ const CubeTransparentSvg = ({ ...props }) => <svg className="w-6 h-6" fill="none
 
 const TableSvg = ({ ...props }) => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" {...props}><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
 
-export { PlusCircleSvg, MinusCircleSvg, PlusSvg, MinusSvg, XSvg, ChevronDown, ChevronUp, ChevronLeft, HamburgerSvg, CollectionSvg, CubeTransparentSvg, TableSvg }
+const SwitchVerticalSvg = ({ ...props }) => 
+  <svg 
+    className="w-6 h-6" 
+    fill="none" 
+    stroke="currentColor" 
+    viewBox="0 0 24 24" 
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+      <path
+        strokeLinecap="round" 
+        strokeLinejoin="round" 
+        strokeWidth={2} 
+        d="M7 16V4m0 0L3 8m4-4l4 4m6" 
+      />
+      <path
+        strokeLinecap="round" 
+        strokeLinejoin="round" 
+        strokeWidth={2} 
+        d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" 
+      />
+  </svg>
+
+const ChevronDoubleDownSvg = ({ ...props }) =>
+<svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" {...props}><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 13l-7 7-7-7m14-8l-7 7-7-7" /></svg>
+
+export { PlusCircleSvg, MinusCircleSvg, PlusSvg, MinusSvg, XSvg, ChevronDown, ChevronUp, ChevronLeft, HamburgerSvg, CollectionSvg, CubeTransparentSvg, TableSvg, SwitchVerticalSvg, ChevronDoubleDownSvg }

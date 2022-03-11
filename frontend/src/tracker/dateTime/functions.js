@@ -45,6 +45,10 @@ const safeAddDurs = dur1 => dur2 =>
 const emptyDuration = () => Duration.fromMillis(0)
 
 
+// emptyDT :: () -> DateTime
+const emptyDT = () => DateTime.fromMillis(0)
+
+
 /**************************** PARSING *********************************/
 
 // fromISO :: ISO -> Maybe DateTime
@@ -75,5 +79,6 @@ export {
   joinISOs,
   objAgo,
   safeAddDurs,
-  nowSansSeconds
+  nowSansSeconds,
+  emptyDT
 }

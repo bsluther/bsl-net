@@ -9,6 +9,7 @@ import { nowSansSeconds } from '../dateTime/functions'
 import { useEffect, useRef, useState } from 'react'
 import useFontSize from '../../hooks/useFontSize'
 import { PlusSvg } from '../svg'
+import { propOr } from 'ramda'
 const mapIx = addIndex(map)
 
 const DatePicker = ({ isoDate = DateTime.now().toISODate(), handler = x => x }) => {
@@ -135,7 +136,6 @@ const BlockEditor = () => {
   useEffect(() => {
     createNewDraftBlock()
   }, [createNewDraftBlock])
-
   
   return (
     <section className={`flex flex-col space-y-3`}>
@@ -169,7 +169,11 @@ const BlockEditor = () => {
       </Field>
 
       <Field label='Notes'>
-        <textarea className={`w-3/4 max-h-24 bg-hermit-aqua-500 focus:bg-hermit-grey-400 border border-hermit-grey-900 rounded-sm outline-none`}/>
+        <textarea 
+          className={`w-3/4 max-h-24 bg-hermit-aqua-500 focus:bg-hermit-grey-400 border border-hermit-grey-900 rounded-sm outline-none`}
+          value={propOr('')('notes')(block)}
+          onChange={e => setBlock(L.set(['notes'])(e.target.value)(block))}
+        />
       </Field>
 
       <Field label='Tags'>
@@ -190,7 +194,7 @@ const BlockEditor = () => {
       </Field>
       
       <div className='self-center grow space-x-4'>
-        <button className={`text-hermit-grey-400 bg-hermit-grey-900 rounded-md w-max px-2`}>Discard</button>
+        <button className={`text-hermit-grey-400 bg-hermit-grey-900 rounded-md w-max px-2`} onClick={createNewDraftBlock}>Discard</button>
         <button className={`text-hermit-grey-400 bg-hermit-grey-900 rounded-md w-max px-2`}>Save</button>
       </div>
       
