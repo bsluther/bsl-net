@@ -1,5 +1,9 @@
+import { atom, useAtom } from 'jotai'
 import { map } from 'ramda'
+import { useLayoutEffect, useRef } from 'react'
 import { PlusCircleSvg, CollectionSvg, CubeTransparentSvg, TableSvg } from '../svg'
+
+const mobileNavHeightAtom = atom(0)
 
 const NavButton = ({ label, Icon, onClick }) => {
   return (
@@ -19,14 +23,22 @@ const iconHash = {
 }
 
 const MobileNav = ({ handleNavClick }) => {
+  const [,setMobileNavHeight] = useAtom(mobileNavHeightAtom)
+  const navRef = useRef()
+
+  useLayoutEffect(() => {
+    setMobileNavHeight(navRef.current.offsetHeight)
+  }, [navRef, setMobileNavHeight])
+
   return (
     <section
       className={`
-        fixed bottom-0 left-0
+        fixed bottom-0 left-0 h-12
         w-full row-start-2 row-span-1 col-start-1 col-span-1
         flex justify-around pt-1
         bg-hermit-grey-400 border-t border-hermit-grey-900
-      `}
+      `} 
+      ref={navRef}
     >
       {
         map(lbl =>
@@ -38,4 +50,4 @@ const MobileNav = ({ handleNavClick }) => {
   )
 }
 
-export { MobileNav }
+export { MobileNav, mobileNavHeightAtom }

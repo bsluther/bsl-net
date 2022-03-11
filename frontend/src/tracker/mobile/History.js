@@ -7,6 +7,8 @@ import { snakeToSpaced } from '../../util'
 import { useEffect, useMemo, useState } from 'react'
 import { ChevronDoubleDownSvg, PlusSvg, SwitchVerticalSvg } from '../svg'
 import { ascend, descend, prop, sortWith, map, values, append } from 'ramda'
+import { mobileNavHeightAtom } from './MobileNav'
+import { isoDateNow, nowSansSeconds } from '../dateTime/functions'
 
 
 
@@ -53,21 +55,86 @@ const DateFilter = ({ filterConfig }) => {
   )
 }
 
+const DatePicker = ({ isoDate = isoDateNow() }) => {
+  return (
+    <input
+      className={`bg-hermit-grey-900 border border-hermit-grey-700 rounded-md h-max`}
+      type='date'
+      value={isoDate}
+    />
+  )
+}
+
+const DateDialog = () => {
+  return (
+    <div className={`flex flex-col h-full`}>
+
+      <div className={`flex items-center pt-2 px-4`}>
+        <div className='grow flex flex-col items-center'>
+          <span className={`uppercase`}>before</span>
+          <span>or</span>
+          <span className={`uppercase`}>after</span>
+        </div>
+        <DatePicker />
+      </div>
+      <div className='flex justify-center grow'>
+        <button>Cancel</button>
+        <button>Set Filter</button>
+      </div>
+      
+
+      {/* <div className={`flex px-2`}>
+        <span className={`text-sm`}>{'Include data before:'}</span>
+        <DatePicker />
+      </div> */}
+
+      {/* <div className={`flex px-2`}>
+        <span className={`text-sm`}>{'Include data after:'}</span>
+        <DatePicker />
+      </div> */}
+
+    </div>
+  )
+}
+
+const FilterDialog = () => {
+  const [filterType, setFilterType] = useState()
+
+  return (
+    <div className={`fixed top-1/2 left-1/2 -translate-x-1/2
+      w-11/12 h-40
+      text-hermit-grey-400 bg-hermit-grey-900 border border-hermit-grey-400 rounded-md
+    `}>
+      <div className={`space-x-4 p-2`}>
+        <span>Filter by:</span>
+        
+        <span 
+          className={`uppercase px-1 ${filterType === 'date' && `outline outline-hermit-grey-400`}`}
+          onClick={() => setFilterType('date')}
+        >date</span>
+        
+        <span>or</span>
+        
+        <span 
+          className={`uppercase px-1 ${filterType === 'category' && `outline outline-hermit-grey-400`}`}
+          onClick={() => setFilterType('category')}
+        >category</span>
+      </div>
+      <div>
+        {filterType && filterType === 'date' ? <DateDialog /> : null}
+      </div>
+
+
+    </div>
+  )
+}
+
 const AddFilter = () => {
   const [editing, setEditing] = useState(false)
-  const [editingType, setEditingType] = useState()
 
   if (editing) {
     return (
-      <div className='absolute text-hermit-grey-400 bg-hermit-grey-900 space-x-4 top-8 left-0'>
-        <span>date</span>
-        <span>category</span>
-      </div>
-      // <div className='absolute top-10 right-0 w-52 h-16
-      // bg-yellow-400 border border-hermit-grey-900 rounded-md'>
-      //   <span>date</span>
-      //   <span>category</span>
-      // </div>
+      <FilterDialog />
     )
   }
 
@@ -89,6 +156,7 @@ const BlockRefiner = ({ setRefiner }) => {
   const [sortBy, setSortBy] = useState('date')
   const [sortDirection, setSortDirection] = useState('ascending')
   const [filterConfigs, setFilterConfigs] = useState([])
+  const [mobileNavHeight] = useAtom(mobileNavHeightAtom)
 
   useEffect(() => {
     const direction = sortDirection === 'ascending' ? ascend : descend
@@ -100,12 +168,14 @@ const BlockRefiner = ({ setRefiner }) => {
       direction(maybeStart),
       direction(prop('categoryName')) 
     ]))
-  }, [sortDirection, sortBy])
+  }, [sortDirection, sortBy, setRefiner])
 
 
   return (
     <>
-      <div className=' bg-hermit-grey-700 flex flex-col border-b border-hermit-grey-900'>
+      <div 
+        style={{ bottom: `${mobileNavHeight}px` }}
+        className='bg-hermit-grey-700 flex flex-col border-t border-hermit-grey-900 fixed w-full'>
         <div className={`self-center w-max rounded-md p-1  bg-hermit-grey-700`}>
         
           <div className='pb-1 flex space-x-2'>
@@ -151,14 +221,13 @@ const BlockRefiner = ({ setRefiner }) => {
 const History = () => {
   const [blocks, setBlocks] = useAtom(namedBlocks2Atom)
   const [categories, setCategories] = useAtom(categoriesAtom)
-    const [filteredBlocks, setFilteredBlocks] = useState([])
   const [refiner, setRefiner] = useState(() => I)
 
   return (
     <section className={`flex flex-col space-y-1`}>
-      <BlockRefiner blocks={values(blocks)} setRefiner={setRefiner} />
-
       <BlobCollection blocks={refiner(values(blocks))} />
+
+      <BlockRefiner blocks={values(blocks)} setRefiner={setRefiner} />
     </section>
   )
 }

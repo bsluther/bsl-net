@@ -28,6 +28,8 @@ const inRange = lowerDT => upperDT => dt =>
 const gt = lowerDT => dt =>
   lowerDT < dt
 
+const isoDateNow = () => DateTime.now().toISODate()
+
 const nowSansSeconds = () =>
   DateTime.now().set({ second: 0, millisecond: 0}).toISOTime({ suppressMilliseconds: true, suppressSeconds: true, includeOffset: false })
 
@@ -80,5 +82,6 @@ export {
   objAgo,
   safeAddDurs,
   nowSansSeconds,
-  emptyDT
+  emptyDT,
+  isoDateNow
 }
