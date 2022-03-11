@@ -32,7 +32,7 @@ const BlockBlob = ({ block }) => {
 
 const BlobCollection = ({ blocks }) => {
   return (
-    <div className={`flex flex-col items-center justify-center px-1 space-y-1`}>
+    <div className={`flex flex-col items-center justify-center px-1 space-y-1 overflow-scroll`}>
       {map(blc => 
             <BlockBlob block={blc} key={blc._id} />)
           (values(blocks))}
@@ -131,10 +131,12 @@ const BlockFilter = ({ blocks }) => {
               onClick={() => setSortDirection(prev => prev === 'descending' ? 'ascending' : 'descending')}
             />
           </div>
-          
+  
         </div>
+
         <div className='relative flex px-2 space-x-2 self-center w-max'>
           <span>filters:</span>
+
           <div>
             {append(<AddFilter key='addFilter' />)
                    (map(cfg => cfg.filterType === 'date' 
@@ -144,6 +146,7 @@ const BlockFilter = ({ blocks }) => {
           </div>
         </div>
       </div>
+
       <BlobCollection blocks={sortedBlocks} />
     </>
   )
