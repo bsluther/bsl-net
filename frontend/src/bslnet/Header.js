@@ -14,7 +14,7 @@ const DesktopHeader = ({ activeAppName }) => {
 
   return (
     <section
-      className={` flex row-start-1 row-span-1 w-screen text-hermit-grey-400 bg-hermit-grey-900 items-center justify-center
+      className={` flex row-start-1 row-span-1 text-hermit-grey-400 bg-hermit-grey-900 items-center justify-center
       space-x-8 sticky`}
     >
       {map(label => 
@@ -31,7 +31,7 @@ const MobileHeader = ({ activeAppName }) => {
 
   return (
     <section
-      className={` flex row-start-1 row-span-1 w-screen text-hermit-grey-400 bg-hermit-grey-900 items-center justify-center sticky`}
+      className={`flex row-start-1 row-span-1 text-hermit-grey-400 bg-hermit-grey-900 items-center justify-center sticky`}
     >
       <div className={`h-max`}
       >

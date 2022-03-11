@@ -42,6 +42,8 @@ const Tracker = () => {
   const [, setCategories] = useAtom(categoriesAtom)
   const breakpoint = useBreakpoint()
 
+  console.log('Breakpoint condition: ', (breakpoint === 'xs' || breakpoint === 'sm'))
+
   const syncBlocks = useCallback(
     () =>
       fork(err => console.log('Failed to fetch blocks.', err))
@@ -71,8 +73,14 @@ const Tracker = () => {
 
   return (
     <section className={`row-start-2 row-span-1 col-start-1 col-span-1`}>
-      <div className={`h-full flex flex-col justify-end`}>
-        <div className={`grow bg-hermit-aqua-500`}>
+      <div 
+        className={`h-full grid grid-rows-mobileNav`}
+        // className={`h-full flex flex-col justify-end`}
+      >
+        <div 
+          className={`row-start-1 row-span-1 col-start-1 col-span-1 bg-hermit-aqua-500`}
+          // className={`grow bg-hermit-aqua-500`}
+        >
           <Navigated />
         </div>
 

@@ -32,8 +32,9 @@ module.exports = {
         }
       },
       gridTemplateRows: {
+        'container': '5rem auto',
         'mainHeader': '2rem auto',
-        'container': '5rem auto'
+        'mobileNav': '1fr 3rem'
       },
       gridTemplateColumns: {
         mainLarge: '500px auto'

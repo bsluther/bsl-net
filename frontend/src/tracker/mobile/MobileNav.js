@@ -22,7 +22,9 @@ const MobileNav = ({ handleNavClick }) => {
   console.log('MobileNav rendered!')
   return (
     <section
-      className={`flex w-full justify-around pt-1
+      className={`
+        w-full row-start-2 row-span-1 col-start-1 col-span-1
+        flex justify-around pt-1
         bg-hermit-grey-400 border-t border-hermit-grey-900
       `}
     >

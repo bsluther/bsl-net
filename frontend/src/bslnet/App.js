@@ -28,7 +28,7 @@ const App = () => {
         height: `${innerHeight}px`,
         Width: `${innerWidth}px`
       }}
-      className={`font-customMono h-screen w-screen grid grid-rows-mainHeader grid-cols-1 overflow-hidden`}
+      className={`font-customMono h-screen w-screen grid grid-rows-mainHeader grid-cols-1`}
       ref={appRef}
     >
       <Header />
