@@ -1,18 +1,36 @@
-import { useAtom } from 'jotai'
+import { atom, useAtom } from 'jotai'
+import { atomWithReset, useResetAtom } from 'jotai/utils'
 import { namedBlocks2Atom, categoriesAtom } from '../atoms'
-import { blockEnd, blockStart, maybeStart } from '../block/blockData'
+import { blockStart, maybeStart } from '../block/blockData'
 import { maybe, I } from 'sanctuary'
 import { toFormat } from '../dateTime/pointfree'
 import { snakeToSpaced } from '../../util'
 import { useEffect, useMemo, useState } from 'react'
-import { ChevronDoubleDownSvg, PlusSvg, SwitchVerticalSvg } from '../svg'
+import { ChevronDoubleDownSvg, PlusSvg } from '../svg'
 import { ascend, descend, prop, sortWith, map, values, append } from 'ramda'
 import { mobileNavHeightAtom } from './MobileNav'
-import { isoDateNow, nowSansSeconds } from '../dateTime/functions'
+import { isoDateNow } from '../dateTime/functions'
+import * as L from 'partial.lenses'
+import { gte } from 'ramda'
+import pipe from 'ramda/src/pipe'
+import { lte } from 'ramda'
 
+const filterConfigsAtom = atom([])
 
+const draftFilterConfigAtom = atomWithReset({
+  type: 'date',
+  parameter: isoDateNow(),
+  logic: 'gte',
+  predicate: I
+})
 
-
+const saveDraftAtom = atom(
+  null,
+  (get, set, arg) => {
+    set(filterConfigsAtom, configs => append(get(draftFilterConfigAtom))(configs))
+    set(draftFilterConfigAtom, {})
+  }
+)
 
 
 
@@ -55,19 +73,32 @@ const DateFilter = ({ filterConfig }) => {
   )
 }
 
-const DatePicker = ({ isoDate = isoDateNow() }) => {
+const DatePicker = (props) => {
   return (
     <input
       className={`bg-hermit-grey-900 border border-hermit-grey-700 rounded-md h-max`}
       type='date'
-      value={isoDate}
+      {...props}
     />
   )
 }
 
-const DateDialog = ({ setFilterConfig }) => {
-  const [date, setDate] = useState(isoDateNow())
-  const [include, setInclude] = useState()
+const DateDialog = ({ endEditing }) => {
+  const [draftFilterConfig, setDraftFilterConfig] = useAtom(draftFilterConfigAtom)
+  const resetDraft = useResetAtom(draftFilterConfigAtom)
+  const [, saveDraft] = useAtom(saveDraftAtom)
+
+  // const predicateHash = {
+  //   gt: pipe([
+  //     blockStart,
+  //     maybe(false)(gte)
+  //   ]),
+  //   lte: pipe([
+  //     blockStart,
+  //     maybe(false)(lte)
+  //   ])
+  // }
+
 
   return (
     <div className={`flex flex-col h-full basis-full space-y-4`}>
@@ -77,26 +108,50 @@ const DateDialog = ({ setFilterConfig }) => {
           <span className='-mb-2'>Show</span>
           <span>data</span>
         </div>
-        <select className='bg-hermit-grey-900 border border-hermit-grey-400 rounded-md outline-none'>
-          <option>before</option>
-          <option>after</option>
+        <select 
+          className='bg-hermit-grey-900 border border-hermit-grey-400 rounded-md outline-none'
+          onChange={e => setDraftFilterConfig(L.set(['logic'])
+                                                   (e.target.value)
+                                                   (draftFilterConfig))}
+          value='gte'
+        >
+          <option value='lte'>before</option>
+          <option value='gte'>after</option>
         </select>
 
-        <DatePicker />
+        <DatePicker 
+          value={draftFilterConfig.parameter} 
+          onChange={e => setDraftFilterConfig(L.set(['parameter'])
+                                                   (e.target.value)
+                                                   (draftFilterConfig))}/>
       </div>
 
       <div className='flex justify-center items-center grow space-x-4'>
-        <button className={`text-hermit-grey-400 bg-hermit-grey-700 rounded-md px-2 h-max`}>Cancel</button>
-        <button className={`text-hermit-grey-400 bg-hermit-grey-700 rounded-md px-2 h-max`}>Set Filter</button>
+        <button 
+          className={`text-hermit-grey-400 bg-hermit-grey-700 rounded-md px-2 h-max`}
+          onClick={() => {
+            resetDraft()
+            endEditing()
+          }}
+        >Cancel</button>
+        <button 
+          className={`text-hermit-grey-400 bg-hermit-grey-700 rounded-md px-2 h-max`}
+          onClick={() => {
+            if (draftFilterConfig.logic && draftFilterConfig.parameter) {
+              saveDraft()
+              resetDraft()
+              endEditing()
+            }
+          }}
+        >Set Filter</button>
       </div>
 
     </div>
   )
 }
 
-const FilterDialog = () => {
+const FilterDialog = ({ endEditing }) => {
   const [filterType, setFilterType] = useState()
-  const [filterConfig, setFilterConfig] = useState({})
 
   return (
     <div className={`fixed top-1/3 left-1/2 -translate-x-1/2
@@ -120,15 +175,20 @@ const FilterDialog = () => {
         >category</span>
       </div>
       
-      {filterType && filterType === 'date' 
+      {filterType === 'date' 
         ? <div className='grow'>
             <DateDialog 
-              setFilterConfig={setFilterConfig}
+              endEditing={endEditing}
             /> 
           </div>
         : null}
 
-
+        {!filterType
+          ? <button 
+              className={`text-hermit-grey-400 bg-hermit-grey-700 rounded-md px-2 h-max`}
+              onClick={endEditing}
+            >Cancel</button>
+          : null}
 
     </div>
   )
@@ -139,7 +199,7 @@ const AddFilter = () => {
 
   if (editing) {
     return (
-      <FilterDialog />
+      <FilterDialog endEditing={() => setEditing(false)} />
     )
   }
 
@@ -159,18 +219,19 @@ const AddFilter = () => {
 // filter: date range, category(ies) (exclude / include)
 
 
-const filterConfigSchema = {
-  type: 'date' || 'category',
-  include: 'before' || 'after' || ['CategoryID'],
-  parameter: 'ISODate' || 'CategoryID'
+const dateFilterConfigSchema = {
+  type: 'date',
+  logic: 'gte' || 'lte',
+  parameter: 'ISODate',
+  predicate: Block => Boolean
 }
 
 const BlockRefiner = ({ setRefiner }) => {
   const [sortBy, setSortBy] = useState('date')
   const [sortDirection, setSortDirection] = useState('ascending')
-  const [filterConfigs, setFilterConfigs] = useState([])
+  const [filterConfigs] = useAtom(filterConfigsAtom)
   const [mobileNavHeight] = useAtom(mobileNavHeightAtom)
-
+  console.log(filterConfigs)
   useEffect(() => {
     const direction = sortDirection === 'ascending' ? ascend : descend
 
@@ -218,7 +279,7 @@ const BlockRefiner = ({ setRefiner }) => {
 
           <div>
             {append(<AddFilter key='addFilter' />)
-                   (map(cfg => cfg.filterType === 'date' 
+                   (map(cfg => cfg.type === 'date' 
                           ? <DateFilter filterConfig={cfg} key={cfg} /> 
                           : <CategoryFilter filterConfig={cfg} key={cfg} />)
                        (filterConfigs))}
@@ -237,7 +298,7 @@ const History = () => {
   const [refiner, setRefiner] = useState(() => I)
 
   return (
-    <section className={`flex flex-col space-y-1`}>
+    <section className={`flex flex-col space-y-1 pt-4`}>
       <BlobCollection blocks={refiner(values(blocks))} />
 
       <BlockRefiner blocks={values(blocks)} setRefiner={setRefiner} />
