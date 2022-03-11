@@ -1,5 +1,5 @@
 import { map } from 'ramda'
-import { PlusCircleSvg, MinusCircleSvg, CollectionSvg, CubeTransparentSvg, TableSvg } from '../svg'
+import { PlusCircleSvg, CollectionSvg, CubeTransparentSvg, TableSvg } from '../svg'
 
 const NavButton = ({ label, Icon, onClick }) => {
   return (
@@ -19,6 +19,7 @@ const iconHash = {
 }
 
 const MobileNav = ({ handleNavClick }) => {
+  console.log('MobileNav rendered!')
   return (
     <section
       className={`flex w-full justify-around pt-1
