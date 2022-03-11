@@ -65,7 +65,10 @@ const DatePicker = ({ isoDate = isoDateNow() }) => {
   )
 }
 
-const DateDialog = () => {
+const DateDialog = ({ setFilterConfig }) => {
+  const [date, setDate] = useState(isoDateNow())
+  const [include, setInclude] = useState()
+
   return (
     <div className={`flex flex-col h-full basis-full space-y-4`}>
 
@@ -78,12 +81,7 @@ const DateDialog = () => {
           <option>before</option>
           <option>after</option>
         </select>
-        {/* <span>{'<'}</span> */}
-        {/* <div className='grow flex flex-col items-center'>
-          <span className={`uppercase`}>before</span>
-          <span>or</span>
-          <span className={`uppercase`}>after</span>
-        </div> */}
+
         <DatePicker />
       </div>
 
@@ -91,17 +89,6 @@ const DateDialog = () => {
         <button className={`text-hermit-grey-400 bg-hermit-grey-700 rounded-md px-2 h-max`}>Cancel</button>
         <button className={`text-hermit-grey-400 bg-hermit-grey-700 rounded-md px-2 h-max`}>Set Filter</button>
       </div>
-      
-
-      {/* <div className={`flex px-2`}>
-        <span className={`text-sm`}>{'Include data before:'}</span>
-        <DatePicker />
-      </div> */}
-
-      {/* <div className={`flex px-2`}>
-        <span className={`text-sm`}>{'Include data after:'}</span>
-        <DatePicker />
-      </div> */}
 
     </div>
   )
@@ -109,6 +96,7 @@ const DateDialog = () => {
 
 const FilterDialog = () => {
   const [filterType, setFilterType] = useState()
+  const [filterConfig, setFilterConfig] = useState({})
 
   return (
     <div className={`fixed top-1/3 left-1/2 -translate-x-1/2
@@ -134,7 +122,9 @@ const FilterDialog = () => {
       
       {filterType && filterType === 'date' 
         ? <div className='grow'>
-            <DateDialog /> 
+            <DateDialog 
+              setFilterConfig={setFilterConfig}
+            /> 
           </div>
         : null}
 
@@ -167,6 +157,14 @@ const AddFilter = () => {
 // sort by: date, time, category (choose order)
 //  ascending / descending
 // filter: date range, category(ies) (exclude / include)
+
+
+const filterConfigSchema = {
+  type: 'date' || 'category',
+  include: 'before' || 'after' || ['CategoryID'],
+  parameter: 'ISODate' || 'CategoryID'
+}
+
 const BlockRefiner = ({ setRefiner }) => {
   const [sortBy, setSortBy] = useState('date')
   const [sortDirection, setSortDirection] = useState('ascending')
