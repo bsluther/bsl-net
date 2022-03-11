@@ -42,8 +42,6 @@ const Tracker = () => {
   const [, setCategories] = useAtom(categoriesAtom)
   const breakpoint = useBreakpoint()
 
-  console.log('Breakpoint condition: ', (breakpoint === 'xs' || breakpoint === 'sm'))
-
   const syncBlocks = useCallback(
     () =>
       fork(err => console.log('Failed to fetch blocks.', err))
@@ -72,19 +70,13 @@ const Tracker = () => {
   const Navigated = navigate(primaryNavState)
 
   return (
-    <section className={`h-full row-start-2 row-span-1 col-start-1 col-span-1
-      grid grid-rows-mobileNav
-      relative
-    `}>
+    <section className={`h-full row-start-2 row-span-1 col-start-1 col-span-1`}>
  
-        <div 
-          className={`row-start-1 row-span-1 col-start-1 col-span-1 bg-hermit-aqua-500 h-full overflow-scroll`}
-        >
+        <div className={`bg-hermit-aqua-500 h-full overflow-scroll`}>
           <Navigated />
         </div>
 
         {(breakpoint === 'xs' || breakpoint === 'sm') && <MobileNav handleNavClick={label => setPrimaryNavState(label)} />}
-  
     </section>
   )
 }

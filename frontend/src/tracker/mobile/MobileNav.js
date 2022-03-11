@@ -19,7 +19,6 @@ const iconHash = {
 }
 
 const MobileNav = ({ handleNavClick }) => {
-  console.log('MobileNav rendered!')
   return (
     <section
       className={`

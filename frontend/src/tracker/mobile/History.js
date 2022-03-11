@@ -4,7 +4,7 @@ import { blockEnd, blockStart, maybeStart } from '../block/blockData'
 import { maybe, I } from 'sanctuary'
 import { toFormat } from '../dateTime/pointfree'
 import { snakeToSpaced } from '../../util'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { ChevronDoubleDownSvg, PlusSvg, SwitchVerticalSvg } from '../svg'
 import { ascend, descend, prop, sortWith, map, values, append } from 'ramda'
 
@@ -16,14 +16,11 @@ import { ascend, descend, prop, sortWith, map, values, append } from 'ramda'
 
 
 const BlockBlob = ({ block }) => {
-  const start = blockStart(block)
-  const end = blockEnd(block)
+  const start = useMemo(() => blockStart(block), [block])
 
   return (
-    <div className={`h-8 border border-hermit-grey-900 space-x-6 w-max rounded-md px-2 bg-hermit-grey-400`}>
-      
+    <div className={`border border-hermit-grey-900 space-x-6 w-max rounded-md px-2 bg-hermit-grey-400`}>
       <span className={`text-hermit-grey-900`}>{maybe('')(toFormat('M/d/yy'))(start)}</span>
-      {/* <span>{`${maybe('')(toFormat('h:mm'))(start)}-${maybe('')(toFormat('h:mm'))(end)}`}</span> */}
       <span className={`text-hermit-grey-700`}>{`${maybe('')(toFormat('ha'))(start)}`}</span>
       <span className={``}>{snakeToSpaced(block.categoryName)}</span>
     </div>
@@ -88,24 +85,23 @@ const AddFilter = () => {
 // sort by: date, time, category (choose order)
 //  ascending / descending
 // filter: date range, category(ies) (exclude / include)
-const BlockFilter = ({ blocks }) => {
+const BlockRefiner = ({ setRefiner }) => {
   const [sortBy, setSortBy] = useState('date')
   const [sortDirection, setSortDirection] = useState('ascending')
   const [filterConfigs, setFilterConfigs] = useState([])
-  const direction = sortDirection === 'ascending' ? ascend : descend
 
-  const directionHash = {
-    ascending: ascend,
-    descending: descend
-  }
+  useEffect(() => {
+    const direction = sortDirection === 'ascending' ? ascend : descend
 
-  const sortedBlocks = sortWith([
-    sortBy === 'date'
-      ? direction(maybeStart)
-      : direction(prop('categoryName')),
-    direction(maybeStart),
-    direction(prop('categoryName')) 
-  ])(blocks)
+    setRefiner(() => sortWith([
+      sortBy === 'date'
+        ? direction(maybeStart)
+        : direction(prop('categoryName')),
+      direction(maybeStart),
+      direction(prop('categoryName')) 
+    ]))
+  }, [sortDirection, sortBy])
+
 
   return (
     <>
@@ -147,7 +143,7 @@ const BlockFilter = ({ blocks }) => {
         </div>
       </div>
 
-      <BlobCollection blocks={sortedBlocks} />
+      
     </>
   )
 }
@@ -155,10 +151,14 @@ const BlockFilter = ({ blocks }) => {
 const History = () => {
   const [blocks, setBlocks] = useAtom(namedBlocks2Atom)
   const [categories, setCategories] = useAtom(categoriesAtom)
+    const [filteredBlocks, setFilteredBlocks] = useState([])
+  const [refiner, setRefiner] = useState(() => I)
 
   return (
     <section className={`flex flex-col space-y-1`}>
-      <BlockFilter blocks={values(blocks)} />
+      <BlockRefiner blocks={values(blocks)} setRefiner={setRefiner} />
+
+      <BlobCollection blocks={refiner(values(blocks))} />
     </section>
   )
 }
