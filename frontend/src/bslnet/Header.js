@@ -29,17 +29,19 @@ const DesktopHeader = ({ activeAppName }) => {
 const MobileHeader = ({ activeAppName }) => {
 
   return (
-    <section
-      className={`flex text-hermit-grey-400 bg-hermit-grey-900 items-center justify-center h-8 overflow-hidden `}
-    >
-      <div className={`h-max`}
+    <div className='relative h-full w-full'>
+      <section
+        className={`flex text-hermit-grey-400 bg-hermit-grey-900 items-center justify-center h-8 overflow-hidden absolute w-full`}
       >
-        {activeAppName}
-      </div>
-      <HamburgerSvg
-        className={`absolute top-1 right-2 w-6 h-6`}
-      />
-    </section>
+        <div className={`h-max`}
+        >
+          {activeAppName}
+        </div>
+        <HamburgerSvg
+          className={`absolute top-1 right-2 w-6 h-6`}
+        />
+      </section>
+    </div>
   )
 }
 
