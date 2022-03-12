@@ -149,7 +149,7 @@ const BlockEditor = () => {
   }, [createNewDraftBlock])
   
   return (
-    <section autofocus className={`flex flex-col space-y-3`}>
+    <section className={`flex flex-col space-y-3`}>
       <Field label='Category'>
         <CategoriesDropdown
           className={`bg-hermit-aqua-500 border border-hermit-grey-900 rounded-sm outline-none`}
@@ -223,7 +223,7 @@ const BlockEditor = () => {
 
 const Create = () => {
   return(
-    <section className={`h-full flex flex-col justify-center overflow-scroll`}>
+    <section autoFocus className={`h-full flex flex-col justify-center overflow-scroll`}>
       <BlockEditor />
     </section>
   )

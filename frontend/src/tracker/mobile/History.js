@@ -301,14 +301,14 @@ const BlockRefiner = ({ setRefiner }) => {
   )
 }
 
-const History = () => {
+const History = () => { 
   const [blocks, setBlocks] = useAtom(namedBlocks2Atom)
   const [categories, setCategories] = useAtom(categoriesAtom)
   const [refiner, setRefiner] = useState(() => I)
   console.log(values(blocks))
   return (
 
-    <div autofocus className='h-full w-full grid grid-rows-bottomBar'>
+    <div autoFocus className='h-full w-full grid grid-rows-bottomBar'>
 
       <section className={`row-start-1 row-end-2 overflow-scroll`}>
         <BlobCollection blocks={refiner(values(blocks))} />
