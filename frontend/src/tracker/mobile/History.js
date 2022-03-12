@@ -308,11 +308,11 @@ const History = () => {
   console.log(values(blocks))
   return (
     <section className='flex flex-col basis-full w-full h-full'>
-      <div className='grow w-full h-full overflow-scroll'>
+      <div className='w-full h-4/5 overflow-scroll'>
         <BlobCollection blocks={refiner(values(blocks))} />
       </div>
 
-      <div className='w-full h-max'>
+      <div className='w-full h-1/5'>
         <BlockRefiner blocks={values(blocks)} setRefiner={setRefiner} />
       </div>
     </section>
