@@ -308,17 +308,19 @@ const History = () => {
   console.log(values(blocks))
   return (
 
-    <div autoFocus className='h-full w-full grid grid-rows-bottomBar'>
+    // <div autoFocus className='h-full w-full grid grid-rows-bottomBar'>
 
-      <section className={`row-start-1 row-end-2 overflow-scroll`}>
-        <BlobCollection blocks={refiner(values(blocks))} />
-      </section>
+      <>
+        {/* <section className={`row-start-2 row-end-3 overflow-scroll`}> */}
+          <BlobCollection blocks={refiner(values(blocks))} />
+        {/* </section> */}
+        
+        {/* <div className='row-start-3 row-end-4 overflow-hidden'>  */}
+          <BlockRefiner blocks={values(blocks)} setRefiner={setRefiner} />
+        {/* </div> */}
+      </>
 
-      <div className='row-start-2 row-end-3 overflow-hidden'> 
-        <BlockRefiner blocks={values(blocks)} setRefiner={setRefiner} />
-      </div>
-
-    </div>
+    // </div>
   )
 }
 

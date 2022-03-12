@@ -20,7 +20,9 @@ const MobileApp = () => {
         <Header />
       </div>
 
-      <LoadedPage />
+      <div className='row-start-2 row-end-4 overflow-scroll'>
+        <LoadedPage />
+      </div>
 
     </section>
   )
