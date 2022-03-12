@@ -30,7 +30,7 @@ const MobileHeader = ({ activeAppName }) => {
 
   return (
     <section
-      className={`flex text-hermit-grey-400 bg-hermit-grey-900 items-center justify-center h-8`}
+      className={`flex text-hermit-grey-400 bg-hermit-grey-900 items-center justify-center h-8 overflow-hidden`}
     >
       <div className={`h-max`}
       >
