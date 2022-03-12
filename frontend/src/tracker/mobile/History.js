@@ -308,7 +308,7 @@ const History = () => {
   console.log(values(blocks))
   return (
 
-    <div className='h-full w-full grid grid-rows-bottomBar'>
+    <div autofocus className='h-full w-full grid grid-rows-bottomBar'>
 
       <section className={`row-start-1 row-end-2 overflow-scroll`}>
         <BlobCollection blocks={refiner(values(blocks))} />

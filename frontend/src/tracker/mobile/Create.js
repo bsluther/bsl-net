@@ -149,7 +149,7 @@ const BlockEditor = () => {
   }, [createNewDraftBlock])
   
   return (
-    <section className={`flex flex-col space-y-3`}>
+    <section autofocus className={`flex flex-col space-y-3`}>
       <Field label='Category'>
         <CategoriesDropdown
           className={`bg-hermit-aqua-500 border border-hermit-grey-900 rounded-sm outline-none`}

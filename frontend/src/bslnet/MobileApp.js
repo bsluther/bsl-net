@@ -15,12 +15,10 @@ const MobileApp = () => {
   return (
     <section
       className={`font-customMono h-screen w-screen grid grid-rows-mobileLayout`}
-      // className={`font-customMono h-screen w-screen grid grid-rows-mainHeader grid-cols-1`}
     >
-      <div className='row-start-1 row-end-1 overflow-hidden'>
+      <div className='row-start-1 row-end-1 overflow-hidden scroll'>
         <Header />
       </div>
-
 
       <LoadedPage />
 
