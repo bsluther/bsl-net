@@ -261,7 +261,7 @@ const BlockRefiner = ({ setRefiner }) => {
 
   return (
     <div 
-      className='bg-hermit-grey-700 flex flex-col border-t border-hermit-grey-900  w-full h-full'>
+      className='bg-hermit-grey-700 flex flex-col border-b border-hermit-grey-900  w-full h-full'>
       <div className={`self-center w-max rounded-md p-1  bg-hermit-grey-700`}>
       
         <div className='pb-1 flex space-x-2'>
@@ -307,14 +307,9 @@ const History = () => {
   const [refiner, setRefiner] = useState(() => I)
   console.log(values(blocks))
   return (
-    <section className='flex flex-col basis-full w-full h-full'>
-      <div className='w-full h-4/5 overflow-scroll'>
-        <BlobCollection blocks={refiner(values(blocks))} />
-      </div>
-
-      <div className='w-full h-1/5'>
-        <BlockRefiner blocks={values(blocks)} setRefiner={setRefiner} />
-      </div>
+    <section className='flex flex-col basis-full w-full h-full space-y-2'>
+      <BlockRefiner blocks={values(blocks)} setRefiner={setRefiner} />
+      <BlobCollection blocks={refiner(values(blocks))} />
     </section>
           
 
