@@ -223,7 +223,7 @@ const BlockEditor = () => {
 
 const Create = () => {
   return(
-    <section className={`h-full flex flex-col justify-center`}>
+    <section className={`h-full flex flex-col justify-center overflow-scroll`}>
       <BlockEditor />
     </section>
   )
