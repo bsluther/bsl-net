@@ -307,20 +307,17 @@ const History = () => {
   const [refiner, setRefiner] = useState(() => I)
   console.log(values(blocks))
   return (
+    <section className='flex flex-col basis-full w-full h-full'>
+      <div className='grow w-full h-full overflow-scroll'>
+        <BlobCollection blocks={refiner(values(blocks))} />
+      </div>
 
-    // <div autoFocus className='h-full w-full grid grid-rows-bottomBar'>
+      <div className='w-full h-max'>
+        <BlockRefiner blocks={values(blocks)} setRefiner={setRefiner} />
+      </div>
+    </section>
+          
 
-      <>
-        {/* <section className={`row-start-2 row-end-3 overflow-scroll`}> */}
-          <BlobCollection blocks={refiner(values(blocks))} />
-        {/* </section> */}
-        
-        {/* <div className='row-start-3 row-end-4 overflow-hidden'>  */}
-          <BlockRefiner blocks={values(blocks)} setRefiner={setRefiner} />
-        {/* </div> */}
-      </>
-
-    // </div>
   )
 }
 
