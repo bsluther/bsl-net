@@ -260,48 +260,44 @@ const BlockRefiner = ({ setRefiner }) => {
 
 
   return (
-    <>
-      <div 
-        className='bg-hermit-grey-700 flex flex-col border-t border-hermit-grey-900 w-full h-full'>
-        <div className={`self-center w-max rounded-md p-1  bg-hermit-grey-700`}>
-        
-          <div className='pb-1 flex space-x-2'>
-            <span>sort by:</span>
-            
-            <select 
-              value={sortBy}
-              onChange={e => setSortBy(e.target.value)}
-              className={`rounded-md border border-hermit-grey-900 bg-hermit-grey-700 outline-none`}
-            >
-              <option>category</option>
-              <option>date</option>
-            </select>
-            
-            <ChevronDoubleDownSvg 
-              className={`transition ease-in-out duration-200 w-5 h-5 
-                ${sortDirection === 'ascending' ? '' : 'rotate-180' }
-              `}
-              onClick={() => setSortDirection(prev => prev === 'descending' ? 'ascending' : 'descending')}
-            />
-          </div>
-  
+    <div 
+      className='bg-hermit-grey-700 flex flex-col border-t border-hermit-grey-900  w-full h-full'>
+      <div className={`self-center w-max rounded-md p-1  bg-hermit-grey-700`}>
+      
+        <div className='pb-1 flex space-x-2'>
+          <span>sort by:</span>
+          
+          <select 
+            value={sortBy}
+            onChange={e => setSortBy(e.target.value)}
+            className={`rounded-md border border-hermit-grey-900 bg-hermit-grey-700 outline-none`}
+          >
+            <option>category</option>
+            <option>date</option>
+          </select>
+          
+          <ChevronDoubleDownSvg 
+            className={`transition ease-in-out duration-200 w-5 h-5 
+              ${sortDirection === 'ascending' ? '' : 'rotate-180' }
+            `}
+            onClick={() => setSortDirection(prev => prev === 'descending' ? 'ascending' : 'descending')}
+          />
         </div>
 
-        <div className='relative flex px-2 space-x-2 self-center w-max'>
-          <span>filters:</span>
-
-          <div>
-            {append(<AddFilter key='addFilter' />)
-                   (mapIx((cfg, ix) => cfg.type === 'date' 
-                          ? <DateFilter filterConfig={cfg} key={ix} /> 
-                          : <CategoryFilter filterConfig={cfg} key={ix} />)
-                       (filterConfigs))}
-          </div>
-        </div>
       </div>
 
-      
-    </>
+      <div className='relative flex px-2 space-x-2 self-center w-max'>
+        <span>filters:</span>
+
+        <div>
+          {append(<AddFilter key='addFilter' />)
+                  (mapIx((cfg, ix) => cfg.type === 'date' 
+                        ? <DateFilter filterConfig={cfg} key={ix} /> 
+                        : <CategoryFilter filterConfig={cfg} key={ix} />)
+                      (filterConfigs))}
+        </div>
+      </div>
+    </div>
   )
 }
 
