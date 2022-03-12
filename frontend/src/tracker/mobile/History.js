@@ -2,18 +2,18 @@ import { atom, useAtom } from 'jotai'
 import { atomWithReset, useResetAtom } from 'jotai/utils'
 import { namedBlocks2Atom, categoriesAtom } from '../atoms'
 import { blockStart, maybeStart } from '../block/blockData'
-import { maybe, I } from 'sanctuary'
+import { maybe, I, pipe } from 'sanctuary'
 import { toFormat } from '../dateTime/pointfree'
 import { snakeToSpaced } from '../../util'
 import { useEffect, useMemo, useState } from 'react'
 import { ChevronDoubleDownSvg, PlusSvg } from '../svg'
-import { ascend, descend, prop, sortWith, map, values, append } from 'ramda'
+import { ascend, descend, prop, sortWith, map, values, append, gte, lte, filter, addIndex } from 'ramda'
 import { mobileNavHeightAtom } from './MobileNav'
 import { isoDateNow } from '../dateTime/functions'
 import * as L from 'partial.lenses'
-import { gte } from 'ramda'
-import pipe from 'ramda/src/pipe'
-import { lte } from 'ramda'
+import { DateTime } from 'luxon'
+const mapIx = addIndex(map)
+
 
 const filterConfigsAtom = atom([])
 
@@ -87,18 +87,6 @@ const DateDialog = ({ endEditing }) => {
   const [draftFilterConfig, setDraftFilterConfig] = useAtom(draftFilterConfigAtom)
   const resetDraft = useResetAtom(draftFilterConfigAtom)
   const [, saveDraft] = useAtom(saveDraftAtom)
-
-  // const predicateHash = {
-  //   gt: pipe([
-  //     blockStart,
-  //     maybe(false)(gte)
-  //   ]),
-  //   lte: pipe([
-  //     blockStart,
-  //     maybe(false)(lte)
-  //   ])
-  // }
-
 
   return (
     <div className={`flex flex-col h-full basis-full space-y-4`}>
@@ -226,23 +214,49 @@ const dateFilterConfigSchema = {
   predicate: Block => Boolean
 }
 
+const log = x => {
+  console.log('filterer arg', x)
+  return x
+}
+
+const predicateHash = {
+    gte: param => pipe([
+      blockStart,
+      maybe(false)(lte(DateTime.fromISO(param))),
+      log
+    ]),
+    lte: param => pipe([
+      blockStart,
+      maybe(false)(gte(DateTime.fromISO(param)))
+    ])
+  }
+
+const configToFilter = cfg => blcs => filter(predicateHash[cfg.logic](cfg.parameter))
+                                            (blcs)
+
 const BlockRefiner = ({ setRefiner }) => {
   const [sortBy, setSortBy] = useState('date')
   const [sortDirection, setSortDirection] = useState('ascending')
   const [filterConfigs] = useAtom(filterConfigsAtom)
   const [mobileNavHeight] = useAtom(mobileNavHeightAtom)
-  console.log(filterConfigs)
+  const [blocks, setBlocks] = useAtom(namedBlocks2Atom)
+
   useEffect(() => {
     const direction = sortDirection === 'ascending' ? ascend : descend
-
-    setRefiner(() => sortWith([
+    const sorter = sortWith([
       sortBy === 'date'
         ? direction(maybeStart)
         : direction(prop('categoryName')),
       direction(maybeStart),
       direction(prop('categoryName')) 
-    ]))
-  }, [sortDirection, sortBy, setRefiner])
+    ])
+
+    const filterer = pipe(
+      filterConfigs.length === 0 ? [I] : map(configToFilter)(filterConfigs)
+    )
+
+    setRefiner(() => pipe([filterer, sorter]))
+  }, [sortDirection, sortBy, setRefiner, filterConfigs, blocks])
 
 
   return (
@@ -279,9 +293,9 @@ const BlockRefiner = ({ setRefiner }) => {
 
           <div>
             {append(<AddFilter key='addFilter' />)
-                   (map(cfg => cfg.type === 'date' 
-                          ? <DateFilter filterConfig={cfg} key={cfg} /> 
-                          : <CategoryFilter filterConfig={cfg} key={cfg} />)
+                   (mapIx((cfg, ix) => cfg.type === 'date' 
+                          ? <DateFilter filterConfig={cfg} key={ix} /> 
+                          : <CategoryFilter filterConfig={cfg} key={ix} />)
                        (filterConfigs))}
           </div>
         </div>
@@ -296,7 +310,7 @@ const History = () => {
   const [blocks, setBlocks] = useAtom(namedBlocks2Atom)
   const [categories, setCategories] = useAtom(categoriesAtom)
   const [refiner, setRefiner] = useState(() => I)
-
+  // console.log(values(blocks))
   return (
     <section className={`flex flex-col space-y-1 pt-4`}>
       <BlobCollection blocks={refiner(values(blocks))} />
