@@ -29,9 +29,9 @@ const DesktopHeader = ({ activeAppName }) => {
 const MobileHeader = ({ activeAppName }) => {
 
   return (
-    <div className='relative h-full w-full'>
+    <div className='relative'>
       <section
-        className={`flex text-hermit-grey-400 bg-hermit-grey-900 items-center justify-center h-8 overflow-hidden absolute w-full`}
+        className={`flex text-hermit-grey-400 bg-hermit-grey-900 items-center justify-center h-8 overflow-hidden fixed w-full`}
       >
         <div className={`h-max`}
         >
