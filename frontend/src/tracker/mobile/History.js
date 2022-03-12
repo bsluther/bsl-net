@@ -309,7 +309,7 @@ const History = () => {
   const [blocks, setBlocks] = useAtom(namedBlocks2Atom)
   const [categories, setCategories] = useAtom(categoriesAtom)
   const [refiner, setRefiner] = useState(() => I)
-  // console.log(values(blocks))
+  console.log(values(blocks))
   return (
 
     <div className='h-full w-full grid grid-rows-bottomBar'>
