@@ -70,14 +70,20 @@ const Tracker = () => {
   const Navigated = navigate(primaryNavState)
 
   return (
-    <section className={`h-full row-start-2 row-span-1 col-start-1 col-span-1`}>
+    // <section className={`h-full row-start-2 row-span-1 col-start-1 col-span-1`}>
  
-        <div className={`bg-hermit-aqua-500 h-full overflow-scroll`}>
-          <Navigated />
-        </div>
 
-        {(breakpoint === 'xs' || breakpoint === 'sm') && <MobileNav handleNavClick={label => setPrimaryNavState(label)} />}
-    </section>
+        <>
+          <div className='row-start-2 row-end-4 overflow-scroll'>
+            <Navigated />
+          </div>
+          
+          
+          <div className='row-start-4 row-span-1 overflow-hidden'>
+            <MobileNav handleNavClick={label => setPrimaryNavState(label)} />
+          </div>
+        </>
+    // </section>
   )
 }
 

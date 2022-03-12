@@ -1,5 +1,4 @@
 import { map } from 'ramda'
-import { useLayoutEffect } from 'react'
 import { HamburgerSvg } from '../tracker/svg'
 import { useBreakpoint } from '../hooks/useBreakpoint'
 
@@ -31,7 +30,7 @@ const MobileHeader = ({ activeAppName }) => {
 
   return (
     <section
-      className={`flex row-start-1 row-span-1 text-hermit-grey-400 bg-hermit-grey-900 items-center justify-center sticky`}
+      className={`flex text-hermit-grey-400 bg-hermit-grey-900 items-center justify-center h-8`}
     >
       <div className={`h-max`}
       >
@@ -55,4 +54,4 @@ const Header = ({ activeAppName = 'Tracker' }) => {
   )
 }
 
-export { Header }
+export { Header, MobileHeader, DesktopHeader }

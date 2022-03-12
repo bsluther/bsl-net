@@ -39,7 +39,7 @@ const BlockBlob = ({ block }) => {
   const start = useMemo(() => blockStart(block), [block])
 
   return (
-    <div className={`border border-hermit-grey-900 space-x-6 w-max rounded-md px-2 bg-hermit-grey-400`}>
+    <div className={`border border-hermit-grey-900 space-x-6 w-max rounded-md px-2 bg-hermit-grey-400 h-12`}>
       <span className={`text-hermit-grey-900`}>{maybe('')(toFormat('M/d/yy'))(start)}</span>
       <span className={`text-hermit-grey-700`}>{`${maybe('')(toFormat('ha'))(start)}`}</span>
       <span className={``}>{snakeToSpaced(block.categoryName)}</span>
@@ -262,8 +262,7 @@ const BlockRefiner = ({ setRefiner }) => {
   return (
     <>
       <div 
-        style={{ bottom: `${mobileNavHeight}px` }}
-        className='bg-hermit-grey-700 flex flex-col border-t border-hermit-grey-900 fixed w-full'>
+        className='bg-hermit-grey-700 flex flex-col border-t border-hermit-grey-900 w-full h-full'>
         <div className={`self-center w-max rounded-md p-1  bg-hermit-grey-700`}>
         
           <div className='pb-1 flex space-x-2'>
@@ -312,11 +311,18 @@ const History = () => {
   const [refiner, setRefiner] = useState(() => I)
   // console.log(values(blocks))
   return (
-    <section className={`flex flex-col space-y-1 pt-4`}>
-      <BlobCollection blocks={refiner(values(blocks))} />
 
-      <BlockRefiner blocks={values(blocks)} setRefiner={setRefiner} />
-    </section>
+    <div className='h-full w-full grid grid-rows-bottomBar'>
+
+      <section className={`flex flex-col space-y-1 pt-4     row-start-1 row-end-2 overflow-scroll`}>
+        <BlobCollection blocks={refiner(values(blocks))} />
+      </section>
+
+      <div className='row-start-2 row-end-3 overflow-hidden'> 
+        <BlockRefiner blocks={values(blocks)} setRefiner={setRefiner} />
+      </div>
+
+    </div>
   )
 }
 

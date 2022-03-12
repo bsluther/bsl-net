@@ -34,7 +34,9 @@ module.exports = {
       gridTemplateRows: {
         'container': '5rem auto',
         'mainHeader': '2rem 1fr',
-        'mobileNav': '1fr 3rem'
+        'mobileNav': '1fr 3rem',
+        'mobileLayout': '2rem 1fr 4rem 3rem',
+        'bottomBar': '1fr 4rem'
       },
       gridTemplateColumns: {
         mainLarge: '500px auto'

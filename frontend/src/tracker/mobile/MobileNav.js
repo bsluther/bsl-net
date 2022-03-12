@@ -33,8 +33,8 @@ const MobileNav = ({ handleNavClick }) => {
   return (
     <section
       className={`
-        fixed bottom-0 left-0 h-12
-        w-full row-start-2 row-span-1 col-start-1 col-span-1
+        fixed bottom-0 left-0
+        w-full h-12
         flex justify-around pt-1
         bg-hermit-grey-400 border-t border-hermit-grey-900
       `} 
