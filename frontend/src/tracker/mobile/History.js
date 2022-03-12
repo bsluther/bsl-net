@@ -310,7 +310,7 @@ const History = () => {
 
     <div className='h-full w-full grid grid-rows-bottomBar'>
 
-      <section className={`flex flex-col space-y-1 pt-4     row-start-1 row-end-2 overflow-scroll`}>
+      <section className={`row-start-1 row-end-2 overflow-scroll`}>
         <BlobCollection blocks={refiner(values(blocks))} />
       </section>
 
