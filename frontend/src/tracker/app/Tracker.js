@@ -8,7 +8,7 @@ import { CategoryEditor } from '../category/categoryEditor'
 import { getCategoriesF, getUserBlocksF } from '../dbRequests'
 import { foldToIdObj } from '../functions'
 import { Create } from '../mobile/Create'
-import { History } from '../mobile/History'
+import { History } from '../mobile/History2'
 import { MobileNav } from '../mobile/MobileNav'
 
 const trackerUserAtom = atom({

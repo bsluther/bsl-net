@@ -1,6 +1,8 @@
 import { assoc, find, findIndex, prop, update, replace, reduce } from 'ramda'
 import { v4 as uuid } from 'uuid'
 
+const isTypeof = typeStr => x => typeof x === typeStr
+
 /*****  *****/
 // OLD, based on an array
 const findCategoryById = id => cats => find(cat => prop('_id')(cat) === id)(cats)
@@ -34,6 +36,7 @@ const foldToIdObj = reduce((acc, x) => assign(acc)(keyById(x)))
                           ({})
 
 /*****  *****/
+
 const assocCatNameToBlock = categories => block => {
      const catId = prop('category')(block)
      const cat = prop(catId)(categories)
@@ -46,4 +49,4 @@ const assocCatNameToBlock = categories => block => {
 /*****  *****/
 
 
-export { assocName, findIndexById, updateById, snakeToSpaced, blcId, catId, foldToIdObj, assocCatNameToBlock }
+export { assocName, findIndexById, updateById, snakeToSpaced, blcId, catId, foldToIdObj, assocCatNameToBlock, isTypeof }
