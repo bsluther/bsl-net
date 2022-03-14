@@ -2,6 +2,10 @@ import { assoc, find, findIndex, prop, update, replace, reduce } from 'ramda'
 import { v4 as uuid } from 'uuid'
 
 const isTypeof = typeStr => x => typeof x === typeStr
+const log = x => {
+  console.log('LOG: ', x)
+  return x
+}
 
 /*****  *****/
 // OLD, based on an array
@@ -49,4 +53,4 @@ const assocCatNameToBlock = categories => block => {
 /*****  *****/
 
 
-export { assocName, findIndexById, updateById, snakeToSpaced, blcId, catId, foldToIdObj, assocCatNameToBlock, isTypeof }
+export { assocName, findIndexById, updateById, snakeToSpaced, blcId, catId, foldToIdObj, assocCatNameToBlock, isTypeof, log }

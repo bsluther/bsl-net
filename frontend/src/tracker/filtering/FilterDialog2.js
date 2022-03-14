@@ -87,7 +87,6 @@ const ComparatorPicker = ({ accessor, comparator, setComparator }) => {
 const RelationPicker = ({ relations, relation, setRelation, children }) => {
 
   useEffect(() => {
-    console.log('useeffect !relation', !relation)
     if (!relation) {
       setRelation(fromMaybe('')(head(relations)))
     }
@@ -148,7 +147,6 @@ const FilterDialog = ({ filter, setFilter, handleCancel, handleSave }) => {
   const setComparator = useCallback(x => setFilter(assoc('comparator')(x)), [setFilter])
   const setRelation = useCallback(x => setFilter(assoc('relation')(x)), [setFilter])
 
-  console.log('fitler', filter)
   return (
     <div className={`fixed top-1/3 left-1/2 -translate-x-1/2
       min-w-max max-w-11/12 h-max p-2 space-y-4

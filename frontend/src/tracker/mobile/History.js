@@ -1,13 +1,15 @@
 import { useAtom } from 'jotai'
-import { get } from 'sanctuary'
-import { map, values, dissoc, assoc } from 'ramda'
-import { useCallback, useEffect, useState } from 'react'
-import { namedBlocks2Atom } from '../atoms'
+import { assoc, dissoc, map, values } from 'ramda'
+import { useCallback, useState } from 'react'
+import { get, reduce, concat, joinWith, pipe, prop, fromMaybe } from 'sanctuary'
+import { categoriesAtom, namedBlocks2Atom } from '../atoms'
 import { blockStart } from '../block/blockData'
+import { toFormat } from '../dateTime/pointfree'
 import { FilterDialog } from '../filtering/FilterDialog2'
 import { useFilters } from '../filtering/useFilters'
+import { isTypeof, log } from '../functions'
+import { PlusSvg } from '../svg'
 import { BlockBlob } from './BlockBlob'
-import { isTypeof } from '../functions'
  
 const BlobCollection = ({ blocks }) => {
   return (
@@ -19,18 +21,79 @@ const BlobCollection = ({ blocks }) => {
   )
 }
 
-const FilterBlob = ({ filterConfig, handleStartEditing }) => {
+const relationSymbolHash = {
+  lte: '≤',
+  gte: '≥',
+  include: '=',
+  exclude: '≠'
+  // include: '∈',
+  // exclude: '∉'
+}
+
+const RelationSymbol = ({ relation }) => {
 
   return (
-    <div
-      className={`border border-hermit-grey-400 rounded-md px-1`}
-    >{filterConfig.accessor}</div>
+    <span className='w-max h-max'>
+      {relationSymbolHash[relation]}
+    </span>
+  )
+}
+
+// accessor lets us know what the data type is
+// comparator is the actual data which we need to process somehow
+const ComparatorSpan = ({ accessor, comparator }) => {
+  const [categories] = useAtom(categoriesAtom)
+  const catIdToName = categories => id => pipe([
+    get(isTypeof('object'))(id),
+    map(prop('name')),
+    fromMaybe('')
+  ])(categories)
+
+  if (accessor === 'date') {
+    return (
+      <span>
+        {toFormat('M/d/yy')(comparator)}
+      </span>
+    )
+  }
+
+  const ellipsize = str =>
+    str.length > 3
+      ? concat(str.slice(0, 3))('...')
+      : str
+
+  if (accessor === 'category') {
+    // console.log('!!!', map(pipe([catIdToName(categories), ellipsize]))(comparator))
+    return (
+      <span>
+        {joinWith(', ')(map(pipe([catIdToName(categories), ellipsize]))(comparator))}
+      </span>
+    )
+  }
+
+  return <></>
+}
+
+const FilterBlob = ({ filterConfig, handleStartEditing }) => {
+  
+  return (
+    <div className='border border-hermit-grey-900 text-hermit-grey-400 rounded-md px-1 space-x-1 flex justify-center'>
+      {/* <div
+        className={``}
+      >{filterConfig.accessor}</div> */}
+      {/* <div className='flex'> */}
+        <span>{filterConfig.accessor}</span>
+        <RelationSymbol relation={filterConfig.relation} />
+        {filterConfig.comparator && filterConfig.accessor && 
+          <ComparatorSpan comparator={filterConfig.comparator} accessor={filterConfig.accessor}/>
+        }
+      {/* </div> */}
+    </div>
   )
 }
 
 const SettingsBar = ({ filters, createFilter, setFilters }) => {
   const [editingFilterId, setEditingFilterId] = useState()
-  console.log('editingfilterid', editingFilterId)
   
   const setFilter = useCallback(arg => {
     if (typeof arg === 'function') {
@@ -48,19 +111,24 @@ const SettingsBar = ({ filters, createFilter, setFilters }) => {
   , [setEditingFilterId])
 
   return (
-    <div className={`min-w-full w-max h-12 py-2 flex flex-col items-start 
+    <div className={`min-w-full w-max h-max py-2 flex flex-col items-start 
     bg-hermit-grey-700 border-b border-hermit-grey-900`}>
       <div className={`flex w-max px-2 space-x-2 overflow-x-scroll`}>
-        <button 
-          className={`bg-hermit-grey-900 text-hermit-grey-400 w-max rounded-md px-2 sticky`}
+
+        <span>Filters:</span>
+
+        {map(cfg => <FilterBlob filterConfig={cfg} key={cfg.id} />)
+            (values(filters))}
+
+        <PlusSvg 
+          className={`bg-hermit-grey-900 text-hermit-grey-400 w-6 h-6 rounded-md`}
           onClick={() => {
             const newFilterId = createFilter()
             setEditingFilterId(newFilterId)
           }}
-        >add filter</button>
+        ></PlusSvg>
 
-        {map(cfg => <FilterBlob filterConfig={cfg} />)
-            (values(filters))}
+        
       </div>
 
       
@@ -87,16 +155,17 @@ const History = () => {
   const [createFilter, filters, setFilters, filterFn] = useFilters({ 
     date: {
       accessor: blockStart,
+      comparatorType: 'CategoryID',
       accessorKey: 'date',
       licitRelations: ['gte', 'lte']
     }, 
     category: {
       accessor: get(isTypeof('string'))('category'),
+      comparatorType: 'CategoryID',
       accessorKey: 'category',
       licitRelations: ['include', 'exclude']
     } 
   })
-  console.log(filterFn(values(blocks)))
 
   return (
     <section className='flex flex-col basis-full w-full h-full space-y-2'>

@@ -27,7 +27,6 @@ const constructFilter = accessorStr => relationStr => ({
 const relationFnFromCfg = pipe([
   get(isTypeof('string'))
      ('relation'),
-  log,
   chain(flip(get(isTypeof('function')))
             (relationHash)),
 ])
@@ -55,10 +54,13 @@ const assembleArgs = accessorSettings => cfg => {
   return lift3(createPredicate)(maybeAcc)(maybeRel)(maybeComp)
 }
 
+
+
 const useFilters = accessorSettings => {
   const [filterConfigs, setFilterConfigs] = useState({})
 
   const preds = justs(map(assembleArgs(accessorSettings))(values(filterConfigs)))
+
   const filterFn = filter(data =>
     reduce(acc => pred => and(pred(data))(acc))
           (true)
