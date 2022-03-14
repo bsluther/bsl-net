@@ -1,22 +1,17 @@
 import { useAtom } from 'jotai'
+import { get } from 'sanctuary'
+import { map, values, dissoc, assoc } from 'ramda'
+import { useCallback, useEffect, useState } from 'react'
 import { namedBlocks2Atom } from '../atoms'
-import { blockStart, maybeStart } from '../block/blockData'
-import { maybe, I, pipe } from 'sanctuary'
-import { useEffect, useState } from 'react'
-import { ChevronDoubleDownSvg, PlusSvg } from '../svg'
-import { ascend, descend, prop, sortWith, map, values, append, gte, lte, filter, addIndex } from 'ramda'
-import { DateTime } from 'luxon'
+import { blockStart } from '../block/blockData'
+import { FilterDialog } from '../filtering/FilterDialog2'
+import { useFilters } from '../filtering/useFilters'
 import { BlockBlob } from './BlockBlob'
-import { filterConfigsAtom } from '../state/filterAtoms'
-import { Filterer } from '../filtering/FilterDialog'
-const mapIx = addIndex(map)
-
-
-
-
+import { isTypeof } from '../functions'
+ 
 const BlobCollection = ({ blocks }) => {
   return (
-    <div className={`flex flex-col items-center justify-center px-1 space-y-1`}>
+    <div className={`flex flex-col w-full items-center justify-center px-1 space-y-1`}>
       {map(blc => 
             <BlockBlob block={blc} key={blc._id} />)
           (values(blocks))}
@@ -24,131 +19,89 @@ const BlobCollection = ({ blocks }) => {
   )
 }
 
-const CategoryFilter = ({ filterConfig }) => {
+const FilterBlob = ({ filterConfig, handleStartEditing }) => {
+
   return (
-    <div>
-      categoryFilter...
-    </div>
+    <div
+      className={`border border-hermit-grey-400 rounded-md px-1`}
+    >{filterConfig.accessor}</div>
   )
 }
 
-const DateFilter = ({ filterConfig }) => {
-  return (
-    <div>
-      dateFilter...
-    </div>
-  )
-}
+const SettingsBar = ({ filters, createFilter, setFilters }) => {
+  const [editingFilterId, setEditingFilterId] = useState()
+  console.log('editingfilterid', editingFilterId)
+  
+  const setFilter = useCallback(arg => {
+    if (typeof arg === 'function') {
+      setFilters(prev => assoc(editingFilterId)
+                              (arg(prev[editingFilterId]))
+                              (prev))
+    }
+    if (typeof arg === 'object') {
+      setFilters(assoc(editingFilterId)(arg))
+    }
+  }, [setFilters, editingFilterId])
 
-
-
-const AddFilter = () => {
-  const [editing, setEditing] = useState(false)
-
-  if (editing) {
-    return (
-      <Filterer endEditing={() => setEditing(false)} />
-    )
-  }
-
-  return (
-    <div 
-      className='w-max border border-hermit-grey-900 rounded-md'
-      onClick={() => setEditing(true)}
-    >
-      <PlusSvg />
-    </div>
-  )
-}
-
-
-const predicateHash = {
-    gte: param => pipe([
-      blockStart,
-      maybe(false)(lte(DateTime.fromISO(param)))
-    ]),
-    lte: param => pipe([
-      blockStart,
-      maybe(false)(gte(DateTime.fromISO(param)))
-    ])
-  }
-
-const configToFilter = cfg => blcs => filter(predicateHash[cfg.logic](cfg.parameter))
-                                            (blcs)
-
-const BlockRefiner = ({ setRefiner }) => {
-  const [sortBy, setSortBy] = useState('date')
-  const [sortDirection, setSortDirection] = useState('ascending')
-  const [filterConfigs] = useAtom(filterConfigsAtom)
-  const [blocks] = useAtom(namedBlocks2Atom)
-
-  useEffect(() => {
-    const direction = sortDirection === 'ascending' ? ascend : descend
-    const sorter = sortWith([
-      sortBy === 'date'
-        ? direction(maybeStart)
-        : direction(prop('categoryName')),
-      direction(maybeStart),
-      direction(prop('categoryName')) 
-    ])
-
-    const filterer = pipe(
-      filterConfigs.length === 0 ? [I] : map(configToFilter)(filterConfigs)
-    )
-
-    setRefiner(() => pipe([filterer, sorter]))
-  }, [sortDirection, sortBy, setRefiner, filterConfigs, blocks])
-
+  const handleSaveFilter = useCallback(() => 
+    setEditingFilterId(null)
+  , [setEditingFilterId])
 
   return (
-    <div 
-      className='bg-hermit-grey-700 flex flex-col border-b border-hermit-grey-900  w-full h-full'>
-      <div className={`self-center w-max rounded-md p-1  bg-hermit-grey-700`}>
+    <div className={`min-w-full w-max h-12 py-2 flex flex-col items-start 
+    bg-hermit-grey-700 border-b border-hermit-grey-900`}>
+      <div className={`flex w-max px-2 space-x-2 overflow-x-scroll`}>
+        <button 
+          className={`bg-hermit-grey-900 text-hermit-grey-400 w-max rounded-md px-2 sticky`}
+          onClick={() => {
+            const newFilterId = createFilter()
+            setEditingFilterId(newFilterId)
+          }}
+        >add filter</button>
+
+        {map(cfg => <FilterBlob filterConfig={cfg} />)
+            (values(filters))}
+      </div>
+
       
-        <div className='pb-1 flex space-x-2'>
-          <span>sort by:</span>
-          
-          <select 
-            value={sortBy}
-            onChange={e => setSortBy(e.target.value)}
-            className={`rounded-md border border-hermit-grey-900 bg-hermit-grey-700 outline-none`}
-          >
-            <option>category</option>
-            <option>date</option>
-          </select>
-          
-          <ChevronDoubleDownSvg 
-            className={`transition ease-in-out duration-200 w-5 h-5 
-              ${sortDirection === 'ascending' ? '' : 'rotate-180' }
-            `}
-            onClick={() => setSortDirection(prev => prev === 'descending' ? 'ascending' : 'descending')}
+
+      {editingFilterId && 
+
+          <FilterDialog 
+            filter={filters[editingFilterId]}
+            setFilter={setFilter}
+            handleCancel={() => {
+              setFilters(dissoc(editingFilterId))
+              setEditingFilterId(null)
+            }}
+            handleSave={handleSaveFilter}
           />
-        </div>
 
-      </div>
-
-      <div className='relative flex px-2 space-x-2 self-center w-max'>
-        <span>filters:</span>
-
-        <div>
-          {append(<AddFilter key='addFilter' />)
-                  (mapIx((cfg, ix) => cfg.type === 'date' 
-                        ? <DateFilter filterConfig={cfg} key={ix} /> 
-                        : <CategoryFilter filterConfig={cfg} key={ix} />)
-                      (filterConfigs))}
-        </div>
-      </div>
+      }
     </div>
   )
 }
 
 const History = () => { 
   const [blocks] = useAtom(namedBlocks2Atom)
-  const [refiner, setRefiner] = useState(() => I)
+  const [createFilter, filters, setFilters, filterFn] = useFilters({ 
+    date: {
+      accessor: blockStart,
+      accessorKey: 'date',
+      licitRelations: ['gte', 'lte']
+    }, 
+    category: {
+      accessor: get(isTypeof('string'))('category'),
+      accessorKey: 'category',
+      licitRelations: ['include', 'exclude']
+    } 
+  })
+  console.log(filterFn(values(blocks)))
+
   return (
     <section className='flex flex-col basis-full w-full h-full space-y-2'>
-      <BlockRefiner blocks={values(blocks)} setRefiner={setRefiner} />
-      <BlobCollection blocks={refiner(values(blocks))} />
+      <SettingsBar filters={filters} createFilter={createFilter} setFilters={setFilters} />
+      <BlobCollection blocks={filterFn(values(blocks))} />
     </section>
           
 

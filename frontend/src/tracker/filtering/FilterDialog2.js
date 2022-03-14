@@ -52,7 +52,6 @@ const CategoriesPicker = ({ valueArray = [], setComparator }) => {
 }
 
 const DatePicker = ({ setComparator, dt, ...props}) => {
-  console.log('dt', dt)
   const iso = dt ? dt.toISODate() : ''
 
   useEffect(() => {
@@ -139,6 +138,12 @@ const AccessorPicker = ({ keys, accessor, setAccessor }) => {
   )
 }
 
+const Button = ({ children, ...props }) => 
+  <button 
+    className={`bg-hermit-grey-700 border border-hermit-grey-400 px-1 rounded-sm`}
+    {...props}
+  >{children}</button>
+
 const FilterDialog = ({ filter, setFilter, handleCancel, handleSave }) => {
   const setComparator = useCallback(x => setFilter(assoc('comparator')(x)), [setFilter])
   const setRelation = useCallback(x => setFilter(assoc('relation')(x)), [setFilter])
@@ -146,7 +151,7 @@ const FilterDialog = ({ filter, setFilter, handleCancel, handleSave }) => {
   console.log('fitler', filter)
   return (
     <div className={`fixed top-1/3 left-1/2 -translate-x-1/2
-      w-11/12 h-max p-2 space-y-4
+      min-w-max max-w-11/12 h-max p-2 space-y-4
       flex flex-col items-center
       text-hermit-grey-400 bg-hermit-grey-900 border border-hermit-grey-400 rounded-md
     `}>
@@ -172,7 +177,10 @@ const FilterDialog = ({ filter, setFilter, handleCancel, handleSave }) => {
           /> 
         </RelationPicker>}
 
-      <button onClick={handleCancel}>cancel</button>
+      <div className={`flex max-w-full min-w-max space-x-12`}>
+        <Button onClick={handleCancel}>Cancel</Button>
+        <Button onClick={handleSave}>Set Filter</Button>
+      </div>
     </div>
   )
 }

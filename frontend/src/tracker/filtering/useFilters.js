@@ -22,11 +22,6 @@ const constructFilter = accessorStr => relationStr => ({
   id: uuid()
 })
 
-const strAtProp = cfg => prop => typeof cfg[prop] === 'string'
-const isFilledWithStrings = cfg => 
-  reduce(acc => x => and(strAtProp(cfg)(x))(acc))
-        (true)
-        (['accessor', 'relation', 'comparator', 'id'])
 
 // relationFnFromCfg :: FilterConfig -> Maybe (a -> a -> Boolean)
 const relationFnFromCfg = pipe([
@@ -57,19 +52,11 @@ const assembleArgs = accessorSettings => cfg => {
   const maybeRel = relationFnFromCfg(cfg)
   const maybeComp = comparatorFromCfg(cfg)
   const maybeAcc = accessorFnFromCfg(accessorSettings)(cfg)
-  // console.log('maybeRel', maybeRel)
-  // console.log('maybeComp', maybeComp)
-  // console.log('maybeAcc', maybeAcc(accessorSettings))
   return lift3(createPredicate)(maybeAcc)(maybeRel)(maybeComp)
 }
 
 const useFilters = accessorSettings => {
   const [filterConfigs, setFilterConfigs] = useState({})
-
-  // console.log(map(isFilledWithStrings)(filterConfigs))
-  // console.log('relationFnFromCfg', map(relationFnFromCfg)(values(filterConfigs)))
-  // console.log('comparatorFromCfg', map(comparatorFromCfg)(values(filterConfigs)))
-  // console.log('accessorFnFromCfg', map(accessorFnFromCfg(accessorSettings))(values(filterConfigs)))
 
   const preds = justs(map(assembleArgs(accessorSettings))(values(filterConfigs)))
   const filterFn = filter(data =>
@@ -77,8 +64,6 @@ const useFilters = accessorSettings => {
           (true)
           (preds)
   )
-
-  // console.log(filterConfigs)
 
   const createFilter = useCallback(() => {
     const maybeDefaultAccessorSettings = head(values(accessorSettings))
