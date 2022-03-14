@@ -5,7 +5,7 @@ import { get, reduce, concat, joinWith, pipe, prop, fromMaybe } from 'sanctuary'
 import { categoriesAtom, namedBlocks2Atom } from '../atoms'
 import { blockStart } from '../block/blockData'
 import { toFormat } from '../dateTime/pointfree'
-import { FilterDialog } from '../filtering/FilterDialog2'
+import { FilterDialog } from '../filtering/FilterDialog'
 import { useFilters } from '../filtering/useFilters'
 import { isTypeof, log } from '../functions'
 import { PlusSvg } from '../svg'
@@ -77,17 +77,15 @@ const ComparatorSpan = ({ accessor, comparator }) => {
 const FilterBlob = ({ filterConfig, handleStartEditing }) => {
   
   return (
-    <div className='border border-hermit-grey-900 text-hermit-grey-400 rounded-md px-1 space-x-1 flex justify-center'>
-      {/* <div
-        className={``}
-      >{filterConfig.accessor}</div> */}
-      {/* <div className='flex'> */}
-        <span>{filterConfig.accessor}</span>
-        <RelationSymbol relation={filterConfig.relation} />
-        {filterConfig.comparator && filterConfig.accessor && 
-          <ComparatorSpan comparator={filterConfig.comparator} accessor={filterConfig.accessor}/>
-        }
-      {/* </div> */}
+    <div 
+      className='border border-hermit-grey-900 text-hermit-grey-400 rounded-md px-1 space-x-1 flex justify-center'
+      onClick={() => handleStartEditing(filterConfig.id)}
+    >
+      <span>{filterConfig.accessor}</span>
+      <RelationSymbol relation={filterConfig.relation} />
+      {filterConfig.comparator && filterConfig.accessor && 
+        <ComparatorSpan comparator={filterConfig.comparator} accessor={filterConfig.accessor}/>
+      }
     </div>
   )
 }
@@ -117,7 +115,7 @@ const SettingsBar = ({ filters, createFilter, setFilters }) => {
 
         <span>Filters:</span>
 
-        {map(cfg => <FilterBlob filterConfig={cfg} key={cfg.id} />)
+        {map(cfg => <FilterBlob filterConfig={cfg} key={cfg.id} handleStartEditing={setEditingFilterId} />)
             (values(filters))}
 
         <PlusSvg 

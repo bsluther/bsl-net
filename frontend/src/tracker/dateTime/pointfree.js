@@ -21,6 +21,9 @@ const toObject = dt => dt.toObject()
 // isDuration :: Duration -> Boolean
 const isDuration = dur => Duration.isDuration(dur)
 
+// isDateTime :: a -> Boolean
+const isDateTime = x => DateTime.isDateTime(x)
+
 // luxonPlus :: Luxon -> Luxon -> Luxon
 const luxonPlus = x1 => x2 => x1.plus(x2)
 
@@ -39,5 +42,6 @@ export {
   luxonMinus,
   luxonPlus,
   toFormat,
-  toObject
+  toObject,
+  isDateTime
 }
