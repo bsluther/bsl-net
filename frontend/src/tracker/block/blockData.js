@@ -35,6 +35,7 @@ const blockConstructor = user => ({
     date: DateTime.now().toISODate(),
     time: DateTime.now().set({ milliseconds: 0, seconds: 0 }).toISOTime({ suppressMilliseconds: true, suppressSeconds: true, includeOffset: false })
   },
+  notes: '',
   tags: []
 })
 
@@ -78,6 +79,7 @@ const blockDuration = blc =>
 
 const blockStartedAfter = dt => blc =>
   maybe(false)(gt(dt))(blockStart(blc))
+
 
 const blockInRange = dt1 => dt2 => blc =>
   maybe(false)(inRange(dt1)(dt2))(blockStart(blc))

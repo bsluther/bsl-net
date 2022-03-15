@@ -3,14 +3,18 @@ import { categoriesAtom, targetBlockAtom, createNewDraftBlockAtom } from '../ato
 import * as L from 'partial.lenses'
 import { DateTime } from 'luxon'
 import { CategoriesDropdown } from '../category/categoriesDropdown'
-import { values } from 'ramda'
-import { map, addIndex, append } from 'ramda'
+import { map, addIndex, append, values, propOr, remove, dissoc } from 'ramda'
 import { nowSansSeconds } from '../dateTime/functions'
 import { useEffect, useRef, useState } from 'react'
 import useFontSize from '../../hooks/useFontSize'
 import { PlusSvg } from '../svg'
-import { propOr } from 'ramda'
-import { remove } from 'ramda'
+import { validators } from './blockValidation'
+import { validate } from '../../Villa/Validation'
+import { pipe } from 'sanctuary'
+import { fork } from 'fluture'
+import { postBlockF } from '../dbRequests'
+
+
 const mapIx = addIndex(map)
 
 const DatePicker = ({ isoDate = DateTime.now().toISODate(), handler = x => x }) => {
@@ -138,16 +142,69 @@ const Field = ({ label, children }) => {
   )
 }
 
+const assocFlatTimes = obj => obj && obj.start && obj.end && 
+  ({
+    ...obj,
+    startDate: obj.start.date,
+    startTime: obj.start.time,
+    endDate: obj.end.date,
+    endTime: obj.end.time,
+  })
+
+const dissocStartAndEnd = pipe([
+  dissoc('start'),
+  dissoc('end')
+])
+
+const flattenTimes = pipe([
+  assocFlatTimes,
+  dissocStartAndEnd
+])
+
+// try mapping start: { time, date } into shallow startTime startDate properties
+// could even write a generic functiont to do so.... 
+// probably use mapObjIndexed
 
 const BlockEditor = () => {
   const [block, setBlock] = useAtom(targetBlockAtom)
   const [categories] = useAtom(categoriesAtom)
   const [, createNewDraftBlock] = useAtom(createNewDraftBlockAtom)
+  // console.log('flat', flattenTimes(block))
+  const validation = validate(validators)(flattenTimes(block))
+  const isInvalid = validation.isFail
+  console.log('isInvalid', isInvalid)
+  console.log('validation', validation)
 
   useEffect(() => {
     createNewDraftBlock()
   }, [createNewDraftBlock])
+
+  const categoryHandler = catId => 
+    setBlock(L.set(['category'])
+                  (catId)
+                  (block))
   
+  const notesHandler = str =>
+    setBlock(L.set(['notes'])
+                  (str)
+                  (block))
+
+  const dateTimeHandler = position => type => iso => 
+    setBlock(L.set([position, type])
+                  (iso)
+                  (block))
+
+  const handleSave = blc =>
+    fork(err => console.log('Block post failed!', err))
+        (res => {
+          createNewDraftBlock()
+          // if (res.insertedId === editingId) {
+          //   handleSaveBlock(editingId)
+          //   syncBlocks()
+          // }
+        })
+        (postBlockF(dissoc('isDraft')(blc)))
+
   return (
     <section className={`flex flex-col space-y-3`}>
       <Field label='Category'>
@@ -155,27 +212,29 @@ const BlockEditor = () => {
           className={`bg-hermit-aqua-500 border border-hermit-grey-900 rounded-sm outline-none`}
           nameIdObjs={values(categories)}
           selectedId={block.category}
-          selectHandler={id => setBlock(L.set(['category'])
-                                             (id)
-                                             (block))}
+          selectHandler={categoryHandler}
           title=''
         />
       </Field>
       <Field label='Start'>
         <DatePicker 
           isoDate={L.get(['start', 'date'])(block)}
+          handler={dateTimeHandler('start')('date')}
         />
         <TimePicker 
           isoTime={L.get(['start', 'time'])(block)}
+          handler={dateTimeHandler('start')('time')}
         />
       </Field>
 
       <Field label='End'>
         <DatePicker 
           isoDate={L.get(['end', 'date'])(block)}
+          handler={dateTimeHandler('end')('date')}
         />
         <TimePicker 
           isoTime={L.get(['end', 'time'])(block)}
+          handler={dateTimeHandler('end')('time')}
         />
       </Field>
 
@@ -183,7 +242,7 @@ const BlockEditor = () => {
         <textarea 
           className={`w-3/4 max-h-24 bg-hermit-aqua-500 focus:bg-hermit-grey-400 border border-hermit-grey-900 rounded-sm outline-none`}
           value={propOr('')('notes')(block)}
-          onChange={e => setBlock(L.set(['notes'])(e.target.value)(block))}
+          onChange={e => notesHandler(e.target.value)}
         />
       </Field>
 
@@ -212,8 +271,17 @@ const BlockEditor = () => {
       </Field>
       
       <div className='self-center grow space-x-4'>
-        <button className={`text-hermit-grey-400 bg-hermit-grey-900 rounded-md w-max px-2`} onClick={createNewDraftBlock}>Discard</button>
-        <button className={`text-hermit-grey-400 bg-hermit-grey-900 rounded-md w-max px-2`}>Save</button>
+        <button 
+          className={`text-hermit-grey-400 bg-hermit-grey-900 rounded-md w-max px-2`} 
+          onClick={createNewDraftBlock}
+        >Discard</button>
+        <button
+          disabled={isInvalid}
+          className={`bg-hermit-grey-900 rounded-md w-max px-2
+            ${isInvalid ? 'text-hermit-grey-700' : 'text-hermit-grey-400'}
+          `}
+          onClick={() => handleSave(block)}
+        >Save</button>
       </div>
       
 
@@ -222,7 +290,7 @@ const BlockEditor = () => {
 }
 
 const Create = () => {
-  return(
+  return (
     <section autoFocus className={`h-full flex flex-col justify-center overflow-scroll`}>
       <BlockEditor />
     </section>

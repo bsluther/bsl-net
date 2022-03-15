@@ -165,6 +165,8 @@ const History = () => {
     } 
   })
 
+  console.log('blcs', blocks)
+
   return (
     <section className='flex flex-col basis-full w-full h-full space-y-2'>
       <SettingsBar filters={filters} createFilter={createFilter} setFilters={setFilters} />

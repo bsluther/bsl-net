@@ -12,7 +12,7 @@ import { Category } from './category/categoryData'
 const trackerAtom = atom({
   user: {
     users: ['ari', 'bsluther', 'dolan', 'moontiger', 'whittlesey', 'sgluther'],
-    currentUser: 'noCurrentUser'
+    currentUser: 'bsluther'
   },
   editor: { target: 'draft' },
   windows: {
@@ -27,7 +27,7 @@ const logoutAtom = atom(
   null,
   (get, set) => {
     set(categoriesAtom, {})
-    set(blocksAtom, [])
+    set(blocks2Atom, {})
     set(trackerAtom, L.set(['editor', 'target'], 'draft', get(trackerAtom)))
     set(trackerAtom, L.set(['user', 'currentUser'], 'noCurrentUser', get(trackerAtom)))
   }
@@ -55,60 +55,59 @@ const changeUserAtom = atom(
 
 /***** BLOCKS *****/
 
-const blocksAtom = atom([])
+// const blocksAtom = atom([])
 
-const namedBlocksAtom = atom(
-  get => map(blc => assocCatNameToBlock(get(categoriesAtom))(blc))
-            (get(blocksAtom)),
-  (_get, set, blks) => set(blocksAtom, blks)
-)
+// const namedBlocksAtom = atom(
+//   get => map(blc => assocCatNameToBlock(get(categoriesAtom))(blc))
+//             (get(blocksAtom)),
+//   (_get, set, blks) => set(blocksAtom, blks)
+// )
 
-const saveBlockAtom = atom(
-  null,
-  (get, set, blcId) => {
-    // Set editorTarget to the ID of the saved block
-    set(trackerAtom,
-        L.set(
-          ['editor', 'target'],
-          blcId,
-          get(trackerAtom)
-        )
-    )
+// const saveBlockAtom = atom(
+//   null,
+//   (get, set, blcId) => {
+//     // Set editorTarget to the ID of the saved block
+//     set(trackerAtom,
+//         L.set(
+//           ['editor', 'target'],
+//           blcId,
+//           get(trackerAtom)
+//         )
+//     )
 
-    // Remove isDraft property from the saved block
-    set(blocksAtom,
-        L.set(
-          [L.find(x => L.get([Block.id], x) === blcId), 'isDraft'],
-          undefined,
-          get(blocksAtom)
-        ))
+//     // Remove isDraft property from the saved block
+//     set(blocksAtom,
+//         L.set(
+//           [L.find(x => L.get([Block.id], x) === blcId), 'isDraft'],
+//           undefined,
+//           get(blocksAtom)
+//         ))
 
-  }
-)
+//   }
+// )
 
-const deriveTargetBlockAtom = str => blcsAtom =>
-  str === 'draft'
-    ? atom(
-      get => find(blc => blc.isDraft)(get(blcsAtom)),
-      (get, set, arg) => set(blcsAtom,
-                              updateById(arg)
-                                        (L.get(Block.id)(arg))
-                                        (get(blcsAtom)))
-    )
-    : atom(
-      get => find(blc => L.get(Block.id)(blc) === str)(get(blcsAtom)),
-      (get, set, arg) => set(blcsAtom,
-                          updateById(arg)
-                                    (L.get(Block.id)(arg))
-                                    (get(blcsAtom)))
-    )
+// const deriveTargetBlockAtom = str => blcsAtom =>
+//   str === 'draft'
+//     ? atom(
+//       get => find(blc => blc.isDraft)(get(blcsAtom)),
+//       (get, set, arg) => set(blcsAtom,
+//                               updateById(arg)
+//                                         (L.get(Block.id)(arg))
+//                                         (get(blcsAtom)))
+//     )
+//     : atom(
+//       get => find(blc => L.get(Block.id)(blc) === str)(get(blcsAtom)),
+//       (get, set, arg) => set(blcsAtom,
+//                           updateById(arg)
+//                                     (L.get(Block.id)(arg))
+//                                     (get(blcsAtom)))
+//     )
 
 
 
 /***** BLOCKS V2 *****/
 
 const blocks2Atom = atom ({})
-
 
 const namedBlocks2Atom = atom(
   get => {
@@ -148,15 +147,22 @@ const targetBlockAtom = atom(
     if (targetId === 'draft') {
       return get(draftBlockAtom)
     }
-    return prop(targetId)(get(namedBlocks2Atom))
+    return prop(targetId)
+               (get(namedBlocks2Atom))
   },
+
   (get, set, blc) => {
     const targetId = get(targetBlockIdAtom)
-
+    console.log('TARGETID:', targetId)
     if (targetId === 'draft') {
+      console.log('target id', targetId)
+      console.log('blc', blc)
       set(draftBlockAtom, blc)
     }
-    set(namedBlocks2Atom, blcs => assoc(targetId)(blc)(blcs))
+    if (targetId !== 'draft') {
+      set(namedBlocks2Atom, assoc(targetId)(blc)(get(namedBlocks2Atom)))
+    }
+    
   }
 )
 
@@ -221,7 +227,6 @@ const deleteCategoryAtom = atom(
   }
 )
 
-// const deriveTargetCategoryAtom = targetId =>
 
 
 
@@ -242,14 +247,14 @@ const deleteCategoryAtom = atom(
 
 
 export {
-  trackerAtom,
-  blocksAtom,
-  namedBlocksAtom,
+  // trackerAtom,
+  // blocksAtom,
+  // namedBlocksAtom,
   categoriesAtom,
-  deriveTargetBlockAtom,
-  loginAtom,
-  logoutAtom,
-  saveBlockAtom,
+  // deriveTargetBlockAtom,
+  // loginAtom,
+  // logoutAtom,
+  // saveBlockAtom,
   changeUserAtom,
   targetCategoryAtom,
   targetCategoryIdAtom,
