@@ -1,13 +1,13 @@
 import { useAtom } from 'jotai'
 import { assoc, dissoc, map, values } from 'ramda'
 import { useCallback, useState } from 'react'
-import { get, reduce, concat, joinWith, pipe, prop, fromMaybe } from 'sanctuary'
-import { categoriesAtom, namedBlocks2Atom } from '../atoms'
+import { get, concat, joinWith, pipe, prop, fromMaybe } from 'sanctuary'
+import { categoriesAtom, namedBlocksAtom } from '../atoms'
 import { blockStart } from '../block/blockData'
 import { toFormat } from '../dateTime/pointfree'
 import { FilterDialog } from '../filtering/FilterDialog'
 import { useFilters } from '../filtering/useFilters'
-import { isTypeof, log } from '../functions'
+import { isTypeof } from '../functions'
 import { PlusSvg } from '../svg'
 import { BlockBlob } from './BlockBlob'
  
@@ -26,8 +26,6 @@ const relationSymbolHash = {
   gte: '≥',
   include: '=',
   exclude: '≠'
-  // include: '∈',
-  // exclude: '∉'
 }
 
 const RelationSymbol = ({ relation }) => {
@@ -149,7 +147,7 @@ const SettingsBar = ({ filters, createFilter, setFilters }) => {
 }
 
 const History = () => { 
-  const [blocks] = useAtom(namedBlocks2Atom)
+  const [blocks] = useAtom(namedBlocksAtom)
   const [createFilter, filters, setFilters, filterFn] = useFilters({ 
     date: {
       accessor: blockStart,
@@ -164,8 +162,6 @@ const History = () => {
       licitRelations: ['include', 'exclude']
     } 
   })
-
-  console.log('blcs', blocks)
 
   return (
     <section className='flex flex-col basis-full w-full h-full space-y-2'>

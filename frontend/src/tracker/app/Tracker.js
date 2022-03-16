@@ -4,6 +4,7 @@ import { useCallback, useEffect } from 'react'
 import { useBreakpoint } from '../../hooks/useBreakpoint'
 import { categoriesAtom, namedBlocks2Atom } from '../atoms'
 import { BlockEditor2 } from '../block/blockEditor2'
+import useSyncBlocks from '../block/useSyncBlocks'
 import { CategoryEditor } from '../category/categoryEditor'
 import { getCategoriesF, getUserBlocksF } from '../dbRequests'
 import { foldToIdObj } from '../functions'
@@ -38,18 +39,9 @@ const navigate = label => navHash[label] ?? BrokenLink
 const Tracker = () => {
   const [userState] = useAtom(trackerUserAtom)
   const [primaryNavState, setPrimaryNavState] = useAtom(primaryNavAtom)
-  const [, setNamedBlocks2] = useAtom(namedBlocks2Atom)
   const [, setCategories] = useAtom(categoriesAtom)
-  const breakpoint = useBreakpoint()
+  const syncBlocks = useSyncBlocks()
 
-  const syncBlocks = useCallback(
-    () =>
-      fork(err => console.log('Failed to fetch blocks.', err))
-          (blcs => {
-            setNamedBlocks2(foldToIdObj(blcs))
-          })
-          (getUserBlocksF(userState.currentUser))
-  , [setNamedBlocks2, userState.currentUser])
 
   useEffect(() => {
     syncBlocks()
@@ -70,20 +62,16 @@ const Tracker = () => {
   const Navigated = navigate(primaryNavState)
 
   return (
-    // <section className={`h-full row-start-2 row-span-1 col-start-1 col-span-1`}>
- 
-
-        <>
-          <div className='row-start-2 row-end-4 h-full w-full overflow-scroll'>
-            <Navigated />
-          </div>
-          
-          
-          <div className='row-start-4 row-span-1 overflow-hidden'>
-            <MobileNav handleNavClick={label => setPrimaryNavState(label)} />
-          </div>
-        </>
-    // </section>
+    <>
+      <div className='row-start-2 row-end-4 h-full w-full overflow-scroll'>
+        <Navigated />
+      </div>
+      
+      
+      <div className='row-start-4 row-span-1 overflow-hidden'>
+        <MobileNav handleNavClick={label => setPrimaryNavState(label)} />
+      </div>
+    </>
   )
 }
 

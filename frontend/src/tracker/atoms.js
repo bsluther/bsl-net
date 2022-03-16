@@ -2,7 +2,6 @@ import { atom } from 'jotai'
 import { map, find, assoc, prop, dissoc } from 'ramda'
 import * as L from 'partial.lenses'
 import { Block } from './block/blockData'
-import { updateById, assocCatNameToBlock } from './functions'
 import { Category } from './category/categoryData'
 
 
@@ -23,11 +22,15 @@ const trackerAtom = atom({
   }
 })
 
+const currentTrackerUserAtom = atom(
+  get => get(trackerAtom).user.currentUser
+)
+
 const logoutAtom = atom(
   null,
   (get, set) => {
     set(categoriesAtom, {})
-    set(blocks2Atom, {})
+    set(blocksAtom, {})
     set(trackerAtom, L.set(['editor', 'target'], 'draft', get(trackerAtom)))
     set(trackerAtom, L.set(['user', 'currentUser'], 'noCurrentUser', get(trackerAtom)))
   }
@@ -53,65 +56,16 @@ const changeUserAtom = atom(
   }
 )
 
-/***** BLOCKS *****/
-
-// const blocksAtom = atom([])
-
-// const namedBlocksAtom = atom(
-//   get => map(blc => assocCatNameToBlock(get(categoriesAtom))(blc))
-//             (get(blocksAtom)),
-//   (_get, set, blks) => set(blocksAtom, blks)
-// )
-
-// const saveBlockAtom = atom(
-//   null,
-//   (get, set, blcId) => {
-//     // Set editorTarget to the ID of the saved block
-//     set(trackerAtom,
-//         L.set(
-//           ['editor', 'target'],
-//           blcId,
-//           get(trackerAtom)
-//         )
-//     )
-
-//     // Remove isDraft property from the saved block
-//     set(blocksAtom,
-//         L.set(
-//           [L.find(x => L.get([Block.id], x) === blcId), 'isDraft'],
-//           undefined,
-//           get(blocksAtom)
-//         ))
-
-//   }
-// )
-
-// const deriveTargetBlockAtom = str => blcsAtom =>
-//   str === 'draft'
-//     ? atom(
-//       get => find(blc => blc.isDraft)(get(blcsAtom)),
-//       (get, set, arg) => set(blcsAtom,
-//                               updateById(arg)
-//                                         (L.get(Block.id)(arg))
-//                                         (get(blcsAtom)))
-//     )
-//     : atom(
-//       get => find(blc => L.get(Block.id)(blc) === str)(get(blcsAtom)),
-//       (get, set, arg) => set(blcsAtom,
-//                           updateById(arg)
-//                                     (L.get(Block.id)(arg))
-//                                     (get(blcsAtom)))
-//     )
 
 
 
 /***** BLOCKS V2 *****/
 
-const blocks2Atom = atom ({})
+const blocksAtom = atom ({})
 
-const namedBlocks2Atom = atom(
+const namedBlocksAtom = atom(
   get => {
-    const blocks2 = get(blocks2Atom)
+    const blocks2 = get(blocksAtom)
     const categories = get(categoriesAtom)
     
     const res = map(blc => blc.category
@@ -123,7 +77,7 @@ const namedBlocks2Atom = atom(
                    (blocks2)
     return res
   },
-  (_get, set, arg) => set(blocks2Atom, arg)
+  (_get, set, arg) => set(blocksAtom, arg)
 )
 
 const targetBlockIdAtom = atom('draft')
@@ -148,19 +102,17 @@ const targetBlockAtom = atom(
       return get(draftBlockAtom)
     }
     return prop(targetId)
-               (get(namedBlocks2Atom))
+               (get(namedBlocksAtom))
   },
 
   (get, set, blc) => {
     const targetId = get(targetBlockIdAtom)
-    console.log('TARGETID:', targetId)
+
     if (targetId === 'draft') {
-      console.log('target id', targetId)
-      console.log('blc', blc)
       set(draftBlockAtom, blc)
     }
     if (targetId !== 'draft') {
-      set(namedBlocks2Atom, assoc(targetId)(blc)(get(namedBlocks2Atom)))
+      set(namedBlocksAtom, assoc(targetId)(blc)(get(namedBlocksAtom)))
     }
     
   }
@@ -247,15 +199,10 @@ const deleteCategoryAtom = atom(
 
 
 export {
-  // trackerAtom,
-  // blocksAtom,
-  // namedBlocksAtom,
-  categoriesAtom,
-  // deriveTargetBlockAtom,
-  // loginAtom,
-  // logoutAtom,
-  // saveBlockAtom,
   changeUserAtom,
+  currentTrackerUserAtom,
+
+  categoriesAtom,
   targetCategoryAtom,
   targetCategoryIdAtom,
   draftCategoryAtom,
@@ -263,9 +210,10 @@ export {
   saveDraftCategoryAtom,
   deleteCategoryAtom,
 
-  blocks2Atom,
-  namedBlocks2Atom,
+  blocksAtom,
+  namedBlocksAtom,
   targetBlockIdAtom,
   targetBlockAtom,
-  createNewDraftBlockAtom
+  createNewDraftBlockAtom,
+  draftBlockAtom
 }

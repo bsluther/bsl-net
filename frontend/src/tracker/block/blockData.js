@@ -48,7 +48,9 @@ const Block = {
   startDate: ['start', 'date'],
   startTime: ['start', 'time'],
   endDate: ['end', 'date'],
-  endTime: ['end', 'time']
+  endTime: ['end', 'time'],
+  notes: ['notes'],
+  tags: ['tags']
 }
 
 // blockDT :: String -> Block -> Maybe DateTime
