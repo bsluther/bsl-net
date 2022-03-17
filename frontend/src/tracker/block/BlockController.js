@@ -1,14 +1,14 @@
 import { useAtom } from 'jotai'
 import { fork } from 'fluture'
 import * as L from 'partial.lenses'
-import { Block } from '../block/blockData'
+import { Block } from './blockData'
 import { postBlockF } from '../dbRequests'
 import { pipe } from 'sanctuary'
 import { dissoc } from 'ramda'
 import { validate } from '../../Villa/Validation'
 import { validators } from './blockValidation'
 import { createNewDraftBlockAtom } from '../atoms'
-import useSyncBlocks from '../block/useSyncBlocks'
+import useSyncBlocks from './useSyncBlocks'
 
 const assocFlatTimes = obj => obj && obj.start && obj.end && 
   ({

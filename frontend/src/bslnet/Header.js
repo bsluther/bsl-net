@@ -13,7 +13,7 @@ const DesktopHeader = ({ activeAppName }) => {
 
   return (
     <section
-      className={` flex row-start-1 row-span-1 text-hermit-grey-400 bg-hermit-grey-900 items-center justify-center
+      className={`w-full h-8 flex row-start-1 row-span-1 text-hermit-grey-400 bg-hermit-grey-900 items-center justify-center
       space-x-8 sticky`}
     >
       {map(label => 

@@ -3,7 +3,7 @@ import { keys } from 'ramda'
 import { length } from 'ramda'
 import { useEffect } from 'react'
 import { createNewDraftBlockAtom, draftBlockAtom } from '../atoms'
-import { BlockController } from './BlockController'
+import { BlockController } from '../block/BlockController'
 import { CreateBlockPresenter } from './CreateBlockPresenter'
 
 const Create = () => {

@@ -2,7 +2,7 @@ import { atom, useAtom } from 'jotai'
 import { map } from 'ramda'
 import { reduce as fold } from 'sanctuary'
 import { useMemo } from 'react'
-import { ResizableHeaderTable, resizingAtom } from '../../resizable/resizableHeaderTable'
+import { ResizableHeaderTable, resizingAtom } from '../../../resizable/resizableHeaderTable'
 import { values, reduce } from 'ramda'
 import { add } from 'ramda'
 

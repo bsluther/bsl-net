@@ -1,6 +1,6 @@
 import { useAtom } from 'jotai'
-import { SubMenuToggle } from '../header'
-import { trackerAtom } from './atoms'
+import { SubMenuToggle } from './header'
+import { trackerAtom } from '../atoms'
 import * as L from 'partial.lenses'
 
 const TrackerSubMenu = () => {

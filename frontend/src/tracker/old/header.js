@@ -1,9 +1,9 @@
 import { atom, useAtom } from 'jotai'
 import { map } from 'ramda'
 import * as L from 'partial.lenses'
-import { UserDropdown } from './tracker/user/userDropdown'
+import { UserDropdown } from '../user/userDropdown'
 import { useLayoutEffect, useRef, useState } from 'react'
-import { logoutAtom, changeUserAtom } from './tracker/atoms'
+import { logoutAtom, changeUserAtom } from '../atoms'
 import { TrackerSubMenu } from './tracker/trackerSubMenu'
 
 const headerNavAtom = atom({ activeLink: 'Tracker' })

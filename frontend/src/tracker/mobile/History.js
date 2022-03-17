@@ -9,13 +9,13 @@ import { FilterDialog } from '../filtering/FilterDialog'
 import { useFilters } from '../filtering/useFilters'
 import { isTypeof } from '../functions'
 import { PlusSvg } from '../svg'
-import { BlockBlob } from './BlockBlob'
+import { BlockBlob, ExpandableBlockBlob } from './BlockBlob'
  
 const BlobCollection = ({ blocks }) => {
   return (
     <div className={`flex flex-col w-full items-center justify-center px-1 space-y-1`}>
       {map(blc => 
-            <BlockBlob block={blc} key={blc._id} />)
+            <ExpandableBlockBlob block={blc} key={blc._id} />)
           (values(blocks))}
     </div>
   )

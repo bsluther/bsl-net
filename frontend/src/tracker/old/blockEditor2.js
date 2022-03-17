@@ -1,13 +1,11 @@
 import { useAtom } from 'jotai'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { categoriesAtom, createNewDraftBlockAtom, targetBlockAtom } from '../atoms'
-import { Validation } from '../../Villa/Validation'
 import { CategoriesDropdown } from '../category/categoriesDropdown'
 import { assoc } from 'ramda'
 import { values } from 'ramda'
 import { DateTime } from 'luxon'
 import * as L from 'partial.lenses'
-import { ChevronDown, ChevronLeft } from '../svg'
 import { Collapsable } from '../Collapsable'
 
 /*
