@@ -18,6 +18,7 @@ const validators = {
   startTime: isISOTime,
   endDate: isISODate,
   endTime: isISOTime,
+  start: isPresent,
   end: isPresent,
   notes: isType('string'),
   tags: isArray

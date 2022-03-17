@@ -59,7 +59,7 @@ const changeUserAtom = atom(
 
 
 
-/***** BLOCKS V2 *****/
+/***** BLOCKS *****/
 
 const blocksAtom = atom ({})
 

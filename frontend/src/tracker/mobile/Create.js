@@ -7,7 +7,7 @@ import { BlockController } from '../block/BlockController'
 import { CreateBlockPresenter } from './CreateBlockPresenter'
 
 const Create = () => {
-  const [draftBlock] = useAtom(draftBlockAtom)
+  const [draftBlock, setDraftBlock] = useAtom(draftBlockAtom)
   const [, createNewDraftBlock] = useAtom(createNewDraftBlockAtom)
 
   useEffect(() => {
@@ -20,7 +20,9 @@ const Create = () => {
     <section className={`h-full flex flex-col justify-center overflow-scroll`}>
       <BlockController
         Presenter={CreateBlockPresenter}
-        blockAtom={draftBlockAtom}
+        // blockAtom={draftBlockAtom}
+        block={draftBlock}
+        setBlock={setDraftBlock}
       />
     </section>
   )

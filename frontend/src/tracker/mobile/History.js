@@ -1,8 +1,9 @@
 import { useAtom } from 'jotai'
 import { assoc, dissoc, map, values } from 'ramda'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { get, concat, joinWith, pipe, prop, fromMaybe } from 'sanctuary'
-import { categoriesAtom, namedBlocksAtom } from '../atoms'
+import { fnUpdate } from '../../util'
+import { categoriesAtom, namedBlocksAtom, targetBlockIdAtom } from '../atoms'
 import { blockStart } from '../block/blockData'
 import { toFormat } from '../dateTime/pointfree'
 import { FilterDialog } from '../filtering/FilterDialog'
@@ -10,12 +11,33 @@ import { useFilters } from '../filtering/useFilters'
 import { isTypeof } from '../functions'
 import { PlusSvg } from '../svg'
 import { BlockBlob, ExpandableBlockBlob } from './BlockBlob'
- 
-const BlobCollection = ({ blocks }) => {
+import * as L from 'partial.lenses'
+
+// note that that looks like promapping... aka lensing...
+const BlobCollection = ({ blocks, setBlocks, setTargetBlockId }) => {
+
   return (
     <div className={`flex flex-col w-full items-center justify-center px-1 space-y-1`}>
       {map(blc => 
-            <ExpandableBlockBlob block={blc} key={blc._id} />)
+            <ExpandableBlockBlob 
+              block={blc}
+              setBlock={arg => {
+                if (typeof arg === 'function') {
+                  setBlocks(prev => L.set([blc._id])
+                                         (arg(L.get([blc._id])
+                                                   (prev)))
+                                         (prev))
+                }
+                if (typeof arg !== 'function') {
+                  setBlocks(prev => L.set([blc._id])
+                                         (arg)
+                                         (prev))
+                }
+              }}
+              key={blc._id} 
+              setTargetBlockId={setTargetBlockId}
+
+            />)
           (values(blocks))}
     </div>
   )
@@ -147,7 +169,8 @@ const SettingsBar = ({ filters, createFilter, setFilters }) => {
 }
 
 const History = () => { 
-  const [blocks] = useAtom(namedBlocksAtom)
+  const [blocks, setBlocks] = useAtom(namedBlocksAtom)
+  const [targetBlockId, setTargetBlockId] = useAtom(targetBlockIdAtom)
   const [createFilter, filters, setFilters, filterFn] = useFilters({ 
     date: {
       accessor: blockStart,
@@ -166,7 +189,11 @@ const History = () => {
   return (
     <section className='flex flex-col basis-full w-full h-full space-y-2'>
       <SettingsBar filters={filters} createFilter={createFilter} setFilters={setFilters} />
-      <BlobCollection blocks={filterFn(values(blocks))} />
+      <BlobCollection 
+        blocks={filterFn(values(blocks))} 
+        setBlocks={setBlocks}
+        setTargetBlockId={setTargetBlockId} 
+      />
     </section>
           
 

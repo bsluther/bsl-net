@@ -19,21 +19,23 @@ const assocFlatTimes = obj => obj && obj.start && obj.end &&
     endTime: obj.end.time
   })
 
-const dissocStartAndEnd = pipe([
+// safer to just get what you do want to validate, eventually
+const dissocUnvalidated = pipe([
   dissoc('start'),
-  dissoc('end')
+  dissoc('end'),
+  dissoc('categoryName')
 ])
 
 const flattenTimes = pipe([
   assocFlatTimes,
-  dissocStartAndEnd
+  dissocUnvalidated
 ])
 
-const BlockController = ({ blockAtom, Presenter }) => {
-  const [block, setBlock] = useAtom(blockAtom)
+const BlockController = ({ block, setBlock, Presenter }) => {
+  // const [block, setBlock] = useAtom(blockAtom)
   const [, createNewDraftBlock] = useAtom(createNewDraftBlockAtom)
   const syncBlocks = useSyncBlocks()
-
+  console.log('blc cntrl block', flattenTimes(block))
   const validation = validate(validators)(flattenTimes(block))
   const isInvalid = validation.isFail
 
