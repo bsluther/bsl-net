@@ -60,7 +60,7 @@ const Tracker = () => {
 
   return (
     <>
-      <div id='tracker-body-window' className='row-start-2 row-end-4 h-full w-full overflow-scroll'>
+      <div id='tracker-body' className='row-start-2 row-end-4 h-full w-full overflow-scroll'>
         <Navigated />
       </div>
       

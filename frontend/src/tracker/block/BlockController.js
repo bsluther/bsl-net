@@ -32,12 +32,12 @@ const flattenTimes = pipe([
   dissocUnvalidated
 ])
 
-const BlockController = ({ block, setBlock, Presenter }) => {
+const BlockController = ({ block, setBlock, Presenter, ...props }) => {
   const [, createNewDraftBlock] = useAtom(createNewDraftBlockAtom)
   const syncBlocks = useSyncBlocks()
   const validation = validate(validators)(flattenTimes(block))
   const isInvalid = validation.isFail
-
+  console.log(block)
   const setLensedBlock = lens => arg =>
     setBlock(L.set(lens)
                   (arg))
@@ -72,6 +72,8 @@ const BlockController = ({ block, setBlock, Presenter }) => {
       category={getLensedBlock(Block.category)}
       categoryHandler={setLensedBlock(Block.category)}
 
+      categoryName={getLensedBlock(Block.categoryName)}
+
       startDate={getLensedBlock(Block.startDate)}
       startDateHandler={setLensedBlock(Block.startDate)}
 
@@ -93,6 +95,8 @@ const BlockController = ({ block, setBlock, Presenter }) => {
       cancelHandler={cancelHandler}
       saveHandler={() => saveHandler(block)}
       deleteHandler={() => deleteHandler(block._id)}
+
+      {...props}
     />
   )
 }

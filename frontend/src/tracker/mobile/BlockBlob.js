@@ -8,6 +8,20 @@ import { useAtom } from 'jotai'
 import { targetBlockAtom } from '../atoms'
 import { fromISO } from '../dateTime/functions'
 
+const scrollIntoViewIfNeeded = el => {
+  const trackerBody = document.getElementById('tracker-body')
+  const bodyRect = trackerBody.getBoundingClientRect()
+  const elRect = el.getBoundingClientRect()
+
+  if (elRect.bottom > bodyRect.bottom) {
+    el.scrollIntoView(false)
+  }
+
+  if (elRect.top < bodyRect.top) {
+    el.scrollIntoView(false)
+  }
+}
+
 
 
 
@@ -67,45 +81,71 @@ const Button = ({ clickHandler, children }) => {
   )
 }
 
-const BodyPresenter = ({ startDate, deleteHandler }) => {
+const Field = ({ label, children }) => {
+  return (
+    <div className={`flex space-x-2`}>
+      <span>{`${label}:`}</span>
+      {children}
+    </div>
+  )
+}
+
+const SubtleInput = ({ value, handler, notSubtle }) => {
+  return (
+    <input
+      className={`
+        w-max h-max bg-hermit-grey-700 outline-none
+        ${notSubtle && 'border border-hermit-grey-400'}
+      `}
+      value={value}
+      onChange={e => handler(e.target.value)}
+    />
+  )
+}
+const BodyPresenter = ({ categoryName, startDate, startTime, endTime, notes, deleteHandler }) => {
+  const [isEditing, setIsEditing] = useState(false)
+
   return (
     <div 
       className={`flex flex-col text-hermit-grey-400
     `}>
-      <span>{pipe([fromISO, maybe('')(toFormat('M/d/yy'))])
-                 (startDate)}</span>
-      <span>two</span>
+      <div className={`flex w-full basis-full`}>
+        <span className='grow'>
+           {pipe([fromISO, maybe('')(toFormat('M/d/yy'))])
+                (startDate)}
+         </span>
+         <div className={`flex space-x-1`}>
+          <span>
+            {pipe([fromISO, maybe('')(toFormat('hh:mma'))])
+                (startTime)}
+          </span>
+          <span>-</span>
+          <span>
+          {pipe([fromISO, maybe('')(toFormat('hh:mma'))])
+               (endTime)}
+          </span>
+        </div>
+      </div>
+
+      <Field label='Category'>
+        <span>{snakeToSpaced(categoryName)}</span>
+      </Field>
+
+      {notes && notes.length > 0 &&
+        <Field label='Notes'>
+          <span>{notes}</span>
+        </Field>}
+
+
       <div className={`flex px-2 space-x-2 justify-center`}>
-        <Button>Edit</Button>
+        <Button clickHandler={() => setIsEditing(prev => !prev)}>Edit</Button>
         <Button clickHandler={deleteHandler} >Delete</Button>
       </div>
     </div>
   )
 }
 
-const BodyController = ({ block, setBlock}) => {
-  const [targetBlock, setTargetBlock] = useAtom(targetBlockAtom)
-  console.log('trg blc', targetBlock)
-  return (
-    <BlockController 
-      Presenter={BodyPresenter}
-      block={block}
-      setBlock={setBlock}
-    />
-  )
-}
 
-const scrollIntoViewIfNeed = el => {
-  const windowRect = document.getElementById('tracker-body-window').getBoundingClientRect()
-
-  if (el.getBoundingClientRect().bottom > windowRect.bottom) {
-    el.scrollIntoView(false)
-  }
-
-  if (el.getBoundingClientRect().top < windowRect.top) {
-    el.scrollIntoView(false)
-  }
-}
 
 const Expandable = ({ block, setBlock, setTargetBlockId }) => {
   const [expanded, setExpanded] = useState(false)
@@ -113,7 +153,7 @@ const Expandable = ({ block, setBlock, setTargetBlockId }) => {
 
   useEffect(() => {
     if (expanded) {
-      scrollIntoViewIfNeed(expandableRef.current)
+      scrollIntoViewIfNeeded(expandableRef.current)
     }
   }, [expanded])
 
@@ -134,7 +174,6 @@ const Expandable = ({ block, setBlock, setTargetBlockId }) => {
         showBottomBorder={expanded}
       />
       {expanded &&
-
           <BlockController
             block={block}
             setBlock={setBlock}
