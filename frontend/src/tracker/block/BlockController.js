@@ -2,7 +2,7 @@ import { useAtom } from 'jotai'
 import { fork } from 'fluture'
 import * as L from 'partial.lenses'
 import { Block } from './blockData'
-import { postBlockF } from '../dbRequests'
+import { deleteBlockF, postBlockF } from '../dbRequests'
 import { pipe } from 'sanctuary'
 import { dissoc } from 'ramda'
 import { validate } from '../../Villa/Validation'
@@ -19,7 +19,8 @@ const assocFlatTimes = obj => obj && obj.start && obj.end &&
     endTime: obj.end.time
   })
 
-// safer to just get what you do want to validate, eventually
+// IMPROVE:
+// safer to just get what you do want to validate
 const dissocUnvalidated = pipe([
   dissoc('start'),
   dissoc('end'),
@@ -32,10 +33,8 @@ const flattenTimes = pipe([
 ])
 
 const BlockController = ({ block, setBlock, Presenter }) => {
-  // const [block, setBlock] = useAtom(blockAtom)
   const [, createNewDraftBlock] = useAtom(createNewDraftBlockAtom)
   const syncBlocks = useSyncBlocks()
-  console.log('blc cntrl block', flattenTimes(block))
   const validation = validate(validators)(flattenTimes(block))
   const isInvalid = validation.isFail
 
@@ -58,6 +57,13 @@ const BlockController = ({ block, setBlock, Presenter }) => {
 
   const cancelHandler = () =>
     createNewDraftBlock()
+
+  const deleteHandler = id =>
+    fork(err => console.error('Block delete failed!', err))
+        (() => {
+          syncBlocks()
+        })
+        (deleteBlockF(id))
     
   return (
     <Presenter
@@ -86,6 +92,7 @@ const BlockController = ({ block, setBlock, Presenter }) => {
 
       cancelHandler={cancelHandler}
       saveHandler={() => saveHandler(block)}
+      deleteHandler={() => deleteHandler(block._id)}
     />
   )
 }

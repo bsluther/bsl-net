@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useRef, useMemo, useState, useEffect } from 'react'
 import { blockStart } from '../block/blockData'
 import { maybe, pipe } from 'sanctuary'
 import { toFormat } from '../dateTime/pointfree'
@@ -54,14 +54,31 @@ const HeaderBlockBlob = ({ block, showBottomBorder, ...props }) => {
   )
 }
 
-const BodyPresenter = ({ startDate }) => {
+const Button = ({ clickHandler, children }) => {
+  return (
+    <button
+      className={`
+        uppercase
+        px-1
+        bg-hermit-grey-900
+      `}
+      onClick={clickHandler}
+    >{children}</button>
+  )
+}
+
+const BodyPresenter = ({ startDate, deleteHandler }) => {
   return (
     <div 
-      className={`flex flex-col
+      className={`flex flex-col text-hermit-grey-400
     `}>
       <span>{pipe([fromISO, maybe('')(toFormat('M/d/yy'))])
                  (startDate)}</span>
       <span>two</span>
+      <div className={`flex px-2 space-x-2 justify-center`}>
+        <Button>Edit</Button>
+        <Button clickHandler={deleteHandler} >Delete</Button>
+      </div>
     </div>
   )
 }
@@ -78,21 +95,36 @@ const BodyController = ({ block, setBlock}) => {
   )
 }
 
+const scrollIntoViewIfNeed = el => {
+  const windowRect = document.getElementById('tracker-body-window').getBoundingClientRect()
+
+  if (el.getBoundingClientRect().bottom > windowRect.bottom) {
+    el.scrollIntoView(false)
+  }
+
+  if (el.getBoundingClientRect().top < windowRect.top) {
+    el.scrollIntoView(false)
+  }
+}
+
 const Expandable = ({ block, setBlock, setTargetBlockId }) => {
   const [expanded, setExpanded] = useState(false)
-  
-  // useEffect(() => {
-  //   setBlock(prev => {
-  //     console.log('PREV', prev)
-  //     return prev
-  //   })
-  // }, [])
+  const expandableRef = useRef()
+
+  useEffect(() => {
+    if (expanded) {
+      scrollIntoViewIfNeed(expandableRef.current)
+    }
+  }, [expanded])
 
   return (
-    <div className={`
-      w-max h-max
-      border rounded-md border-hermit-grey-900 bg-hermit-grey-700
-    `}>
+    <div 
+      className={`
+        w-max h-max
+        border rounded-md border-hermit-grey-900 bg-hermit-grey-700
+      `}
+      ref={expandableRef}
+    >
       <HeaderBlockBlob 
         block={block} 
         onClick={() => {
@@ -102,11 +134,13 @@ const Expandable = ({ block, setBlock, setTargetBlockId }) => {
         showBottomBorder={expanded}
       />
       {expanded &&
-        <BlockController
-          block={block}
-          setBlock={setBlock}
-          Presenter={BodyPresenter}
-        />
+
+          <BlockController
+            block={block}
+            setBlock={setBlock}
+            Presenter={BodyPresenter}
+          />
+
       }
     </div>
   )

@@ -7,13 +7,4 @@ const catId = () => makeId('cat')
 
 const snakeToSpaced = replace(/_/g)(' ')
 
-const fnUpdate = setter => arg => {
-  if (typeof arg === 'function') {
-    return setter(prev => arg(prev))
-  }
-  if (typeof arg !== 'function') {
-    return setter(arg)
-  }
-}
-
-export { snakeToSpaced, blcId, catId, fnUpdate }
+export { snakeToSpaced, blcId, catId }

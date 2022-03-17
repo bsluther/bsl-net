@@ -10,6 +10,8 @@ import { useCallback } from 'react'
 //   }
 // }, [setFilters, editingFilterId])
 
+
+// DOESNT WORK!!!!
 const useFnUpdate = setter => useCallback(arg => {
   if (typeof arg === 'function') {
     setter(prev => arg(prev))
@@ -19,4 +21,3 @@ const useFnUpdate = setter => useCallback(arg => {
   }
 }, [setter])
 
-export default useFnUpdate
