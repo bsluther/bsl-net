@@ -4,7 +4,7 @@ import { maybe } from 'sanctuary'
 import { toFormat } from '../../dateTime/pointfree'
 import { snakeToSpaced, scrollIntoViewIfNeeded } from '../../../util'
 import { BlockController } from '../../block/BlockController'
-import { ReadOnlyPresenter } from '../blockBlob/ReadOnlyPresenter'
+import { ReadOnlyPresenter } from './ReadOnlyPresenter'
 import { EditPresenter } from './EditPresenter'
 import { map, values } from 'ramda'
 import * as L from 'partial.lenses'
@@ -44,14 +44,13 @@ const Expandable = ({ block, setBlock, setTargetBlockId }) => {
         w-80 h-max z-1
         border-b last:border-0 border-hermit-grey-900
         odd:bg-hermit-grey-400 even:bg-hermit-grey-500
-        ${expanded && 'outline outline-hermit-yellow-403 mb-[1px] bg-hermit-grey-300'}
+        ${expanded && 'outline outline-white mb-[2px] bg-hermit-grey-300'}
       `}
       ref={expandableRef}
     >
       <Blob 
         block={block} 
         onClick={() => {
-          setTargetBlockId(block._id)
           setExpanded(prev => !prev)
         }}
         expanded={expanded}
@@ -68,7 +67,8 @@ const Expandable = ({ block, setBlock, setTargetBlockId }) => {
   )
 }
 
-const BlobCollection = ({ blocks, setBlocks, setTargetBlockId }) => {
+const ExpandableBlobCollection = ({ blocks, setBlocks, }) => {
+
 
   return (
     <div 
@@ -93,8 +93,6 @@ const BlobCollection = ({ blocks, setBlocks, setTargetBlockId }) => {
                 }
               }}
               key={blc._id} 
-              setTargetBlockId={setTargetBlockId}
-
             />)
           (values(blocks))}
     </div>
@@ -103,5 +101,5 @@ const BlobCollection = ({ blocks, setBlocks, setTargetBlockId }) => {
 
 export { 
   Expandable as TableBlockBlob, 
-  BlobCollection as ExpandableBlobTable 
+  ExpandableBlobCollection 
 }

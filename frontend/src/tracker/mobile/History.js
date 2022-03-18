@@ -10,7 +10,7 @@ import { useFilters } from '../filtering/useFilters'
 import { isTypeof } from '../functions'
 import { PlusSvg } from '../svg'
 // import { BlockBlob, ExpandableBlockBlob } from './BlockBlob'
-import { ExpandableBlobTable, TableBlockBlob } from './blockBlob/TableBlockBlob'
+import { ExpandableBlobCollection, TableBlockBlob } from './blockBlob/ExpandableBlobCollection'
 import * as L from 'partial.lenses'
 
 // note that that looks like promapping... aka lensing...
@@ -170,7 +170,7 @@ const SettingsBar = ({ filters, createFilter, setFilters }) => {
 
 const History = () => { 
   const [blocks, setBlocks] = useAtom(namedBlocksAtom)
-  const [targetBlockId, setTargetBlockId] = useAtom(targetBlockIdAtom)
+
   const [createFilter, filters, setFilters, filterFn] = useFilters({ 
     date: {
       accessor: blockStart,
@@ -189,11 +189,10 @@ const History = () => {
   return (
     <section className='flex flex-col basis-full w-full h-full space-y-2'>
       <SettingsBar filters={filters} createFilter={createFilter} setFilters={setFilters} />
-      <div className={`flex w-full h-max justify-center`}>
-        <ExpandableBlobTable 
+      <div className={`flex w-full h-max justify-center pb-72`}>
+        <ExpandableBlobCollection
           blocks={filterFn(values(blocks))} 
           setBlocks={setBlocks}
-          setTargetBlockId={setTargetBlockId} 
         />
       </div>
     </section>

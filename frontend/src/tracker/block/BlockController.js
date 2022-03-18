@@ -47,7 +47,7 @@ const BlockController = ({ block, setBlock, Presenter, ...props }) => {
          (block)
 
 
-  const saveHandler = blc =>
+  const saveDraftHandler = blc =>
     fork(err => console.error('Block post failed!', err))
         (() => {
           createNewDraftBlock()
@@ -55,15 +55,18 @@ const BlockController = ({ block, setBlock, Presenter, ...props }) => {
         })
         (postBlockF(blc))
 
-  const cancelHandler = () =>
+  const cancelDraftHandler = () =>
     createNewDraftBlock()
 
   const deleteHandler = id =>
     fork(err => console.error('Block delete failed!', err))
-        (() => {
-          syncBlocks()
-        })
+        (() => syncBlocks())
         (deleteBlockF(id))
+
+  const updateHandler = blc =>
+    fork()
+        ()
+        ()
     
   return (
     <Presenter
@@ -92,8 +95,8 @@ const BlockController = ({ block, setBlock, Presenter, ...props }) => {
       tags={getLensedBlock(Block.tags)}
       tagsHandler={setLensedBlock(Block.tags)}
 
-      cancelHandler={cancelHandler}
-      saveHandler={() => saveHandler(block)}
+      cancelDraftHandler={cancelDraftHandler}
+      saveDraftHandler={() => saveDraftHandler(block)}
       deleteHandler={() => deleteHandler(block._id)}
 
       {...props}

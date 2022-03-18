@@ -159,8 +159,8 @@ const CreateBlockPresenter = ({
   notesHandler,
   tags = [],
   tagsHandler,
-  cancelHandler = x => x,
-  saveHandler = x => x
+  cancelDraftHandler = x => x,
+  saveDraftHandler = x => x
 }) => {
 
   return (
@@ -213,14 +213,14 @@ const CreateBlockPresenter = ({
       <div className='self-center grow space-x-4'>
         <button 
           className={`text-hermit-grey-400 bg-hermit-grey-900 rounded-md w-max px-2`} 
-          onClick={cancelHandler}
+          onClick={cancelDraftHandler}
         >Discard</button>
         <button
           disabled={isInvalid}
           className={`bg-hermit-grey-900 rounded-md w-max px-2
             ${isInvalid ? 'text-hermit-grey-700' : 'text-hermit-grey-400'}
           `}
-          onClick={saveHandler}
+          onClick={saveDraftHandler}
         >Save</button>
       </div>
 

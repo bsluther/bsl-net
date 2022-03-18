@@ -14,16 +14,18 @@ const SizedInput = ({ charWidth = 2 }) => {
   )
 }
 
-const Button = ({ children, ...props }) => {
+const Button = ({ children, className, ...props }) => {
   return (
     <button
       className={`
         uppercase
         px-1
-        rounded-sm border border-hermit-yellow-403
+        rounded-sm border border-hermit-grey-400
         bg-hermit-grey-900
-        text-hermit-yellow-403
+        text-hermit-grey-400
+        ${className}
       `}
+      {...props}
     >{children}</button>
   )
 }
@@ -101,7 +103,7 @@ const EditPresenter = ({ category, categoryHandler, startDate, startDateHandler,
       </div>
 
       <div className={`w-full pt-2 flex space-evenly space-x-4 justify-center`}>
-        <Button>Delete</Button>
+        <Button onClick={deleteHandler}>Delete</Button>
         <Button>Update</Button>
       </div>
 
