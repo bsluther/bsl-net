@@ -14,17 +14,16 @@ const Blob = ({ block, expanded, ...props }) => {
   return (
     <div 
       className={`
-        w-full
-        h-max px-2
-        bg-hermit-grey-400
-        select-none flex
+        w-full h-max
+        odd:bg-hermit-grey-400NOT even:bg-hermit-grey-500NOT
+        select-none flex justify-center-center
         ${expanded && 'border-b rounded-b-sm border-hermit-grey-900'}
       `}
       {...props}
     >
-      <span className={`text-hermit-grey-700 w-1/4 border-hermit-grey-900 border-r`}>{maybe('')(toFormat('M/d/yy'))(start)}</span>
-      <span className={`text-hermit-grey-700 w-1/4 border-hermit-grey-900 border-r`}>{`${maybe('')(toFormat('ha'))(start)}`}</span>
-      <span className={`w-1/2`}>{snakeToSpaced(block.categoryName)}</span>
+      <span className={`text-center w-1/4 text-hermit-grey-700  border-hermit-grey-900 border-r`}>{maybe('')(toFormat('M/d/yy'))(start)}</span>
+      <span className={`text-center w-1/4 text-hermit-grey-700 border-hermit-grey-900 border-r`}>{`${maybe('')(toFormat('ha'))(start)}`}</span>
+      <span className={`pl-1 first-line:w-1/2`}>{snakeToSpaced(block.categoryName)}</span>
     </div>
   )
 }
@@ -43,8 +42,9 @@ const Expandable = ({ block, setBlock, setTargetBlockId }) => {
     <div 
       className={`
         w-80 h-max
-        border-b last:border-0 border-hermit-grey-900 bg-hermit-grey-700
-        ${expanded && 'outline border-b-2'}
+        border-b last:border-0 border-hermit-grey-900
+        odd:bg-hermit-grey-400 even:bg-hermit-grey-500
+        ${expanded && 'outline mb-[1px]'}
       `}
       ref={expandableRef}
     >

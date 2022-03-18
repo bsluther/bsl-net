@@ -31,7 +31,7 @@ const ReadOnlyPresenter = ({ categoryName, startDate, startTime, endTime, notes,
 
   return (
     <div 
-      className={`flex flex-col text-hermit-grey-400 w-full space-y-1 pb-1 px-1
+      className={`flex flex-col text-hermit-grey-400 bg-hermit-grey-700 w-full space-y-1 pb-1 px-1
     `}>
       <div className={`flex w-full basis-full`}>
         <span className='grow'>
