@@ -35,7 +35,7 @@ const DatePicker = ({ ...props }) => {
     <input 
       type={'date'}
       className={`bg-hermit-grey-700 appearance-none focus:outline outline-hermit-yellow-403 w-max
-        border border-hermit-grey-500 rounded-sm
+        border border-hermit-grey-500 rounded-sm px-2
       `}
       {...props}
     />
@@ -87,7 +87,7 @@ const EditPresenter = ({ category, categoryHandler, startDate, startDateHandler,
           categoriesAtom={categoriesAtom}
           selectedId={category}
           selectHandler={categoryHandler}
-          className={`bg-hermit-grey-700 outline-none border border-hermit-grey-500 w-full text-center`}
+          className={`bg-hermit-grey-700 outline-none border border-hermit-grey-500 w-full text-center rounded-sm`}
         />
       </div>
 
