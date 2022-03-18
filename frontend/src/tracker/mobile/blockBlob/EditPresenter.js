@@ -34,7 +34,7 @@ const DatePicker = ({ ...props }) => {
   return (
     <input 
       type={'date'}
-      className={`bg-hermit-grey-700 appearance-none focus:outline outline-hermit-yellow-403 w-max
+      className={`bg-hermit-grey-700 appearance-none focus:outline outline-hermit-yellow-403 w-56
         border border-hermit-grey-500 rounded-sm px-2
       `}
       {...props}
