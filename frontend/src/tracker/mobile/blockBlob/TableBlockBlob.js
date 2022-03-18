@@ -5,6 +5,7 @@ import { toFormat } from '../../dateTime/pointfree'
 import { snakeToSpaced, scrollIntoViewIfNeeded } from '../../../util'
 import { BlockController } from '../../block/BlockController'
 import { ReadOnlyPresenter } from '../blockBlob/ReadOnlyPresenter'
+import { EditPresenter } from './EditPresenter'
 import { map, values } from 'ramda'
 import * as L from 'partial.lenses'
 
@@ -60,7 +61,7 @@ const Expandable = ({ block, setBlock, setTargetBlockId }) => {
           <BlockController
             block={block}
             setBlock={setBlock}
-            Presenter={ReadOnlyPresenter}
+            Presenter={EditPresenter}
           />
 
       }

@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+ 
+
+@layer base {
+  .react-datepicker__input-time-container 
+  .react-datepicker-time__input-container 
+  .react-datepicker-time__input input {                    
+    width: unset
+}}
