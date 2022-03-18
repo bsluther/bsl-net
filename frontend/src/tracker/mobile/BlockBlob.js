@@ -5,21 +5,7 @@ import { toFormat } from '../dateTime/pointfree'
 import { snakeToSpaced } from '../../util'
 import { BlockController } from '../block/BlockController'
 import { ReadOnlyPresenter } from './blockBlob/ReadOnlyPresenter'
-
-
-const scrollIntoViewIfNeeded = el => {
-  const trackerBody = document.getElementById('tracker-body')
-  const bodyRect = trackerBody.getBoundingClientRect()
-  const elRect = el.getBoundingClientRect()
-
-  if (elRect.bottom > bodyRect.bottom) {
-    el.scrollIntoView(false)
-  }
-
-  if (elRect.top < bodyRect.top) {
-    el.scrollIntoView(false)
-  }
-}
+import { scrollIntoViewIfNeeded } from '../../util'
 
 
 
@@ -69,6 +55,8 @@ const HeaderBlockBlob = ({ block, showBottomBorder, ...props }) => {
     </div>
   )
 }
+
+
 
 const Button = ({ clickHandler, children }) => {
   return (
@@ -154,4 +142,4 @@ const Expandable = ({ block, setBlock, setTargetBlockId }) => {
 
 
 
-export { BlockBlob, Expandable as ExpandableBlockBlob }
+export { BlockBlob, Expandable as ExpandableBlockBlob,  }

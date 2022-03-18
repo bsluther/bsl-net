@@ -7,4 +7,23 @@ const catId = () => makeId('cat')
 
 const snakeToSpaced = replace(/_/g)(' ')
 
-export { snakeToSpaced, blcId, catId }
+
+// IMPROVE:
+// make a version that works on mobile
+const scrollIntoViewIfNeeded = el => {
+  const trackerBody = document.getElementById('tracker-body')
+  const bodyRect = trackerBody.getBoundingClientRect()
+  const elRect = el.getBoundingClientRect()
+
+  if (elRect.bottom > bodyRect.bottom) {
+    el.scrollIntoView(false)
+  }
+
+  if (elRect.top < bodyRect.top) {
+    el.scrollIntoView(false)
+  }
+}
+
+
+
+export { snakeToSpaced, blcId, catId, scrollIntoViewIfNeeded }

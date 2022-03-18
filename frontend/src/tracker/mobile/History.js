@@ -2,7 +2,6 @@ import { useAtom } from 'jotai'
 import { assoc, dissoc, map, values } from 'ramda'
 import { useCallback, useEffect, useState } from 'react'
 import { get, concat, joinWith, pipe, prop, fromMaybe } from 'sanctuary'
-import { fnUpdate } from '../../util'
 import { categoriesAtom, namedBlocksAtom, targetBlockIdAtom } from '../atoms'
 import { blockStart } from '../block/blockData'
 import { toFormat } from '../dateTime/pointfree'
@@ -10,7 +9,8 @@ import { FilterDialog } from '../filtering/FilterDialog'
 import { useFilters } from '../filtering/useFilters'
 import { isTypeof } from '../functions'
 import { PlusSvg } from '../svg'
-import { BlockBlob, ExpandableBlockBlob } from './BlockBlob'
+// import { BlockBlob, ExpandableBlockBlob } from './BlockBlob'
+import { ExpandableBlobTable, TableBlockBlob } from './blockBlob/TableBlockBlob'
 import * as L from 'partial.lenses'
 
 // note that that looks like promapping... aka lensing...
@@ -19,7 +19,7 @@ const BlobCollection = ({ blocks, setBlocks, setTargetBlockId }) => {
   return (
     <div className={`flex flex-col w-full items-center justify-center px-1 space-y-1`}>
       {map(blc => 
-            <ExpandableBlockBlob 
+            <TableBlockBlob 
               block={blc}
               setBlock={arg => {
                 if (typeof arg === 'function') {
@@ -189,11 +189,13 @@ const History = () => {
   return (
     <section className='flex flex-col basis-full w-full h-full space-y-2'>
       <SettingsBar filters={filters} createFilter={createFilter} setFilters={setFilters} />
-      <BlobCollection 
-        blocks={filterFn(values(blocks))} 
-        setBlocks={setBlocks}
-        setTargetBlockId={setTargetBlockId} 
-      />
+      <div className={`flex w-full h-max justify-center`}>
+        <ExpandableBlobTable 
+          blocks={filterFn(values(blocks))} 
+          setBlocks={setBlocks}
+          setTargetBlockId={setTargetBlockId} 
+        />
+      </div>
     </section>
           
 
