@@ -16,7 +16,6 @@ const Blob = ({ block, expanded, ...props }) => {
     <div 
       className={`
         w-full h-max
-        odd:bg-hermit-grey-400NOT even:bg-hermit-grey-500NOT
         select-none flex justify-center-center
         ${expanded && 'border-b rounded-b-sm border-hermit-grey-900'}
       `}
@@ -42,10 +41,10 @@ const Expandable = ({ block, setBlock, setTargetBlockId }) => {
   return (
     <div 
       className={`
-        w-80 h-max
+        w-80 h-max z-1
         border-b last:border-0 border-hermit-grey-900
         odd:bg-hermit-grey-400 even:bg-hermit-grey-500
-        ${expanded && 'outline mb-[1px]'}
+        ${expanded && 'outline outline-hermit-yellow-403 mb-[1px] bg-hermit-grey-300'}
       `}
       ref={expandableRef}
     >

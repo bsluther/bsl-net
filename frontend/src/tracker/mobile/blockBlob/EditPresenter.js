@@ -14,11 +14,25 @@ const SizedInput = ({ charWidth = 2 }) => {
   )
 }
 
+const Button = ({ children, ...props }) => {
+  return (
+    <button
+      className={`
+        uppercase
+        px-1
+        rounded-sm border border-hermit-yellow-403
+        bg-hermit-grey-900
+        text-hermit-yellow-403
+      `}
+    >{children}</button>
+  )
+}
+
 const DatePicker = ({ ...props }) => {
   return (
     <input 
       type={'date'}
-      className={`bg-hermit-grey-700 appearance-none focus:outline outline-hermit-yellow-403 w-min
+      className={`bg-hermit-grey-700 appearance-none focus:outline outline-hermit-yellow-403 w-max
         border border-hermit-grey-500 rounded-sm
       `}
       {...props}
@@ -42,7 +56,7 @@ const EditPresenter = ({ category, categoryHandler, startDate, startDateHandler,
 
   return (
     <div 
-      className={`flex flex-col text-hermit-grey-400 bg-hermit-grey-700 w-full space-y-1 pb-1 px-1 items-end
+      className={`flex flex-col text-hermit-grey-400 bg-hermit-grey-700 w-full space-y-1 p-1 px-1 items-end
     `}>
       <DatePicker 
         value={startDate}
@@ -84,6 +98,11 @@ const EditPresenter = ({ category, categoryHandler, startDate, startDateHandler,
           value={notes}
           onChange={e => notesHandler(e.target.value)}
         />
+      </div>
+
+      <div className={`w-full pt-2 flex space-evenly space-x-4 justify-center`}>
+        <Button>Delete</Button>
+        <Button>Update</Button>
       </div>
 
     </div>
