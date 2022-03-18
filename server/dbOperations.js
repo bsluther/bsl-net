@@ -32,6 +32,18 @@ async function deleteBlock(id) {
   return result
 }
 
+async function updateBlock(id, data) {
+  const result = await main(client =>
+                              client
+                              .db('bsl-net')
+                              .collection('tracker-blocks')
+                              .updateOne(
+                                { "_id": id },
+                                { $set: data }
+                            ))
+  return result
+}
+
 /**************************************
                CATEGORY
 **************************************/
@@ -104,7 +116,8 @@ module.exports = {
   getAllBlocks, 
   getAllCategories, 
   deleteBlock, 
-  postBlock, 
+  postBlock,
+  updateBlock,
   postCategory,
   deleteCategory,
   updateCategory

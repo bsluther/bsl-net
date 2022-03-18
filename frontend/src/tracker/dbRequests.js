@@ -32,6 +32,16 @@ const deleteBlockF = id =>
          })
   .pipe(chain(encaseP(res => res.json())))
 
+  const updateBlockF = blc =>
+  encaseP(curryN(2, fetch)('./tracker/blocks'))
+         ({
+           method: 'PUT',
+           headers: { 'Content-Type': 'application/json' },
+           body: JSON.stringify(blc)
+         })
+  .pipe(chain(encaseP(res => res.json())))
+
+
 
 
 
@@ -79,6 +89,7 @@ export {
   getUserBlocksP, getUserBlocksF,
   getCategoriesP, getCategoriesF,
   postBlockF, 
+  updateBlockF,
   deleteBlockF,
   postCategoryF, 
   deleteCategoryF,

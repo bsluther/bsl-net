@@ -1,7 +1,7 @@
 require('dotenv').config()
 const express = require('express')
 const path = require('path')
-const { getAllBlocks, getAllCategories, postBlock, deleteBlock, postCategory, deleteCategory, updateCategory } = require('./dbOperations')
+const { getAllBlocks, getAllCategories, postBlock, deleteBlock, postCategory, deleteCategory, updateCategory, updateBlock } = require('./dbOperations')
 const { dissoc } = require('ramda')
 
 
@@ -30,6 +30,11 @@ server.post('/tracker/blocks', (req, res) => {
 server.delete('/tracker/blocks', (req, res) => {
   console.log(req.body)
   deleteBlock(req.body.id)
+  .then(data => res.send(data))
+})
+
+server.put('/tracker/blocks', (req, res) => {
+  updateBlock(req.body._id, req.body)
   .then(data => res.send(data))
 })
 

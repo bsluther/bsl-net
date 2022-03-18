@@ -2,7 +2,7 @@ import { useAtom } from 'jotai'
 import { fork } from 'fluture'
 import * as L from 'partial.lenses'
 import { Block } from './blockData'
-import { deleteBlockF, postBlockF } from '../dbRequests'
+import { deleteBlockF, postBlockF, updateBlockF } from '../dbRequests'
 import { pipe } from 'sanctuary'
 import { dissoc } from 'ramda'
 import { validate } from '../../Villa/Validation'
@@ -64,9 +64,9 @@ const BlockController = ({ block, setBlock, Presenter, ...props }) => {
         (deleteBlockF(id))
 
   const updateHandler = blc =>
-    fork()
-        ()
-        ()
+    fork(err => console.error('Block update failed!', err))
+        (() => syncBlocks)
+        (updateBlockF(blc))
     
   return (
     <Presenter
@@ -98,6 +98,7 @@ const BlockController = ({ block, setBlock, Presenter, ...props }) => {
       cancelDraftHandler={cancelDraftHandler}
       saveDraftHandler={() => saveDraftHandler(block)}
       deleteHandler={() => deleteHandler(block._id)}
+      updateHandler={() => updateHandler(block)}
 
       {...props}
     />

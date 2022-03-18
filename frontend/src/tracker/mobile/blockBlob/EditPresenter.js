@@ -54,7 +54,7 @@ const TimePicker = ({ ...props }) => {
   )
 }
 
-const EditPresenter = ({ category, categoryHandler, startDate, startDateHandler, startTime, startTimeHandler, endTime, endTimeHandler, notes, notesHandler, tags, deleteHandler }) => {
+const EditPresenter = ({ category, categoryHandler, startDate, startDateHandler, startTime, startTimeHandler, endTime, endTimeHandler, notes, notesHandler, tags, deleteHandler, updateHandler }) => {
 
   return (
     <div 
@@ -104,7 +104,7 @@ const EditPresenter = ({ category, categoryHandler, startDate, startDateHandler,
 
       <div className={`w-full pt-2 flex space-evenly space-x-4 justify-center`}>
         <Button onClick={deleteHandler}>Delete</Button>
-        <Button>Update</Button>
+        <Button onClick={updateHandler}>Update</Button>
       </div>
 
     </div>
