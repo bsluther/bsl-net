@@ -4,9 +4,8 @@ import { maybe, pipe } from 'sanctuary'
 import { toFormat } from '../dateTime/pointfree'
 import { snakeToSpaced } from '../../util'
 import { BlockController } from '../block/BlockController'
-import { useAtom } from 'jotai'
-import { targetBlockAtom } from '../atoms'
-import { fromISO } from '../dateTime/functions'
+import { ReadOnlyPresenter } from './blockBlob/ReadOnlyPresenter'
+
 
 const scrollIntoViewIfNeeded = el => {
   const trackerBody = document.getElementById('tracker-body')
@@ -48,22 +47,25 @@ const BlockBlob = ({ block, ...props }) => {
 
 
 
+
+
 const HeaderBlockBlob = ({ block, showBottomBorder, ...props }) => {
   const start = useMemo(() => blockStart(block), [block])
 
   return (
     <div 
       className={`
-        w-max h-max px-2 space-x-6
-         rounded-md bg-hermit-grey-400
-        select-none
+        w-full
+        h-max px-2
+        rounded-md bg-hermit-grey-400
+        select-none flex
         ${showBottomBorder && 'border-b rounded-md border-hermit-grey-900'}
       `}
       {...props}
     >
-      <span className={`text-hermit-grey-900`}>{maybe('')(toFormat('M/d/yy'))(start)}</span>
-      <span className={`text-hermit-grey-700`}>{`${maybe('')(toFormat('ha'))(start)}`}</span>
-      <span className={``}>{snakeToSpaced(block.categoryName)}</span>
+      <span className={`text-hermit-grey-700 w-1/4`}>{maybe('')(toFormat('M/d/yy'))(start)}</span>
+      <span className={`text-hermit-grey-700 w-1/4`}>{`${maybe('')(toFormat('ha'))(start)}`}</span>
+      <span className={`w-1/2`}>{snakeToSpaced(block.categoryName)}</span>
     </div>
   )
 }
@@ -102,48 +104,9 @@ const SubtleInput = ({ value, handler, notSubtle }) => {
     />
   )
 }
-const BodyPresenter = ({ categoryName, startDate, startTime, endTime, notes, deleteHandler }) => {
-  const [isEditing, setIsEditing] = useState(false)
-
-  return (
-    <div 
-      className={`flex flex-col text-hermit-grey-400
-    `}>
-      <div className={`flex w-full basis-full`}>
-        <span className='grow'>
-           {pipe([fromISO, maybe('')(toFormat('M/d/yy'))])
-                (startDate)}
-         </span>
-         <div className={`flex space-x-1`}>
-          <span>
-            {pipe([fromISO, maybe('')(toFormat('hh:mma'))])
-                (startTime)}
-          </span>
-          <span>-</span>
-          <span>
-          {pipe([fromISO, maybe('')(toFormat('hh:mma'))])
-               (endTime)}
-          </span>
-        </div>
-      </div>
-
-      <Field label='Category'>
-        <span>{snakeToSpaced(categoryName)}</span>
-      </Field>
-
-      {notes && notes.length > 0 &&
-        <Field label='Notes'>
-          <span>{notes}</span>
-        </Field>}
 
 
-      <div className={`flex px-2 space-x-2 justify-center`}>
-        <Button clickHandler={() => setIsEditing(prev => !prev)}>Edit</Button>
-        <Button clickHandler={deleteHandler} >Delete</Button>
-      </div>
-    </div>
-  )
-}
+
 
 
 
@@ -160,7 +123,7 @@ const Expandable = ({ block, setBlock, setTargetBlockId }) => {
   return (
     <div 
       className={`
-        w-max h-max
+        w-80 h-max
         border rounded-md border-hermit-grey-900 bg-hermit-grey-700
       `}
       ref={expandableRef}
@@ -177,7 +140,7 @@ const Expandable = ({ block, setBlock, setTargetBlockId }) => {
           <BlockController
             block={block}
             setBlock={setBlock}
-            Presenter={BodyPresenter}
+            Presenter={ReadOnlyPresenter}
           />
 
       }
