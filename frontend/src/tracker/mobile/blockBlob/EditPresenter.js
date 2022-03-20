@@ -1,5 +1,6 @@
 import { AtomicCategoriesDropdown } from '../../category/categoriesDropdown'
 import { categoriesAtom } from '../../atoms'
+import { Tags } from '../CreateBlockPresenter'
 
 const SizedInput = ({ charWidth = 2 }) => {
   return (
@@ -54,7 +55,7 @@ const TimePicker = ({ ...props }) => {
   )
 }
 
-const EditPresenter = ({ category, categoryHandler, startDate, startDateHandler, startTime, startTimeHandler, endTime, endTimeHandler, notes, notesHandler, tags, deleteHandler, updateHandler }) => {
+const EditPresenter = ({ category, categoryHandler, startDate, startDateHandler, startTime, startTimeHandler, endTime, endTimeHandler, notes, notesHandler, tags, tagsHandler, deleteHandler, updateHandler }) => {
 
   return (
     <div 
@@ -99,6 +100,17 @@ const EditPresenter = ({ category, categoryHandler, startDate, startDateHandler,
           `}
           value={notes}
           onChange={e => notesHandler(e.target.value)}
+        />
+      </div>
+
+      <div className={`flex place-self-start w-full space-x-2`}>
+        <span className=''>Tags:</span>
+        <Tags 
+          tags={tags}
+          tagsHandler={tagsHandler}
+          borderColor='border-hermit-grey-400'
+          newTagColor='bg-hermit-grey-900'
+          borderRadius='rounded-sm'
         />
       </div>
 

@@ -30,7 +30,7 @@ const TimePicker = ({ isoTime = nowSansSeconds(), handler }) => {
   )
 }
 
-const NewTag = ({ handleNewTag }) => {
+const NewTag = ({ handleNewTag, bgColor }) => {
   const [newTag, setNewTag] = useState('')
   const [editing, setEditing] = useState(false)
   const chars = Math.max(4, newTag.length ?? 0)
@@ -64,7 +64,7 @@ const NewTag = ({ handleNewTag }) => {
 
   return (
     <span
-      className={`flex w-max border border-hermit-grey-900 bg-hermit-aqua-200 rounded-md px-1 items-center`}
+      className={`flex w-max border border-hermit-grey-900 rounded-md px-1 items-center ${bgColor ?? 'bg-hermit-aqua-200'}`}
       onClick={() => setEditing(true)}
     >
       <PlusSvg strokeWidth={1.5} className='w-5 h-5' />
@@ -113,15 +113,17 @@ const Tag = ({ tag, handleChange, handleRemove }) => {
   )
 }
 
-const Tags = ({ tags, tagsHandler }) => {
+const Tags = ({ tags = [], tagsHandler, borderColor = 'border-hermit-grey-900', borderRadius, newTagColor }) => {
   return (
-    <div className={`border border-hermit-grey-900 
+    <div className={`border ${borderColor} ${borderRadius}
       w-3/4 h-full max-h-[6rem] p-1 flex flex-wrap gap-1 overflow-y-scroll 
     `}>
       {
         append(<NewTag 
-          handleNewTag={tag => tagsHandler(append(tag)(tags))} 
-          key='newTag' />)
+                 handleNewTag={tag => tagsHandler(append(tag)(tags))} 
+                 key='newTag' 
+                 bgColor={newTagColor}
+                />)
               (mapIx((tag, ix) => 
                         <Tag 
                           tag={tag} 
@@ -228,4 +230,4 @@ const CreateBlockPresenter = ({
   )
 }
 
-export { CreateBlockPresenter }
+export { CreateBlockPresenter, Tags }
