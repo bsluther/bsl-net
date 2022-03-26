@@ -3,7 +3,7 @@ import { useAtom } from 'jotai'
 import { useCallback } from 'react'
 import { currentTrackerUserAtom, namedBlocksAtom } from '../atoms'
 import { getUserBlocksF } from '../dbRequests'
-import { foldToIdObj } from '../functions'
+import { foldToIdObj } from '../utility'
 
 
 const useSyncBlocks = () => {

@@ -2,7 +2,6 @@ require('dotenv').config()
 const express = require('express')
 const path = require('path')
 const { getAllBlocks, getAllCategories, postBlock, deleteBlock, postCategory, deleteCategory, updateCategory, updateBlock } = require('./dbOperations')
-const { dissoc } = require('ramda')
 
 
 const server = express()

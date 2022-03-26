@@ -1,6 +1,6 @@
-import { catId } from '../functions'
+import { catId } from '../utility'
 import * as L from 'partial.lenses'
-import { includes, append, indexOf, propOr, update, filter } from 'ramda'
+import { includes, append, filter } from 'ramda'
 
 const categoryConstructor = user => ({
   _id: catId(),

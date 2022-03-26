@@ -20,7 +20,6 @@ const Create = () => {
     <section className={`h-full flex flex-col justify-center overflow-scroll`}>
       <BlockController
         Presenter={CreateBlockPresenter}
-        // blockAtom={draftBlockAtom}
         block={draftBlock}
         setBlock={setDraftBlock}
       />

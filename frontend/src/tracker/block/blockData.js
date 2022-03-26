@@ -1,4 +1,4 @@
-import { blcId } from '../functions'
+import { blcId } from '../utility'
 import { DateTime } from 'luxon'
 import { Pair, lift2, pair, maybe, pipe, justs, reduce as fold } from 'sanctuary'
 import { ifElse, map, filter } from 'ramda'

@@ -1,14 +1,7 @@
 import { pipe } from 'sanctuary'
-import { reduceWhile, map, filter } from 'ramda'
+import { filter } from 'ramda'
 import { useEffect, useState } from 'react'
 
-const breakpointWidths = {
-  sm: 640,
-  md: 768,
-  lg: 1024,
-  xl: 1280,
-  '2xl': 1536 
-}
 
 const breakpoints = [640, 768, 1024, 1280, 1536]
 

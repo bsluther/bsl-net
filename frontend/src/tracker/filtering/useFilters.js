@@ -4,16 +4,12 @@ import { useState, useCallback } from 'react'
 import { v4 as uuid } from 'uuid'
 import { keys } from 'ramda'
 import relationHash from './relations'
-import { isTypeof } from '../functions'
+import { isTypeof } from '../utility'
 
 // should useFilters provide default comparator values for each accessor? maybe
 
 // use a draft property to keep from filtering during configuration?
 
-const log = x => {
-  console.log('LOG', x)
-  return x
-}
 
 const constructFilter = accessorStr => relationStr => ({
   accessor: accessorStr,
@@ -81,7 +77,7 @@ const useFilters = accessorSettings => {
     setFilterConfigs(assoc(newFilter.id)(newFilter))
 
     return newFilter.id
-  }, [setFilterConfigs])
+  }, [setFilterConfigs, accessorSettings])
   
   return [createFilter, filterConfigs, setFilterConfigs, filterFn]
 }

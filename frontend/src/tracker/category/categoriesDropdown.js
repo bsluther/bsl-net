@@ -1,6 +1,6 @@
 import { useAtom } from 'jotai'
 import { map, prop, length, gt, prepend, compose as B, values } from 'ramda'
-import { snakeToSpaced } from '../../util'
+import { snakeToSpaced } from '../utility'
 
 const name = prop('name')
 const id = prop('_id')

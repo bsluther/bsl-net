@@ -2,9 +2,8 @@ import { useRef, useMemo, useState, useEffect } from 'react'
 import { blockStart } from '../../block/blockData'
 import { maybe } from 'sanctuary'
 import { toFormat } from '../../dateTime/pointfree'
-import { snakeToSpaced, scrollIntoViewIfNeeded } from '../../../util'
+import { snakeToSpaced, scrollIntoViewIfNeeded } from '../../utility'
 import { BlockController } from '../../block/BlockController'
-import { ReadOnlyPresenter } from './ReadOnlyPresenter'
 import { EditPresenter } from './EditPresenter'
 import { map, values } from 'ramda'
 import * as L from 'partial.lenses'
@@ -28,7 +27,7 @@ const Blob = ({ block, expanded, ...props }) => {
   )
 }
 
-const Expandable = ({ block, setBlock, setTargetBlockId }) => {
+const Expandable = ({ block, setBlock }) => {
   const [expanded, setExpanded] = useState(false)
   const expandableRef = useRef()
 
@@ -67,8 +66,7 @@ const Expandable = ({ block, setBlock, setTargetBlockId }) => {
   )
 }
 
-const ExpandableBlobCollection = ({ blocks, setBlocks, }) => {
-
+const BlobCollection = ({ blocks, setBlocks }) => {
 
   return (
     <div 
@@ -99,7 +97,4 @@ const ExpandableBlobCollection = ({ blocks, setBlocks, }) => {
   )
 }
 
-export { 
-  Expandable as TableBlockBlob, 
-  ExpandableBlobCollection 
-}
+export { BlobCollection }

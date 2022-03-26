@@ -1,9 +1,7 @@
 import { isValidDate, isValidTime } from 'iso-datestring-validator'
 import { keys } from 'ramda'
 import { foldMap, maybe, get } from 'sanctuary'
-import { isTypeof } from '../tracker/functions'
-
-
+import { isTypeof } from '../tracker/utility'
 
 const FL = {
   concat: 'fantasy-land/concat',
@@ -42,8 +40,6 @@ const Validation = run =>
   [FL.concat]: other =>
     Validation((key, x) => run(key, x).concat(other.run(key, x))),
 })
-
-// const identityV = Validation((key))
 
 const isPresent = Validation((key, x) =>
   !!x
@@ -91,10 +87,6 @@ const validate = validators => obj =>
          (key => validators[key].run(key, obj[key]))
          (keys(obj))
 
-// const validate_ = (validators, obj) =>
-//   List(Object.keys(validators)).foldMap(key =>
-//     validators[key].run(key, obj[key])
-//     , Success([obj]))
 
 export { 
   Validation,
