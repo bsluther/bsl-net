@@ -1,6 +1,5 @@
 import { Duration } from 'luxon'
 import { DateTime } from 'luxon'
-import { Pair, ifElse } from 'sanctuary'
 
 
 // diff :: DateTime -> DateTime -> Duration
@@ -36,6 +35,7 @@ const toFormat = format => x => x.toFormat(format)
 
 export {
   diff,
+  diffNow,
   equals,
   isDuration,
   isValid,

@@ -1,15 +1,11 @@
-import { DateTime } from 'luxon'
+import { DateTime, Duration } from 'luxon'
 import { Just, Nothing, Pair, pair, bimap, compose as B } from 'sanctuary'
-import { isDuration, isValid, luxonMinus, luxonPlus, toObject } from './pointfree'
-import { ifElse } from 'ramda'
-import { map } from 'ramda'
-import { and } from 'ramda'
-import { Duration } from 'luxon'
+import { isDuration, isValid, luxonMinus, luxonPlus } from './pointfree'
+import { ifElse, and } from 'ramda'
 
-const aValidISOTime = '16:46:38.448'
-const anInvalidISOTime = 'k16:46:38.448'
-
-const aValidISODate = "2022-03-04"
+// const aValidISOTime = '16:46:38.448'
+// const anInvalidISOTime = 'k16:46:38.448'
+// const aValidISODate = "2022-03-04"
 
 /**************************** MISC *********************************/
 

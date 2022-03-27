@@ -1,12 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import { BreakpointSwitch } from './bslnet/BreakpointSwitch';
+import { AppBreakpoint } from './bslnet/AppBreakpoint';
 
 
 ReactDOM.render(
   <React.StrictMode>
-    <BreakpointSwitch />
+    <AppBreakpoint />
   </React.StrictMode>,
   document.getElementById('root')
 );

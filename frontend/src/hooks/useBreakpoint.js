@@ -26,7 +26,7 @@ const calcBreakpoint = pipe([
 ])
              
 
-const useBreakpoint = () => {
+const useBreakpoint = ({ responsive }) => {
   const [breakpoint, setBreakpoint] = useState(() => calcBreakpoint(document.documentElement.clientWidth))
 
   useEffect(() => {
@@ -37,9 +37,13 @@ const useBreakpoint = () => {
         setBreakpoint(newBreakpoint)
       }
     }
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
+
+    if (responsive) {
+      window.addEventListener('resize', handleResize)
+      return () => window.removeEventListener('resize', handleResize)
+    }
   })
+
   return breakpoint
 }
 
