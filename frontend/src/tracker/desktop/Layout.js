@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { ChevronDoubleRight } from '../svg'
+import { Main } from './main/Main'
 
 const Collapsable = ({ children, ...props }) => {
   const [collapsed, setCollapsed] = useState(false)
@@ -34,12 +35,12 @@ const Collapsable = ({ children, ...props }) => {
 const Layout = () => {
   return (
     <section
-      className='w-full h-full flex'
+      className='w-full h-full flex overflow-hidden'
     >
       <Collapsable>
         <section className='w-full'>SIDEBAR</section>
       </Collapsable>
-        <section className='w-full'>MAIN</section>
+      <Main />
     </section>
   )
 }
